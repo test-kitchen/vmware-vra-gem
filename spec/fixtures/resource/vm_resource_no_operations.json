@@ -1,0 +1,101 @@
+{
+  "@type": "CatalogResource",
+  "id": "31a7badc-6562-458d-84f3-ec58d74a6953",
+  "resourceTypeRef": {
+    "id": "Infrastructure.Virtual",
+    "label": "Virtual Machine"
+  },
+  "name": "hol-dev-11",
+  "status": "ACTIVE",
+  "organization": {
+    "tenantRef": "vsphere.local",
+    "tenantLabel": "vsphere.local",
+    "subtenantRef": "5327ddd3-1a4e-4663-9e9d-63db86ffc8af",
+    "subtenantLabel": "Rainpole Developers"
+  },
+  "operations": null,
+  "resourceData": {
+    "entries": [
+      {
+        "key": "Expire",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      },
+      {
+        "key": "NETWORK_LIST",
+        "value": {
+          "type": "multiple",
+          "elementTypeId": "COMPLEX",
+          "items": [
+            {
+              "type": "complex",
+              "componentTypeId": "com.vmware.csp.component.iaas.proxy.provider",
+              "componentId": null,
+              "classId": "dynamicops.api.model.NetworkViewModel",
+              "typeFilter": null,
+              "values": {
+                "entries": [
+                  {
+                    "key": "NETWORK_ADDRESS",
+                    "value": {
+                      "type": "string",
+                      "value": "192.168.110.200"
+                    }
+                  },
+                  {
+                    "key": "NETWORK_MAC_ADDRESS",
+                    "value": {
+                      "type": "string",
+                      "value": "00:50:56:ae:95:3c"
+                    }
+                  },
+                  {
+                    "key": "NETWORK_NAME",
+                    "value": {
+                      "type": "string",
+                      "value": "VM Network"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "complex",
+              "componentTypeId": "com.vmware.csp.component.iaas.proxy.provider",
+              "componentId": null,
+              "classId": "dynamicops.api.model.NetworkViewModel",
+              "typeFilter": null,
+              "values": {
+                "entries": [
+                  {
+                    "key": "NETWORK_ADDRESS",
+                    "value": {
+                      "type": "string",
+                      "value": "192.168.220.200"
+                    }
+                  },
+                  {
+                    "key": "NETWORK_MAC_ADDRESS",
+                    "value": {
+                      "type": "string",
+                      "value": "00:50:56:ae:95:3d"
+                    }
+                  },
+                  {
+                    "key": "NETWORK_NAME",
+                    "value": {
+                      "type": "string",
+                      "value": "Management Network"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
