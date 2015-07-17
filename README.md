@@ -82,6 +82,12 @@ catalog_request.subtenant_id = '5327ddd3-1a4e-4663-9e9d-63db86ffc8af'
 => "5327ddd3-1a4e-4663-9e9d-63db86ffc8af"
 ```
 
+If your catalog blueprint item requires additional parameters to successfully submit your request, you may add them:
+
+```
+catalog_request.set_parameter('my_parameter', 'string', 'my value')
+```
+
 Now, submit your request!  The client will return a new "Request" object you can use to query for status.
 
 ```
