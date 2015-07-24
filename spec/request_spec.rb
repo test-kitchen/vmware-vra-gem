@@ -32,6 +32,13 @@ shared_examples 'refresh_trigger_method' do |method|
 end
 
 describe Vra::Request do
+  let(:client) do
+    Vra::Client.new(username: 'user@corp.local',
+                    password: 'password',
+                    tenant: 'tenant',
+                    base_url: 'https://vra.corp.local')
+  end
+
   let(:request_id) { '2c3df007-b1c4-4687-b332-310089c4851d' }
 
   let(:in_progress_payload) do
@@ -55,7 +62,7 @@ describe Vra::Request do
   end
 
   before(:each) do
-    @request = Vra::Request.new(@vra, request_id)
+    @request = Vra::Request.new(client, request_id)
   end
 
   describe '#initialize' do
@@ -66,7 +73,7 @@ describe Vra::Request do
 
   describe '#refresh' do
     it 'calls the request API endpoint' do
-      expect(@vra).to receive(:http_get!)
+      expect(client).to receive(:http_get!)
         .with("/catalog-service/api/consumer/requests/#{request_id}")
         .and_return(in_progress_payload.to_json)
 
@@ -104,7 +111,7 @@ describe Vra::Request do
 
   describe '#resources' do
     it 'calls the requests resources API endpoint' do
-      expect(@vra).to receive(:http_get_paginated_array!)
+      expect(client).to receive(:http_get_paginated_array!)
         .with("/catalog-service/api/consumer/requests/#{request_id}/resources")
         .and_return([])
 

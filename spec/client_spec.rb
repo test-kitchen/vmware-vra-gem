@@ -19,17 +19,24 @@
 require 'spec_helper'
 
 describe Vra::Client do
+  let(:client) do
+    Vra::Client.new(username: 'user@corp.local',
+                    password: 'password',
+                    tenant: 'tenant',
+                    base_url: 'https://vra.corp.local')
+  end
+
   describe '#request_headers' do
     context 'when bearer token exists' do
       it 'has an Authorization header' do
-        @vra.bearer_token = '12345'
-        expect(@vra.request_headers.key?('Authorization')).to be true
+        client.bearer_token = '12345'
+        expect(client.request_headers.key?('Authorization')).to be true
       end
     end
 
     context 'when bearer token does not exist' do
       it 'has an Authorization header' do
-        expect(@vra.request_headers.key?('Authorization')).to be false
+        expect(client.request_headers.key?('Authorization')).to be false
       end
     end
   end
@@ -37,33 +44,33 @@ describe Vra::Client do
   describe '#authorize!' do
     context 'when a token is not authorized or no token exists' do
       it 'generates a token successfully' do
-        allow(@vra).to receive(:authorized?).twice.and_return(false, true)
-        expect(@vra).to receive(:generate_bearer_token)
+        allow(client).to receive(:authorized?).twice.and_return(false, true)
+        expect(client).to receive(:generate_bearer_token)
 
-        @vra.authorize!
+        client.authorize!
       end
 
       it 'raises an exception if token generation fails' do
-        allow(@vra).to receive(:authorized?).and_return(false)
-        allow(@vra).to receive(:generate_bearer_token).and_raise(Vra::Exception::Unauthorized)
+        allow(client).to receive(:authorized?).and_return(false)
+        allow(client).to receive(:generate_bearer_token).and_raise(Vra::Exception::Unauthorized)
 
-        expect { @vra.authorize! }.to raise_error(Vra::Exception::Unauthorized)
+        expect { client.authorize! }.to raise_error(Vra::Exception::Unauthorized)
       end
 
       it 'raises an exception if a generated token is unauthorized' do
-        allow(@vra).to receive(:authorized).twice.and_return(false, false)
-        allow(@vra).to receive(:generate_bearer_token)
+        allow(client).to receive(:authorized).twice.and_return(false, false)
+        allow(client).to receive(:generate_bearer_token)
 
-        expect { @vra.authorize! }.to raise_error(Vra::Exception::Unauthorized)
+        expect { client.authorize! }.to raise_error(Vra::Exception::Unauthorized)
       end
     end
 
     context 'when a token is authorized' do
       it 'does not generate a new token' do
-        allow(@vra).to receive(:authorized?).and_return(true)
-        expect(@vra).to_not receive(:generate_bearer_token)
+        allow(client).to receive(:authorized?).and_return(true)
+        expect(client).to_not receive(:generate_bearer_token)
 
-        @vra.authorize!
+        client.authorize!
       end
     end
   end
@@ -71,13 +78,13 @@ describe Vra::Client do
   describe '#authorized?' do
     context 'when token does not exist' do
       it 'returns false' do
-        expect(@vra.authorized?).to be false
+        expect(client.authorized?).to be false
       end
     end
 
     context 'when token exists' do
       before(:each) do
-        @vra.bearer_token = '12345'
+        client.bearer_token = '12345'
       end
 
       url = '/identity/api/tokens/12345'
@@ -85,17 +92,17 @@ describe Vra::Client do
       it 'returns true if the token validates successfully' do
         response = double('response')
         allow(response).to receive(:code).and_return(204)
-        allow(@vra).to receive(:http_head).with(url, :skip_auth).and_return(response)
+        allow(client).to receive(:http_head).with(url, :skip_auth).and_return(response)
 
-        expect(@vra.authorized?).to be true
+        expect(client.authorized?).to be true
       end
 
       it 'returns false if the token validates unsuccessfully' do
         response = double('response')
         allow(response).to receive(:code).and_return(500)
-        allow(@vra).to receive(:http_head).with(url, :skip_auth).and_return(response)
+        allow(client).to receive(:http_head).with(url, :skip_auth).and_return(response)
 
-        expect(@vra.authorized?).to be false
+        expect(client.authorized?).to be false
       end
     end
   end
@@ -111,11 +118,11 @@ describe Vra::Client do
       response = double('response')
       allow(response).to receive(:code).and_return(200)
       allow(response).to receive(:body).and_return('{"id":"12345"}')
-      expect(@vra).to receive(:http_post).with('/identity/api/tokens',
+      expect(client).to receive(:http_post).with('/identity/api/tokens',
                                                payload,
                                                :skip_auth).and_return(response)
 
-      @vra.generate_bearer_token
+      client.generate_bearer_token
     end
 
     context 'when token is generated successfully' do
@@ -123,13 +130,13 @@ describe Vra::Client do
         response = double('response')
         allow(response).to receive(:code).and_return(200)
         allow(response).to receive(:body).and_return('{"id":"12345"}')
-        allow(@vra).to receive(:http_post).with('/identity/api/tokens',
+        allow(client).to receive(:http_post).with('/identity/api/tokens',
                                                 payload,
                                                 :skip_auth).and_return(response)
 
-        @vra.generate_bearer_token
+        client.generate_bearer_token
 
-        expect(@vra.bearer_token).to eq '12345'
+        expect(client.bearer_token).to eq '12345'
       end
     end
 
@@ -138,19 +145,19 @@ describe Vra::Client do
         response = double('response')
         allow(response).to receive(:code).and_return(500)
         allow(response).to receive(:body).and_return('error string')
-        allow(@vra).to receive(:http_post).with('/identity/api/tokens',
+        allow(client).to receive(:http_post).with('/identity/api/tokens',
                                                 payload,
                                                 :skip_auth)
           .and_return(response)
 
-        expect { @vra.generate_bearer_token }.to raise_error(Vra::Exception::Unauthorized)
+        expect { client.generate_bearer_token }.to raise_error(Vra::Exception::Unauthorized)
       end
     end
   end
 
   describe '#full_url' do
     it 'returns a properly formatted url' do
-      expect(@vra.full_url('/mypath')).to eq 'https://vra.corp.local/mypath'
+      expect(client.full_url('/mypath')).to eq 'https://vra.corp.local/mypath'
     end
   end
 
@@ -159,9 +166,9 @@ describe Vra::Client do
       it 'authorizes before proceeding' do
         response = double('response')
         allow(RestClient::Request).to receive(:execute).and_return(response)
-        expect(@vra).to receive(:authorize!)
+        expect(client).to receive(:authorize!)
 
-        @vra.http_head('/test')
+        client.http_head('/test')
       end
     end
 
@@ -169,9 +176,9 @@ describe Vra::Client do
       it 'does not authorize before proceeding' do
         response = double('response')
         allow(RestClient::Request).to receive(:execute).and_return(response)
-        expect(@vra).to_not receive(:authorize!)
+        expect(client).to_not receive(:authorize!)
 
-        @vra.http_head('/test', :skip_auth)
+        client.http_head('/test', :skip_auth)
       end
     end
 
@@ -182,14 +189,14 @@ describe Vra::Client do
       headers    = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
       verify_ssl = true
 
-      allow(@vra).to receive(:authorize!)
+      allow(client).to receive(:authorize!)
       expect(RestClient::Request).to receive(:execute).with(method: :head,
                                                             url: full_url,
                                                             headers: headers,
                                                             verify_ssl: verify_ssl)
         .and_return(response)
 
-      @vra.http_head(path)
+      client.http_head(path)
     end
   end
 
@@ -198,9 +205,9 @@ describe Vra::Client do
       it 'authorizes before proceeding' do
         response = double('response')
         allow(RestClient::Request).to receive(:execute).and_return(response)
-        expect(@vra).to receive(:authorize!)
+        expect(client).to receive(:authorize!)
 
-        @vra.http_get('/test')
+        client.http_get('/test')
       end
     end
 
@@ -208,9 +215,9 @@ describe Vra::Client do
       it 'does not authorize before proceeding' do
         response = double('response')
         allow(RestClient::Request).to receive(:execute).and_return(response)
-        expect(@vra).to_not receive(:authorize!)
+        expect(client).to_not receive(:authorize!)
 
-        @vra.http_get('/test', :skip_auth)
+        client.http_get('/test', :skip_auth)
       end
     end
 
@@ -221,73 +228,73 @@ describe Vra::Client do
       headers    = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
       verify_ssl = true
 
-      allow(@vra).to receive(:authorize!)
+      allow(client).to receive(:authorize!)
       expect(RestClient::Request).to receive(:execute).with(method: :get,
                                                             url: full_url,
                                                             headers: headers,
                                                             verify_ssl: verify_ssl)
         .and_return(response)
 
-      @vra.http_get(path)
+      client.http_get(path)
     end
 
     it 'calls raise_http_exception upon a RestClient error' do
-      allow(@vra).to receive(:authorize!)
+      allow(client).to receive(:authorize!)
       allow(RestClient::Request).to receive(:execute).and_raise(RestClient::ResourceNotFound)
-      expect(@vra).to receive(:raise_http_exception)
+      expect(client).to receive(:raise_http_exception)
 
-      @vra.http_get('/404')
+      client.http_get('/404')
     end
   end
 
   describe '#http_get!' do
     it 'returns the response body' do
       response = double('response', body: 'body text')
-      allow(@vra).to receive(:http_get).with('/test').and_return(response)
+      allow(client).to receive(:http_get).with('/test').and_return(response)
 
-      expect(@vra.http_get!('/test')).to eq 'body text'
+      expect(client.http_get!('/test')).to eq 'body text'
     end
   end
 
   describe '#http_get_paginated_array!' do
     it 'allows a limit override' do
-      expect(@vra).to receive(:http_get!)
+      expect(client).to receive(:http_get!)
         .with('/test?limit=10&page=1')
         .and_return({ 'content' => [], 'metadata' => { 'totalPages' => 1 } }.to_json)
 
-      @vra.http_get_paginated_array!('/test', 10)
+      client.http_get_paginated_array!('/test', 10)
     end
 
     it 'only calls http_get! once when total pages is 0 (no items)' do
-      expect(@vra).to receive(:http_get!)
+      expect(client).to receive(:http_get!)
         .once
         .with('/test?limit=20&page=1')
         .and_return({ 'content' => [], 'metadata' => { 'totalPages' => 0 } }.to_json)
 
-      @vra.http_get_paginated_array!('/test')
+      client.http_get_paginated_array!('/test')
     end
 
     it 'only calls http_get! once when total pages is 1' do
-      expect(@vra).to receive(:http_get!)
+      expect(client).to receive(:http_get!)
         .once
         .with('/test?limit=20&page=1')
         .and_return({ 'content' => [], 'metadata' => { 'totalPages' => 1 } }.to_json)
 
-      @vra.http_get_paginated_array!('/test')
+      client.http_get_paginated_array!('/test')
     end
 
     it 'calls http_get! 3 times if there are 3 pages of response' do
-      expect(@vra).to receive(:http_get!)
+      expect(client).to receive(:http_get!)
         .with('/test?limit=20&page=1')
         .and_return({ 'content' => [], 'metadata' => { 'totalPages' => 3 } }.to_json)
-      expect(@vra).to receive(:http_get!)
+      expect(client).to receive(:http_get!)
         .with('/test?limit=20&page=2')
         .and_return({ 'content' => [], 'metadata' => { 'totalPages' => 3 } }.to_json)
-      expect(@vra).to receive(:http_get!)
+      expect(client).to receive(:http_get!)
         .with('/test?limit=20&page=3')
         .and_return({ 'content' => [], 'metadata' => { 'totalPages' => 3 } }.to_json)
 
-      @vra.http_get_paginated_array!('/test')
+      client.http_get_paginated_array!('/test')
     end
   end
 
@@ -296,9 +303,9 @@ describe Vra::Client do
       it 'authorizes before proceeding' do
         response = double('response')
         allow(RestClient::Request).to receive(:execute).and_return(response)
-        expect(@vra).to receive(:authorize!)
+        expect(client).to receive(:authorize!)
 
-        @vra.http_post('/test', 'some payload')
+        client.http_post('/test', 'some payload')
       end
     end
 
@@ -306,9 +313,9 @@ describe Vra::Client do
       it 'does not authorize before proceeding' do
         response = double('response')
         allow(RestClient::Request).to receive(:execute).and_return(response)
-        expect(@vra).to_not receive(:authorize!)
+        expect(client).to_not receive(:authorize!)
 
-        @vra.http_post('/test', 'some payload', :skip_auth)
+        client.http_post('/test', 'some payload', :skip_auth)
       end
     end
 
@@ -320,7 +327,7 @@ describe Vra::Client do
       payload    = 'some payload'
       verify_ssl = true
 
-      allow(@vra).to receive(:authorize!)
+      allow(client).to receive(:authorize!)
       expect(RestClient::Request).to receive(:execute).with(method: :post,
                                                             url: full_url,
                                                             headers: headers,
@@ -328,24 +335,24 @@ describe Vra::Client do
                                                             verify_ssl: verify_ssl)
         .and_return(response)
 
-      @vra.http_post(path, payload)
+      client.http_post(path, payload)
     end
 
     it 'calls raise_http_exception upon a RestClient error' do
-      allow(@vra).to receive(:authorize!)
+      allow(client).to receive(:authorize!)
       allow(RestClient::Request).to receive(:execute).and_raise(RestClient::ResourceNotFound)
-      expect(@vra).to receive(:raise_http_exception)
+      expect(client).to receive(:raise_http_exception)
 
-      @vra.http_post('/404', 'test payload')
+      client.http_post('/404', 'test payload')
     end
   end
 
   describe '#http_post!' do
     it 'returns the response body' do
       response = double('response', body: 'body text')
-      allow(@vra).to receive(:http_post).with('/test', 'test payload').and_return(response)
+      allow(client).to receive(:http_post).with('/test', 'test payload').and_return(response)
 
-      expect(@vra.http_post!('/test', 'test payload')).to eq 'body text'
+      expect(client.http_post!('/test', 'test payload')).to eq 'body text'
     end
   end
 
@@ -359,7 +366,7 @@ describe Vra::Client do
       end
 
       it 'raises a Vra::Exception::HTTPNotFound exception' do
-        expect { @vra.raise_http_exception(exception, '/test') }.to raise_error(Vra::Exception::HTTPNotFound)
+        expect { client.raise_http_exception(exception, '/test') }.to raise_error(Vra::Exception::HTTPNotFound)
       end
     end
 
@@ -372,7 +379,7 @@ describe Vra::Client do
       end
 
       it 'raises a Vra::Exception::HTTPError exception' do
-        expect { @vra.raise_http_exception(exception, '/test') }.to raise_error(Vra::Exception::HTTPError)
+        expect { client.raise_http_exception(exception, '/test') }.to raise_error(Vra::Exception::HTTPError)
       end
     end
   end

@@ -19,7 +19,14 @@
 require 'spec_helper'
 
 describe Vra::Resource do
-  let(:resource_id)       { '31a7badc-6562-458d-84f3-ec58d74a6953' }
+  let(:client) do
+    Vra::Client.new(username: 'user@corp.local',
+                    password: 'password',
+                    tenant: 'tenant',
+                    base_url: 'https://vra.corp.local')
+  end
+
+  let(:resource_id) { '31a7badc-6562-458d-84f3-ec58d74a6953' }
   let(:vm_payload) do
     JSON.load(File.read(File.join(File.dirname(__FILE__),
                                   'fixtures',
@@ -54,13 +61,13 @@ describe Vra::Resource do
       it 'calls fetch_resource_data' do
         resource = Vra::Resource.allocate
         expect(resource).to receive(:fetch_resource_data)
-        resource.send(:initialize, @vra, id: resource_id)
+        resource.send(:initialize, client, id: resource_id)
       end
     end
 
     context 'when resource data is provided' do
       it 'populates the ID correctly' do
-        resource = Vra::Resource.new(@vra, data: vm_payload)
+        resource = Vra::Resource.new(client, data: vm_payload)
         expect(resource.id).to eq resource_id
       end
     end
@@ -68,16 +75,16 @@ describe Vra::Resource do
 
   describe '#fetch_resource_data' do
     it 'calls http_get! against the resources API endpoint' do
-      expect(@vra).to receive(:http_get!)
+      expect(client).to receive(:http_get!)
         .with("/catalog-service/api/consumer/resources/#{resource_id}")
 
-      Vra::Resource.new(@vra, id: resource_id)
+      Vra::Resource.new(client, id: resource_id)
     end
   end
 
   context 'when a valid VM resource instance has been created' do
     before(:each) do
-      @resource = Vra::Resource.new(@vra, data: vm_payload)
+      @resource = Vra::Resource.new(client, data: vm_payload)
     end
 
     describe '#name' do
@@ -195,11 +202,11 @@ describe Vra::Resource do
       before do
         allow(@resource).to receive(:action_request_payload).and_return({})
         response = double('response', code: 200, headers: { location: '/requests/request-12345' })
-        allow(@vra).to receive(:http_post).with('/catalog-service/api/consumer/requests', '{}').and_return(response)
+        allow(client).to receive(:http_post).with('/catalog-service/api/consumer/requests', '{}').and_return(response)
       end
 
       it 'calls http_post' do
-        expect(@vra).to receive(:http_post).with('/catalog-service/api/consumer/requests', '{}')
+        expect(client).to receive(:http_post).with('/catalog-service/api/consumer/requests', '{}')
 
         @resource.submit_action_request('action-123')
       end
@@ -212,7 +219,7 @@ describe Vra::Resource do
 
   context 'when a valid VM resource instance with no operations is created' do
     before(:each) do
-      @resource = Vra::Resource.new(@vra, data: vm_payload_no_ops)
+      @resource = Vra::Resource.new(client, data: vm_payload_no_ops)
     end
 
     describe '#actions' do
@@ -225,7 +232,7 @@ describe Vra::Resource do
 
   context 'when a valid non-VM resource instance has been created' do
     before(:each) do
-      @resource = Vra::Resource.new(@vra, data: non_vm_payload)
+      @resource = Vra::Resource.new(client, data: non_vm_payload)
     end
 
     it 'returns nil for network_interfaces and ip_addresses' do
