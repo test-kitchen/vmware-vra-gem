@@ -87,11 +87,10 @@ module Vra
     def network_interfaces
       return unless vm?
 
-      nics = []
       network_list = @resource_data['resourceData']['entries'].find { |x| x['key'] == 'NETWORK_LIST' }
       return if network_list.nil?
 
-      network_list['value']['items'].each do |item|
+      network_list['value']['items'].each_with_object([]) do |item, nics|
         nic = {}
         item['values']['entries'].each do |entry|
           key = entry['key']
@@ -101,8 +100,6 @@ module Vra
 
         nics << nic
       end
-
-      nics
     end
 
     def ip_addresses
