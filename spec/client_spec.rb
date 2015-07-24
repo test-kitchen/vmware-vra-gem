@@ -119,8 +119,8 @@ describe Vra::Client do
       allow(response).to receive(:code).and_return(200)
       allow(response).to receive(:body).and_return('{"id":"12345"}')
       expect(client).to receive(:http_post).with('/identity/api/tokens',
-                                               payload,
-                                               :skip_auth).and_return(response)
+                                                 payload,
+                                                 :skip_auth).and_return(response)
 
       client.generate_bearer_token
     end
@@ -131,8 +131,8 @@ describe Vra::Client do
         allow(response).to receive(:code).and_return(200)
         allow(response).to receive(:body).and_return('{"id":"12345"}')
         allow(client).to receive(:http_post).with('/identity/api/tokens',
-                                                payload,
-                                                :skip_auth).and_return(response)
+                                                  payload,
+                                                  :skip_auth).and_return(response)
 
         client.generate_bearer_token
 
@@ -146,8 +146,8 @@ describe Vra::Client do
         allow(response).to receive(:code).and_return(500)
         allow(response).to receive(:body).and_return('error string')
         allow(client).to receive(:http_post).with('/identity/api/tokens',
-                                                payload,
-                                                :skip_auth)
+                                                  payload,
+                                                  :skip_auth)
           .and_return(response)
 
         expect { client.generate_bearer_token }.to raise_error(Vra::Exception::Unauthorized)
