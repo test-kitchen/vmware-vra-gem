@@ -19,7 +19,7 @@
 module Vra
   # rubocop:disable ClassLength
   class Resource
-    attr_reader :id, :resource_data
+    attr_reader :client, :id, :resource_data
 
     def initialize(client, opts)
       @client           = client
@@ -43,7 +43,7 @@ module Vra
     end
 
     def fetch_resource_data
-      @resource_data = JSON.load(@client.http_get!("/catalog-service/api/consumer/resources/#{@id}"))
+      @resource_data = JSON.load(client.http_get!("/catalog-service/api/consumer/resources/#{@id}"))
     rescue Vra::Exception::HTTPNotFound
       raise Vra::Exception::NotFound, 'resource ID #{@id} does not exist'
     end
@@ -166,9 +166,9 @@ module Vra
 
     def submit_action_request(action_id)
       payload = action_request_payload(action_id).to_json
-      response = @client.http_post('/catalog-service/api/consumer/requests', payload)
+      response = client.http_post('/catalog-service/api/consumer/requests', payload)
       request_id = response.headers[:location].split('/')[-1]
-      Vra::Request.new(@client, request_id)
+      Vra::Request.new(client, request_id)
     end
   end
 end

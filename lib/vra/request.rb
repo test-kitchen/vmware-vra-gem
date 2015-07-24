@@ -18,7 +18,7 @@
 
 module Vra
   class Request
-    attr_reader :id
+    attr_reader :client, :id
     def initialize(client, id)
       @client = client
       @id     = id
@@ -30,7 +30,7 @@ module Vra
     end
 
     def refresh
-      @request_data = JSON.load(@client.http_get!("/catalog-service/api/consumer/requests/#{@id}"))
+      @request_data = JSON.load(client.http_get!("/catalog-service/api/consumer/requests/#{@id}"))
     rescue Vra::Exception::HTTPNotFound
       raise Vra::Exception::NotFound, "request ID #{@id} is not found"
     end
@@ -68,13 +68,13 @@ module Vra
       resources = []
 
       begin
-        request_resources = @client.http_get_paginated_array!("/catalog-service/api/consumer/requests/#{@id}/resources")
+        request_resources = client.http_get_paginated_array!("/catalog-service/api/consumer/requests/#{@id}/resources")
       rescue Vra::Exception::HTTPNotFound
         raise Vra::Exception::NotFound, "resources for request ID #{@id} are not found"
       end
 
       request_resources.each do |resource|
-        resources << Vra::Resource.new(@client, data: resource)
+        resources << Vra::Resource.new(client, data: resource)
       end
 
       resources

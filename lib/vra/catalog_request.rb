@@ -18,7 +18,7 @@
 
 module Vra
   class CatalogRequest
-    attr_reader :catalog_id, :custom_fields
+    attr_reader :catalog_id, :client, :custom_fields
     attr_writer :subtenant_id
     attr_accessor :cpus, :memory, :requested_for, :lease_days, :notes
 
@@ -62,7 +62,7 @@ module Vra
 
     def fetch_catalog_item
       begin
-        response = @client.http_get("/catalog-service/api/consumer/catalogItems/#{@catalog_id}")
+        response = client.http_get("/catalog-service/api/consumer/catalogItems/#{@catalog_id}")
       rescue Vra::Exception::HTTPNotFound
         raise Vra::Exception::NotFound, "catalog ID #{@catalog_id} does not exist"
       end
@@ -117,7 +117,7 @@ module Vra
       validate_params!
 
       begin
-        response = @client.http_post('/catalog-service/api/consumer/requests', request_payload.to_json)
+        response = client.http_post('/catalog-service/api/consumer/requests', request_payload.to_json)
       rescue Vra::Exception::HTTPError => e
         raise Vra::Exception::RequestError, "Unable to submit request: #{e.errors.join(', ')}"
       rescue
@@ -125,7 +125,7 @@ module Vra
       end
 
       request_id = response.headers[:location].split('/')[-1]
-      Vra::Request.new(@client, request_id)
+      Vra::Request.new(client, request_id)
     end
   end
 end
