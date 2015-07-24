@@ -76,6 +76,14 @@ module Vra
       @resource_data['organization']['subtenantLabel']
     end
 
+    def catalog_id
+      @resource_data['catalogItem']['id']
+    end
+
+    def catalog_name
+      @resource_data['catalogItem']['label']
+    end
+
     def network_interfaces
       return unless vm?
 
