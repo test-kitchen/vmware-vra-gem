@@ -16,6 +16,8 @@
 # limitations under the License.
 #
 
+require 'ffi_yajl'
+
 module Vra
   class Request
     attr_reader :client, :id
@@ -30,7 +32,7 @@ module Vra
     end
 
     def refresh
-      @request_data = JSON.load(client.http_get!("/catalog-service/api/consumer/requests/#{@id}"))
+      @request_data = FFI_Yajl::Parser.parse(client.http_get!("/catalog-service/api/consumer/requests/#{@id}"))
     rescue Vra::Exception::HTTPNotFound
       raise Vra::Exception::NotFound, "request ID #{@id} is not found"
     end

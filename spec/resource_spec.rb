@@ -17,6 +17,7 @@
 #
 
 require 'spec_helper'
+require 'ffi_yajl'
 
 describe Vra::Resource do
   let(:client) do
@@ -28,24 +29,24 @@ describe Vra::Resource do
 
   let(:resource_id) { '31a7badc-6562-458d-84f3-ec58d74a6953' }
   let(:vm_payload) do
-    JSON.load(File.read(File.join(File.dirname(__FILE__),
-                                  'fixtures',
-                                  'resource',
-                                  'vm_resource.json')))
+    FFI_Yajl::Parser.parse(File.read(File.join(File.dirname(__FILE__),
+                                               'fixtures',
+                                               'resource',
+                                               'vm_resource.json')))
   end
 
   let(:vm_payload_no_ops) do
-    JSON.load(File.read(File.join(File.dirname(__FILE__),
-                                  'fixtures',
-                                  'resource',
-                                  'vm_resource_no_operations.json')))
+    FFI_Yajl::Parser.parse(File.read(File.join(File.dirname(__FILE__),
+                                               'fixtures',
+                                               'resource',
+                                               'vm_resource_no_operations.json')))
   end
 
   let(:non_vm_payload) do
-    JSON.load(File.read(File.join(File.dirname(__FILE__),
-                                  'fixtures',
-                                  'resource',
-                                  'non_vm_resource.json')))
+    FFI_Yajl::Parser.parse(File.read(File.join(File.dirname(__FILE__),
+                                               'fixtures',
+                                               'resource',
+                                               'non_vm_resource.json')))
   end
 
   describe '#initialize' do
@@ -77,6 +78,7 @@ describe Vra::Resource do
     it 'calls http_get! against the resources API endpoint' do
       expect(client).to receive(:http_get!)
         .with("/catalog-service/api/consumer/resources/#{resource_id}")
+        .and_return('')
 
       Vra::Resource.new(client, id: resource_id)
     end

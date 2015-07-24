@@ -67,7 +67,7 @@ module Vra
         raise Vra::Exception::NotFound, "catalog ID #{@catalog_id} does not exist"
       end
 
-      item = JSON.load(response.body)
+      item = FFI_Yajl::Parser.parse(response.body)
 
       @catalog_details[:tenant_id]    = item['organization']['tenantRef']
       @catalog_details[:subtenant_id] = item['organization']['subtenantRef']

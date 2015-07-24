@@ -16,8 +16,6 @@
 # limitations under the License.
 #
 
-require 'json'
-
 module Vra
   class Catalog
     attr_reader :client

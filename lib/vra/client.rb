@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+require 'ffi_yajl'
 require 'rest-client'
 
 module Vra
@@ -94,7 +95,7 @@ module Vra
         raise Vra::Exception::Unauthorized, "Unable to get bearer token: #{response.body}"
       end
 
-      @bearer_token = JSON.load(response.body)['id']
+      @bearer_token = FFI_Yajl::Parser.parse(response.body)['id']
     end
 
     def full_url(path)
@@ -138,7 +139,7 @@ module Vra
       base_path = path + "?limit=#{limit}"
 
       loop do
-        response = JSON.load(http_get!("#{base_path}&page=#{page}"))
+        response = FFI_Yajl::Parser.parse(http_get!("#{base_path}&page=#{page}"))
         items += response['content']
 
         break if page >= response['metadata']['totalPages']

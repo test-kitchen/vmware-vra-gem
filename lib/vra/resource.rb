@@ -16,6 +16,8 @@
 # limitations under the License.
 #
 
+require 'ffi_yajl'
+
 module Vra
   # rubocop:disable ClassLength
   class Resource
@@ -43,7 +45,7 @@ module Vra
     end
 
     def fetch_resource_data
-      @resource_data = JSON.load(client.http_get!("/catalog-service/api/consumer/resources/#{@id}"))
+      @resource_data = FFI_Yajl::Parser.parse(client.http_get!("/catalog-service/api/consumer/resources/#{@id}"))
     rescue Vra::Exception::HTTPNotFound
       raise Vra::Exception::NotFound, 'resource ID #{@id} does not exist'
     end

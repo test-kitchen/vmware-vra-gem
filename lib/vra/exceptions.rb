@@ -16,6 +16,8 @@
 # limitations under the License.
 #
 
+require 'ffi_yajl'
+
 module Vra
   module Exception
     class NotFound < RuntimeError; end
@@ -36,8 +38,8 @@ module Vra
 
       def parse_errors
         begin
-          data = JSON.load(@body)
-        rescue JSON::ParserError
+          data = FFI_Yajl::Parser.parse(@body)
+        rescue FFI_Yajl::ParseError
           return
         end
 
