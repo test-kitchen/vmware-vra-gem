@@ -52,6 +52,18 @@ module Vra
       @request_data['phase']
     end
 
+    def in_progress?
+      status != 'SUCCESSFUL' && status != 'FAILED'
+    end
+
+    def successful?
+      status == 'SUCCESSFUL'
+    end
+
+    def failed?
+      status == 'FAILED'
+    end
+
     def completion_state
       refresh_if_empty
       return if request_empty?

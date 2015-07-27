@@ -114,7 +114,7 @@ module Vra
     end
 
     def submit
-      fetch_catalog_item
+      fetch_catalog_item if @catalog_details.empty?
       validate_params!
 
       begin
