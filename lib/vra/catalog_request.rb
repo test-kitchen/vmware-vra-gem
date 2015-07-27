@@ -22,7 +22,7 @@ module Vra
     attr_writer :subtenant_id
     attr_accessor :cpus, :memory, :requested_for, :lease_days, :notes
 
-    def initialize(client, catalog_id, opts)
+    def initialize(client, catalog_id, opts={})
       @client            = client
       @catalog_id        = catalog_id
       @cpus              = opts[:cpus]
@@ -114,6 +114,7 @@ module Vra
     end
 
     def submit
+      fetch_catalog_item
       validate_params!
 
       begin
