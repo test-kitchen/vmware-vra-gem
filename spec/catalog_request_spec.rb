@@ -85,7 +85,7 @@ describe Vra::CatalogRequest do
 
       context 'when a required parameter is not provided' do
         it 'raises an exception' do
-          request.cpus = nil
+          request.requested_for = nil
           expect { request.validate_params! }.to raise_error(ArgumentError)
         end
       end

@@ -53,7 +53,7 @@ module Vra
 
     def validate_params!
       missing_params = []
-      [ :catalog_id, :cpus, :memory, :requested_for, :subtenant_id ].each do |param|
+      [ :catalog_id, :requested_for, :subtenant_id ].each do |param|
         missing_params << param.to_s if send(param).nil?
       end
 
