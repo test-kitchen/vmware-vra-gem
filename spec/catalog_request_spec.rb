@@ -152,6 +152,7 @@ describe Vra::CatalogRequest do
 
     describe '#submit' do
       before do
+        allow(request).to receive(:fetch_catalog_item)
         allow(request).to receive(:request_payload).and_return({})
         response = double('response', code: 200, headers: { location: '/requests/request-12345' })
         allow(client).to receive(:http_post).with('/catalog-service/api/consumer/requests', '{}').and_return(response)

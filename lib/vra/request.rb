@@ -52,8 +52,8 @@ module Vra
       @request_data['phase']
     end
 
-    def in_progress?
-      status != 'SUCCESSFUL' && status != 'FAILED'
+    def completed?
+      successful? or failed?
     end
 
     def successful?
