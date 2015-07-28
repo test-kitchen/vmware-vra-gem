@@ -18,7 +18,7 @@
 
 module Vra
   class CatalogRequest
-    attr_reader :catalog_id, :client, :custom_fields
+    attr_reader :catalog_id, :catalog_item, :client, :custom_fields
     attr_writer :subtenant_id
     attr_accessor :cpus, :memory, :requested_for, :lease_days, :notes
 
@@ -31,8 +31,9 @@ module Vra
       @lease_days        = opts[:lease_days]
       @notes             = opts[:notes]
       @subtenant_id      = opts[:subtenant_id]
-      @catalog_details   = {}
       @additional_params = Vra::RequestParameters.new
+
+      @catalog_item = Vra::CatalogItem.new(client, id: catalog_id)
     end
 
     def set_parameter(key, type, value)
@@ -48,7 +49,7 @@ module Vra
     end
 
     def subtenant_id
-      @subtenant_id || @catalog_details[:subtenant_id]
+      @subtenant_id || catalog_item.subtenant_id
     end
 
     def validate_params!
@@ -60,34 +61,14 @@ module Vra
       raise ArgumentError, "Unable to submit request, required param(s) missing => #{missing_params.join(', ')}" unless missing_params.empty?
     end
 
-    def fetch_catalog_item
-      begin
-        response = client.http_get("/catalog-service/api/consumer/catalogItems/#{@catalog_id}")
-      rescue Vra::Exception::HTTPNotFound
-        raise Vra::Exception::NotFound, "catalog ID #{@catalog_id} does not exist"
-      end
-
-      item = FFI_Yajl::Parser.parse(response.body)
-
-      @catalog_details[:tenant_id]    = item['organization']['tenantRef']
-      @catalog_details[:subtenant_id] = item['organization']['subtenantRef']
-      @catalog_details[:blueprint_id] = item['providerBinding']['bindingId']
-    end
-
-    def catalog_detail(key)
-      @catalog_details[key]
-    end
-
     def request_payload
-      fetch_catalog_item if @catalog_details.empty?
-
       payload = {
         '@type' => 'CatalogItemRequest',
         'catalogItemRef' => {
           'id' => @catalog_id
         },
         'organization' => {
-          'tenantRef'    => catalog_detail(:tenant_id),
+          'tenantRef'    => catalog_item.tenant_id,
           'subtenantRef' => subtenant_id
         },
         'requestedFor' => @requested_for,
@@ -95,7 +76,7 @@ module Vra
         'requestNumber' => 0,
         'requestData' => {
           'entries' => [
-            Vra::RequestParameter.new('provider-blueprintId', 'string', catalog_detail(:blueprint_id)).to_h,
+            Vra::RequestParameter.new('provider-blueprintId', 'string', catalog_item.blueprint_id).to_h,
             Vra::RequestParameter.new('provider-provisioningGroupId', 'string', subtenant_id).to_h,
             Vra::RequestParameter.new('requestedFor', 'string', @requested_for).to_h,
             Vra::RequestParameter.new('provider-VirtualMachine.CPU.Count', 'integer', @cpus).to_h,
@@ -114,7 +95,6 @@ module Vra
     end
 
     def submit
-      fetch_catalog_item if @catalog_details.empty?
       validate_params!
 
       begin

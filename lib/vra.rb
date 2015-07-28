@@ -17,6 +17,7 @@
 #
 
 require 'vra/catalog'
+require 'vra/catalog_item'
 require 'vra/catalog_request'
 require 'vra/client'
 require 'vra/exceptions'

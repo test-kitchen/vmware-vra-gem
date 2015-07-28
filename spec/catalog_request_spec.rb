@@ -19,6 +19,14 @@
 require 'spec_helper'
 
 describe Vra::CatalogRequest do
+  before(:each) do
+    catalog_item = double('catalog_item')
+    allow(catalog_item).to receive(:blueprint_id).and_return('catalog_blueprint')
+    allow(catalog_item).to receive(:tenant_id).and_return('catalog_tenant')
+    allow(catalog_item).to receive(:subtenant_id).and_return('catalog_subtenant')
+    allow(Vra::CatalogItem).to receive(:new).and_return(catalog_item)
+  end
+
   let(:client) do
     Vra::Client.new(username: 'user@corp.local',
                     password: 'password',
@@ -37,18 +45,6 @@ describe Vra::CatalogRequest do
     end
 
     it 'uses the subtenant ID from the catalog item' do
-      payload = {
-        'organization' => {
-          'tenantRef' => 'mytenant',
-          'subtenantRef' => 'catalog_subtenant'
-        },
-        'providerBinding' => { 'bindingId' => 'blueprint-54321' }
-      }
-
-      response = double('response', code: 200, body: payload.to_json)
-      allow(client).to receive(:http_get).with('/catalog-service/api/consumer/catalogItems/catalog-12345').and_return(response)
-      request.fetch_catalog_item
-
       expect(request.subtenant_id).to eq 'catalog_subtenant'
     end
   end
@@ -91,53 +87,10 @@ describe Vra::CatalogRequest do
       end
     end
 
-    describe '#fetch_catalog_item' do
-      context 'when the catalog item exists' do
-        payload = {
-          'organization' => {
-            'tenantRef' => 'mytenant',
-            'subtenantRef' => 'mysubtenant'
-          },
-          'providerBinding' => { 'bindingId' => 'blueprint-54321' }
-        }
-
-        let(:response) { double('response', code: 200, body: payload.to_json) }
-
-        it 'calls http_get against the catalog_service' do
-          expect(client).to receive(:http_get).with('/catalog-service/api/consumer/catalogItems/catalog-12345').and_return(response)
-          request.fetch_catalog_item
-        end
-
-        it 'populated the catalog_details hash properly' do
-          allow(client).to receive(:http_get).with('/catalog-service/api/consumer/catalogItems/catalog-12345').and_return(response)
-          request.fetch_catalog_item
-
-          expect(request.catalog_detail(:tenant_id)).to eq 'mytenant'
-          expect(request.catalog_detail(:subtenant_id)).to eq 'mysubtenant'
-          expect(request.catalog_detail(:blueprint_id)).to eq 'blueprint-54321'
-        end
-      end
-
-      context 'when the catalog item does not exist' do
-        it 'raises an exception' do
-          allow(client).to receive(:http_get).with('/catalog-service/api/consumer/catalogItems/catalog-12345').and_raise(Vra::Exception::HTTPNotFound)
-          expect { request.fetch_catalog_item }.to raise_error(Vra::Exception::NotFound)
-        end
-      end
-    end
-
     describe '#request_payload' do
-      it 'gets the tenant ID and blueprint ID from catalog details' do
-        allow(request).to receive(:fetch_catalog_item)
-        expect(request).to receive(:catalog_detail).at_least(:once).with(:tenant_id)
-        expect(request).to receive(:catalog_detail).at_least(:once).with(:blueprint_id)
-        request.request_payload
-      end
-
       it 'properly handles additional parameters' do
         request.set_parameter('param1', 'string', 'my string')
         request.set_parameter('param2', 'integer', '2468')
-        allow(request).to receive(:fetch_catalog_item)
 
         payload = request.request_payload
         param1 = payload['requestData']['entries'].find { |x| x['key'] == 'param1' }
@@ -152,7 +105,6 @@ describe Vra::CatalogRequest do
 
     describe '#submit' do
       before do
-        allow(request).to receive(:fetch_catalog_item)
         allow(request).to receive(:request_payload).and_return({})
         response = double('response', code: 200, headers: { location: '/requests/request-12345' })
         allow(client).to receive(:http_post).with('/catalog-service/api/consumer/requests', '{}').and_return(response)

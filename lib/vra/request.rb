@@ -53,7 +53,7 @@ module Vra
     end
 
     def completed?
-      successful? or failed?
+      successful? || failed?
     end
 
     def successful?
