@@ -51,6 +51,10 @@ module Vra
       @catalog_item_data['name']
     end
 
+    def description
+      @catalog_item_data['description']
+    end
+
     def status
       @catalog_item_data['status']
     end
