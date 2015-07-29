@@ -30,7 +30,9 @@ module Vra
       @password     = opts[:password]
       @tenant       = opts[:tenant]
       @verify_ssl   = opts.fetch(:verify_ssl, true)
-      @bearer_token = opts[:bearer_token]
+      @bearer_token = nil
+
+      validate_client_options!
     end
 
     #########################
@@ -90,6 +92,8 @@ module Vra
 
     def generate_bearer_token
       @bearer_token = nil
+      validate_client_options!
+
       response = http_post('/identity/api/tokens', bearer_token_request_body.to_json, :skip_auth)
       if response.code != 200
         raise Vra::Exception::Unauthorized, "Unable to get bearer token: #{response.body}"
@@ -183,6 +187,20 @@ module Vra
                             path: path)
 
       raise exception, caught_exception.message
+    end
+
+    def validate_client_options!
+      raise ArgumentError, 'Username and password are required' if @username.nil? || @password.nil?
+      raise ArgumentError, 'A tenant is required' if @tenant.nil?
+      raise ArgumentError, 'A base URL is required' if @base_url.nil?
+      raise ArgumentError, "Base URL #{@base_url} is not a valid URI." unless valid_uri?(@base_url)
+    end
+
+    def valid_uri?(uri)
+      uri = URI.parse(uri)
+      uri.is_a?(URI::HTTP)
+    rescue URI::InvalidURIError
+      false
     end
   end
 end

@@ -26,6 +26,17 @@ describe Vra::Client do
                     base_url: 'https://vra.corp.local')
   end
 
+  describe '#initialize' do
+    it 'calls validate_client_options!' do
+      client = Vra::Client.allocate
+      expect(client).to receive(:validate_client_options!)
+      client.send(:initialize, username: 'user@corp.local',
+                               password: 'password',
+                               tenant: 'tenant',
+                               base_url: 'https://vra.corp.local')
+    end
+  end
+
   describe '#request_headers' do
     context 'when bearer token exists' do
       it 'has an Authorization header' do
@@ -380,6 +391,75 @@ describe Vra::Client do
 
       it 'raises a Vra::Exception::HTTPError exception' do
         expect { client.raise_http_exception(exception, '/test') }.to raise_error(Vra::Exception::HTTPError)
+      end
+    end
+  end
+
+  describe '#validate_client_options!' do
+    context 'when all required options are supplied' do
+      it 'does not raise an exception' do
+        expect { client.validate_client_options! }.not_to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when username is missing' do
+      let(:client) do
+        Vra::Client.new(password: 'password',
+                        tenant: 'tenant',
+                        base_url: 'https://vra.corp.local')
+      end
+
+      it 'raises an exception' do
+        expect { client.validate_client_options! }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when password is missing' do
+      let(:client) do
+        Vra::Client.new(username: 'username',
+                        tenant: 'tenant',
+                        base_url: 'https://vra.corp.local')
+      end
+
+      it 'raises an exception' do
+        expect { client.validate_client_options! }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when tenant is missing' do
+      let(:client) do
+        Vra::Client.new(username: 'username',
+                        password: 'password',
+                        base_url: 'https://vra.corp.local')
+      end
+
+      it 'raises an exception' do
+        expect { client.validate_client_options! }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when base URL is missing' do
+      let(:client) do
+        Vra::Client.new(username: 'username',
+                        password: 'password',
+                        tenant: 'tenant')
+      end
+
+      it 'raises an exception' do
+        expect { client.validate_client_options! }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when base URL is not a valid HTTP URL' do
+      let(:client) do
+        Vra::Client.new(username: 'username',
+                        password: 'password',
+                        tenant: 'tenant',
+                        base_url: 'something-that-is-not-a-HTTP-URI')
+      end
+
+      it 'raises an exception' do
+        expect { client.validate_client_options! }.to raise_error(ArgumentError)
       end
     end
   end
