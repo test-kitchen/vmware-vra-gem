@@ -186,7 +186,8 @@ module Vra
                             klass: caught_exception.class,
                             path: path)
 
-      raise exception, caught_exception.message
+      message = exception.errors.empty? ? caught_exception.message : exception.errors.join(', ')
+      raise exception, message
     end
 
     def validate_client_options!
