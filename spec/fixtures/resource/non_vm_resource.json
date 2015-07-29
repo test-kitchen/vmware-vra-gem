@@ -1,0 +1,18 @@
+{
+  "@type": "CatalogResource",
+  "id": "31a7badc-6562-458d-84f3-ec58d74a6953",
+  "resourceTypeRef": {
+    "id": "Infrastructure.Service",
+    "label": "Not a Virtual Machine"
+  },
+  "name": "hol-dev-12",
+  "status": "ACTIVE",
+  "organization": {
+    "tenantRef": "vsphere.local",
+    "tenantLabel": "vsphere.local",
+    "subtenantRef": "5327ddd3-1a4e-4663-9e9d-63db86ffc8af",
+    "subtenantLabel": "Rainpole Developers"
+  },
+  "resourceData": {
+  }
+}

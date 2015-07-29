@@ -1,0 +1,246 @@
+{
+  "@type": "CatalogResource",
+  "id": "31a7badc-6562-458d-84f3-ec58d74a6953",
+  "resourceTypeRef": {
+    "id": "Infrastructure.Virtual",
+    "label": "Virtual Machine"
+  },
+  "name": "hol-dev-11",
+  "status": "ACTIVE",
+  "organization": {
+    "tenantRef": "vsphere.local",
+    "tenantLabel": "vsphere.local",
+    "subtenantRef": "5327ddd3-1a4e-4663-9e9d-63db86ffc8af",
+    "subtenantLabel": "Rainpole Developers"
+  },
+  "operations": [
+    {
+      "name": "Change Lease",
+      "description": "Change the lease for a machine. Leave empty for indefinite.",
+      "iconId": "machineChangeLease.png",
+      "type": "ACTION",
+      "id": "50a50fde-2c8e-4122-acad-77cca348ae23",
+      "extensionId": null,
+      "providerTypeId": "com.vmware.csp.iaas.blueprint.service",
+      "bindingId": "Infrastructure.Machine.Action.ChangeLease",
+      "hasForm": true,
+      "formScale": "SMALL"
+    },
+    {
+      "name": "Connect to Remote Console",
+      "description": "Infrastructure connect using remote console",
+      "iconId": "cafe_default_icon_genericResourceOperation",
+      "type": "EXTENSION",
+      "id": "24c98f8e-6e9b-4f4e-b4df-460a29c80e1a",
+      "extensionId": "csp.places.iaas.item.window.ConnectViaVmrc",
+      "providerTypeId": null,
+      "bindingId": null,
+      "hasForm": false,
+      "formScale": null
+    },
+    {
+      "name": "Destroy",
+      "description": "Destroy a virtual machine.",
+      "iconId": "virtualDestroy.png",
+      "type": "ACTION",
+      "id": "ace8ba42-e724-48d8-9614-9b3a62b5a464",
+      "extensionId": null,
+      "providerTypeId": "com.vmware.csp.iaas.blueprint.service",
+      "bindingId": "Infrastructure.Virtual.Action.Destroy",
+      "hasForm": false,
+      "formScale": null
+    },
+    {
+      "name": "Expire",
+      "description": "Expire a machine.",
+      "iconId": "machineExpire.png",
+      "type": "ACTION",
+      "id": "34f354b5-4f09-495d-a553-646bbdc2d4b4",
+      "extensionId": null,
+      "providerTypeId": "com.vmware.csp.iaas.blueprint.service",
+      "bindingId": "Infrastructure.Machine.Action.Expire",
+      "hasForm": false,
+      "formScale": null
+    },
+    {
+      "name": "Install Tools",
+      "description": "Install tools on a machine.",
+      "iconId": "machineInstallTools.png",
+      "type": "ACTION",
+      "id": "2798f564-ba80-4e3a-b2c9-70aa686ed6a7",
+      "extensionId": null,
+      "providerTypeId": "com.vmware.csp.iaas.blueprint.service",
+      "bindingId": "Infrastructure.Machine.Action.InstallTools",
+      "hasForm": false,
+      "formScale": null
+    },
+    {
+      "name": "Power Cycle",
+      "description": "Reset a machine.",
+      "iconId": "machineReset.png",
+      "type": "ACTION",
+      "id": "9c1c2d9a-9ccc-46fc-bb5d-36632bdb3167",
+      "extensionId": null,
+      "providerTypeId": "com.vmware.csp.iaas.blueprint.service",
+      "bindingId": "Infrastructure.Machine.Action.Reset",
+      "hasForm": false,
+      "formScale": null
+    },
+    {
+      "name": "Power Off",
+      "description": "Power off a machine.",
+      "iconId": "machinePowerOff.png",
+      "type": "ACTION",
+      "id": "a391186c-7a3c-44fc-8d3d-3f5dcc269c85",
+      "extensionId": null,
+      "providerTypeId": "com.vmware.csp.iaas.blueprint.service",
+      "bindingId": "Infrastructure.Machine.Action.PowerOff",
+      "hasForm": false,
+      "formScale": null
+    },
+    {
+      "name": "Reboot",
+      "description": "Reboot a machine.",
+      "iconId": "machineReboot.png",
+      "type": "ACTION",
+      "id": "e71a9cae-7e8b-46a4-83fa-cfa4731669e4",
+      "extensionId": null,
+      "providerTypeId": "com.vmware.csp.iaas.blueprint.service",
+      "bindingId": "Infrastructure.Machine.Action.Reboot",
+      "hasForm": false,
+      "formScale": null
+    },
+    {
+      "name": "Reconfigure",
+      "description": "Reconfigure a machine.",
+      "iconId": "machineReconfigure.png",
+      "type": "ACTION",
+      "id": "1db5df1b-cb05-495d-a577-874b97af951e",
+      "extensionId": null,
+      "providerTypeId": "com.vmware.csp.iaas.blueprint.service",
+      "bindingId": "Infrastructure.Machine.Action.Reconfigure",
+      "hasForm": true,
+      "formScale": "BIG"
+    },
+    {
+      "name": "Reprovision",
+      "description": "Reprovision a machine.",
+      "iconId": "machineReprovision.png",
+      "type": "ACTION",
+      "id": "3ba6fdd8-d36b-48aa-8314-5437441fdea4",
+      "extensionId": null,
+      "providerTypeId": "com.vmware.csp.iaas.blueprint.service",
+      "bindingId": "Infrastructure.Machine.Action.Reprovision",
+      "hasForm": true,
+      "formScale": "BIG"
+    },
+    {
+      "name": "Shutdown",
+      "description": "Shutdown a machine.",
+      "iconId": "machineShutdown.png",
+      "type": "ACTION",
+      "id": "38231238-b979-43de-8697-1d61193e09c5",
+      "extensionId": null,
+      "providerTypeId": "com.vmware.csp.iaas.blueprint.service",
+      "bindingId": "Infrastructure.Machine.Action.Shutdown",
+      "hasForm": false,
+      "formScale": null
+    },
+    {
+      "name": "Suspend",
+      "description": "Suspend a machine.",
+      "iconId": "machineSuspend.png",
+      "type": "ACTION",
+      "id": "48e64dc6-f147-4977-94f7-4acfd4599b96",
+      "extensionId": null,
+      "providerTypeId": "com.vmware.csp.iaas.blueprint.service",
+      "bindingId": "Infrastructure.Machine.Action.Suspend",
+      "hasForm": false,
+      "formScale": null
+    }
+  ],
+  "resourceData": {
+    "entries": [
+      {
+        "key": "Expire",
+        "value": {
+          "type": "boolean",
+          "value": true
+        }
+      },
+      {
+        "key": "NETWORK_LIST",
+        "value": {
+          "type": "multiple",
+          "elementTypeId": "COMPLEX",
+          "items": [
+            {
+              "type": "complex",
+              "componentTypeId": "com.vmware.csp.component.iaas.proxy.provider",
+              "componentId": null,
+              "classId": "dynamicops.api.model.NetworkViewModel",
+              "typeFilter": null,
+              "values": {
+                "entries": [
+                  {
+                    "key": "NETWORK_ADDRESS",
+                    "value": {
+                      "type": "string",
+                      "value": "192.168.110.200"
+                    }
+                  },
+                  {
+                    "key": "NETWORK_MAC_ADDRESS",
+                    "value": {
+                      "type": "string",
+                      "value": "00:50:56:ae:95:3c"
+                    }
+                  },
+                  {
+                    "key": "NETWORK_NAME",
+                    "value": {
+                      "type": "string",
+                      "value": "VM Network"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "complex",
+              "componentTypeId": "com.vmware.csp.component.iaas.proxy.provider",
+              "componentId": null,
+              "classId": "dynamicops.api.model.NetworkViewModel",
+              "typeFilter": null,
+              "values": {
+                "entries": [
+                  {
+                    "key": "NETWORK_ADDRESS",
+                    "value": {
+                      "type": "string",
+                      "value": "192.168.220.200"
+                    }
+                  },
+                  {
+                    "key": "NETWORK_MAC_ADDRESS",
+                    "value": {
+                      "type": "string",
+                      "value": "00:50:56:ae:95:3d"
+                    }
+                  },
+                  {
+                    "key": "NETWORK_NAME",
+                    "value": {
+                      "type": "string",
+                      "value": "Management Network"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

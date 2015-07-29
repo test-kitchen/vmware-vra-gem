@@ -1,0 +1,14 @@
+Metrics/AbcSize:
+  Max: 30
+Metrics/LineLength:
+  Max: 150
+Metrics/MethodLength:
+  Max: 30
+Style/Documentation:
+  Enabled: false
+Style/SignalException:
+  Enabled: false
+Style/SpaceAroundEqualsInParameterDefault:
+  EnforcedStyle: no_space
+Style/SpaceInsideBrackets:
+  Enabled: false
