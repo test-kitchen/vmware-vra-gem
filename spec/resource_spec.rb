@@ -85,59 +85,69 @@ describe Vra::Resource do
   end
 
   context 'when a valid VM resource instance has been created' do
-    before(:each) do
-      @resource = Vra::Resource.new(client, data: vm_payload)
-    end
+    let(:resource) { Vra::Resource.new(client, data: vm_payload) }
 
     describe '#name' do
       it 'returns the correct name' do
-        expect(@resource.name).to eq 'hol-dev-11'
+        expect(resource.name).to eq 'hol-dev-11'
       end
     end
 
     describe '#status' do
       it 'returns the correct status' do
-        expect(@resource.status).to eq 'ACTIVE'
+        expect(resource.status).to eq 'ACTIVE'
       end
     end
 
     describe '#vm?' do
       it 'returns true for the VM resource we created' do
-        expect(@resource.vm?).to be true
+        expect(resource.vm?).to be true
       end
     end
 
     describe '#tenant_id' do
       it 'returns the correct tenant ID' do
-        expect(@resource.tenant_id).to eq 'vsphere.local'
+        expect(resource.tenant_id).to eq 'vsphere.local'
       end
     end
 
     describe '#tenant_name' do
       it 'returns the correct tenant name' do
-        expect(@resource.tenant_name).to eq 'vsphere.local'
+        expect(resource.tenant_name).to eq 'vsphere.local'
       end
     end
 
     describe '#subtenant_id' do
       it 'returns the correct subtenant ID' do
-        expect(@resource.subtenant_id).to eq '5327ddd3-1a4e-4663-9e9d-63db86ffc8af'
+        expect(resource.subtenant_id).to eq '5327ddd3-1a4e-4663-9e9d-63db86ffc8af'
       end
     end
 
     describe '#subtenant_name' do
       it 'returns the correct subtenant name' do
-        expect(@resource.subtenant_name).to eq 'Rainpole Developers'
+        expect(resource.subtenant_name).to eq 'Rainpole Developers'
+      end
+    end
+
+    describe '#owner_ids' do
+      it 'returns the correct owner IDs' do
+        expect(resource.owner_ids).to eq %w(user1@corp.local user2@corp.local)
+      end
+    end
+
+    describe '#owner_names' do
+      it 'returns the correct owner names' do
+        expect(resource.owner_names).to eq [ 'Joe User', 'Jane User' ]
       end
     end
 
     describe '#network_interfaces' do
       it 'returns an array of 2 elements' do
-        expect(@resource.network_interfaces.size).to be 2
+        expect(resource.network_interfaces.size).to be 2
       end
 
       it 'contains the correct data' do
-        nic1, nic2 = @resource.network_interfaces
+        nic1, nic2 = resource.network_interfaces
 
         expect(nic1['NETWORK_NAME']).to eq 'VM Network'
         expect(nic1['NETWORK_ADDRESS']).to eq '192.168.110.200'
@@ -151,58 +161,58 @@ describe Vra::Resource do
 
     describe '#ip_addresses' do
       it 'returns the correct IP addresses' do
-        expect(@resource.ip_addresses).to eq [ '192.168.110.200', '192.168.220.200' ]
+        expect(resource.ip_addresses).to eq [ '192.168.110.200', '192.168.220.200' ]
       end
 
       it 'returns nil if there are no network interfaces' do
-        allow(@resource).to receive(:network_interfaces).and_return nil
-        expect(@resource.ip_addresses).to be_nil
+        allow(resource).to receive(:network_interfaces).and_return nil
+        expect(resource.ip_addresses).to be_nil
       end
     end
 
     describe '#actions' do
       it 'does not call #fetch_resource_data' do
-        expect(@resource).not_to receive(:fetch_resource_data)
-        @resource.actions
+        expect(resource).not_to receive(:fetch_resource_data)
+        resource.actions
       end
     end
 
     describe '#action_id_by_name' do
       it 'returns the correct action ID for the destroy action' do
-        expect(@resource.action_id_by_name('Destroy')).to eq 'ace8ba42-e724-48d8-9614-9b3a62b5a464'
+        expect(resource.action_id_by_name('Destroy')).to eq 'ace8ba42-e724-48d8-9614-9b3a62b5a464'
       end
 
       it 'returns nil if there are no resource operations' do
-        allow(@resource).to receive(:actions).and_return nil
-        expect(@resource.action_id_by_name('Destroy')).to be_nil
+        allow(resource).to receive(:actions).and_return nil
+        expect(resource.action_id_by_name('Destroy')).to be_nil
       end
 
       it 'returns nil if there are actions, but none with the right name' do
-        allow(@resource).to receive(:actions).and_return([ { 'name' => 'some action' }, { 'name' => 'another action' } ])
-        expect(@resource.action_id_by_name('Destroy')).to be_nil
+        allow(resource).to receive(:actions).and_return([ { 'name' => 'some action' }, { 'name' => 'another action' } ])
+        expect(resource.action_id_by_name('Destroy')).to be_nil
       end
     end
 
     describe '#destroy' do
       context 'when the destroy action is available' do
         it 'calls gets the action ID and submits the request' do
-          expect(@resource).to receive(:action_id_by_name).with('Destroy').and_return('action-123')
-          expect(@resource).to receive(:submit_action_request).with('action-123')
-          @resource.destroy
+          expect(resource).to receive(:action_id_by_name).with('Destroy').and_return('action-123')
+          expect(resource).to receive(:submit_action_request).with('action-123')
+          resource.destroy
         end
       end
 
       context 'when the destroy action is not available' do
         it 'raises an exception' do
-          allow(@resource).to receive(:action_id_by_name).and_return nil
-          expect { @resource.destroy }.to raise_error(Vra::Exception::NotFound)
+          allow(resource).to receive(:action_id_by_name).and_return nil
+          expect { resource.destroy }.to raise_error(Vra::Exception::NotFound)
         end
       end
     end
 
     describe '#submit_action_request' do
       before do
-        allow(@resource).to receive(:action_request_payload).and_return({})
+        allow(resource).to receive(:action_request_payload).and_return({})
         response = double('response', code: 200, headers: { location: '/requests/request-12345' })
         allow(client).to receive(:http_post).with('/catalog-service/api/consumer/requests', '{}').and_return(response)
       end
@@ -210,36 +220,32 @@ describe Vra::Resource do
       it 'calls http_post' do
         expect(client).to receive(:http_post).with('/catalog-service/api/consumer/requests', '{}')
 
-        @resource.submit_action_request('action-123')
+        resource.submit_action_request('action-123')
       end
 
       it 'returns a Vra::Request object' do
-        expect(@resource.submit_action_request('action-123')).to be_an_instance_of(Vra::Request)
+        expect(resource.submit_action_request('action-123')).to be_an_instance_of(Vra::Request)
       end
     end
   end
 
   context 'when a valid VM resource instance with no operations is created' do
-    before(:each) do
-      @resource = Vra::Resource.new(client, data: vm_payload_no_ops)
-    end
+    let(:resource) { Vra::Resource.new(client, data: vm_payload_no_ops) }
 
     describe '#actions' do
       it 'calls #fetch_resource_data' do
-        expect(@resource).to receive(:fetch_resource_data)
-        @resource.actions
+        expect(resource).to receive(:fetch_resource_data)
+        resource.actions
       end
     end
   end
 
   context 'when a valid non-VM resource instance has been created' do
-    before(:each) do
-      @resource = Vra::Resource.new(client, data: non_vm_payload)
-    end
+    let(:resource) { Vra::Resource.new(client, data: non_vm_payload) }
 
     it 'returns nil for network_interfaces and ip_addresses' do
-      expect(@resource.network_interfaces).to be_nil
-      expect(@resource.ip_addresses).to be_nil
+      expect(resource.network_interfaces).to be_nil
+      expect(resource.ip_addresses).to be_nil
     end
   end
 end

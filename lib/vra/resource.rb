@@ -86,6 +86,14 @@ module Vra
       @resource_data['catalogItem']['label']
     end
 
+    def owner_ids
+      @resource_data['owners'].map { |x| x['ref'] }
+    end
+
+    def owner_names
+      @resource_data['owners'].map { |x| x['value'] }
+    end
+
     def network_interfaces
       return unless vm?
 
