@@ -129,6 +129,18 @@ describe Vra::Resource do
       end
     end
 
+    describe '#owner_ids' do
+      it 'returns the correct owner IDs' do
+        expect(resource.owner_ids).to eq %w(user1@corp.local user2@corp.local)
+      end
+    end
+
+    describe '#owner_names' do
+      it 'returns the correct owner names' do
+        expect(resource.owner_names).to eq [ 'Joe User', 'Jane User' ]
+      end
+    end
+
     describe '#network_interfaces' do
       it 'returns an array of 2 elements' do
         expect(resource.network_interfaces.size).to be 2

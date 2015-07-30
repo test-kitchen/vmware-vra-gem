@@ -13,6 +13,10 @@
     "subtenantRef": "5327ddd3-1a4e-4663-9e9d-63db86ffc8af",
     "subtenantLabel": "Rainpole Developers"
   },
+  "owners": [
+    {"tenantName": "vsphere.local", "ref": "user1@corp.local", "type": "USER", "value": "Joe User"},
+    {"tenantName": "vsphere.local", "ref": "user2@corp.local", "type": "USER", "value": "Jane User"}
+  ],
   "operations": [
     {
       "name": "Change Lease",
