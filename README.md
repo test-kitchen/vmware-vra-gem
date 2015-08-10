@@ -2,7 +2,7 @@
 
 Client gem for interacting with VMware's vRealize Automation application.
 
-Not all vRA functionality is included in this gem; only API calls necessary 
+Not all vRA functionality is included in this gem; only API calls necessary
 to interact with the catalog, requests, and existing items is included.
 
 The primary goal of this gem is to provide a reusable set of methods in order
@@ -33,7 +33,7 @@ require 'vra'
 => true
 ```
 
-Then, set up your client object.  You will need to know your tenant ID from your vRA administrator.
+Then, set up your client object. You will need to know your tenant ID from your vRA administrator.
 
 ```
 vra = Vra::Client.new(username: 'devmgr@corp.local', password: 'mypassword', tenant: 'mytenant', base_url: 'https://vra.corp.local', verify_ssl: true)
@@ -61,7 +61,7 @@ catalog_request = vra.catalog.request('a9cd6148-6e0b-4a80-ac47-f5255c52b43d', cp
 => #<Vra::CatalogRequest:0x00000003477c20 ... >
 ```
 
-vRA requires your sub-tenant (a.k.a. "business group") to be specified when requesting an item from the catalog.  If the catalog item you are requesting is specifically created for a given business group, the gem will use that ID automatically without you needing to specify it.
+vRA requires your sub-tenant (a.k.a. "business group") to be specified when requesting an item from the catalog. If the catalog item you are requesting is specifically created for a given business group, the gem will use that ID automatically without you needing to specify it.
 
 However, if there is no sub-tenant ID available for us to use, you will receive an error when you submit:
 
@@ -124,7 +124,7 @@ new_request.status
 => "SUCCESSFUL"
 ```
 
-When the request is successful, you can query the resources created as the result of your request.  Assuming that the catalog item blueprint we requested only creates a single VM, we can get that resource and learn more information about it:
+When the request is successful, you can query the resources created as the result of your request. Assuming that the catalog item blueprint we requested only creates a single VM, we can get that resource and learn more information about it:
 
 ```
 resource = request.resources.first
