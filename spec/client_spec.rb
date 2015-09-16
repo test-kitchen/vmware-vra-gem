@@ -398,7 +398,7 @@ describe Vra::Client do
   describe '#validate_client_options!' do
     context 'when all required options are supplied' do
       it 'does not raise an exception' do
-        expect { client.validate_client_options! }.not_to raise_error(ArgumentError)
+        expect { client.validate_client_options! }.not_to raise_error
       end
     end
 
