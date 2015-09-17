@@ -37,6 +37,12 @@ describe Vra::Client do
     end
   end
 
+  describe '#bearer_token_request_body' do
+    it 'gets the correct password from the PasswordMasker object' do
+      expect(client.bearer_token_request_body['password']).to eq('password')
+    end
+  end
+
   describe '#request_headers' do
     context 'when bearer token exists' do
       it 'has an Authorization header' do

@@ -18,6 +18,7 @@
 
 require 'ffi_yajl'
 require 'rest-client'
+require 'passwordmasker'
 
 module Vra
   # rubocop:disable ClassLength
@@ -27,10 +28,10 @@ module Vra
     def initialize(opts)
       @base_url     = opts[:base_url]
       @username     = opts[:username]
-      @password     = opts[:password]
+      @password     = PasswordMasker.new(opts[:password])
       @tenant       = opts[:tenant]
       @verify_ssl   = opts.fetch(:verify_ssl, true)
-      @bearer_token = nil
+      @bearer_token = PasswordMasker.new(nil)
 
       validate_client_options!
     end
@@ -60,7 +61,7 @@ module Vra
     def bearer_token_request_body
       {
         'username' => @username,
-        'password' => @password,
+        'password' => @password.value,
         'tenant'   => @tenant
       }
     end
@@ -69,7 +70,7 @@ module Vra
       headers = {}
       headers['Accept']        = 'application/json'
       headers['Content-Type']  = 'application/json'
-      headers['Authorization'] = "Bearer #{@bearer_token}" unless @bearer_token.nil?
+      headers['Authorization'] = "Bearer #{@bearer_token.value}" unless @bearer_token.nil?
       headers
     end
 
@@ -82,7 +83,7 @@ module Vra
     def authorized?
       return false if @bearer_token.nil?
 
-      response = http_head("/identity/api/tokens/#{@bearer_token}", :skip_auth)
+      response = http_head("/identity/api/tokens/#{@bearer_token.value}", :skip_auth)
       if response.code == 204
         true
       else
@@ -91,7 +92,7 @@ module Vra
     end
 
     def generate_bearer_token
-      @bearer_token = nil
+      @bearer_token.value = nil
       validate_client_options!
 
       response = http_post('/identity/api/tokens', bearer_token_request_body.to_json, :skip_auth)
@@ -99,7 +100,7 @@ module Vra
         raise Vra::Exception::Unauthorized, "Unable to get bearer token: #{response.body}"
       end
 
-      @bearer_token = FFI_Yajl::Parser.parse(response.body)['id']
+      @bearer_token.value = FFI_Yajl::Parser.parse(response.body)['id']
     end
 
     def full_url(path)
