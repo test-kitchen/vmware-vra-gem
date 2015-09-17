@@ -46,7 +46,7 @@ describe Vra::Client do
   describe '#request_headers' do
     context 'when bearer token exists' do
       it 'has an Authorization header' do
-        client.bearer_token = '12345'
+        client.bearer_token.value = '12345'
         expect(client.request_headers.key?('Authorization')).to be true
       end
     end
@@ -101,7 +101,7 @@ describe Vra::Client do
 
     context 'when token exists' do
       before(:each) do
-        client.bearer_token = '12345'
+        client.bearer_token.value = '12345'
       end
 
       url = '/identity/api/tokens/12345'
@@ -153,7 +153,7 @@ describe Vra::Client do
 
         client.generate_bearer_token
 
-        expect(client.bearer_token).to eq '12345'
+        expect(client.bearer_token.value).to eq '12345'
       end
     end
 

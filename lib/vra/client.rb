@@ -70,7 +70,7 @@ module Vra
       headers = {}
       headers['Accept']        = 'application/json'
       headers['Content-Type']  = 'application/json'
-      headers['Authorization'] = "Bearer #{@bearer_token.value}" unless @bearer_token.nil?
+      headers['Authorization'] = "Bearer #{@bearer_token.value}" unless @bearer_token.value.nil?
       headers
     end
 
@@ -81,7 +81,7 @@ module Vra
     end
 
     def authorized?
-      return false if @bearer_token.nil?
+      return false if @bearer_token.value.nil?
 
       response = http_head("/identity/api/tokens/#{@bearer_token.value}", :skip_auth)
       if response.code == 204
@@ -192,7 +192,7 @@ module Vra
     end
 
     def validate_client_options!
-      raise ArgumentError, 'Username and password are required' if @username.nil? || @password.nil?
+      raise ArgumentError, 'Username and password are required' if @username.nil? || @password.value.nil?
       raise ArgumentError, 'A tenant is required' if @tenant.nil?
       raise ArgumentError, 'A base URL is required' if @base_url.nil?
       raise ArgumentError, "Base URL #{@base_url} is not a valid URI." unless valid_uri?(@base_url)
