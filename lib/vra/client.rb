@@ -152,7 +152,7 @@ module Vra
         page += 1
       end
 
-      items
+      items.uniq
     end
 
     def http_post(path, payload, skip_auth=nil)
