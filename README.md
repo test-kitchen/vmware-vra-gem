@@ -170,6 +170,20 @@ vra.resources.all_resources
 vra.requests.all_requests
 ```
 
+### Pagination
+
+vRA paginates API requests where lists of items are returned.  By default, this gem will ask vRA to provide items in groups of 20.  However, as reported in [Issue 10](https://github.com/chef-partners/vmware-vra-gem/issues/10), it appears vRA may have a pagination bug.  You can change the default page size from 20 to a value of your choice by passing in a `page_size` option when setting up the client:
+
+```ruby
+vra = Vra::Client.new(username: 'devmgr@corp.local', password: 'mypassword', tenant: 'mytenant', base_url: 'https://vra.corp.local', verify_ssl: true, page_size: 100)
+```
+
+... or setting `page_size` on the client object after you've created it:
+
+```ruby
+client.page_size = 100
+```
+
 ## License and Authors
 
 Author:: Chef Partner Engineering (<partnereng@chef.io>)

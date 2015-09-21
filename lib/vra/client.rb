@@ -23,7 +23,7 @@ require 'passwordmasker'
 module Vra
   # rubocop:disable ClassLength
   class Client
-    attr_accessor :bearer_token
+    attr_accessor :bearer_token, :page_size
 
     def initialize(opts)
       @base_url     = opts[:base_url]
@@ -32,6 +32,7 @@ module Vra
       @tenant       = opts[:tenant]
       @verify_ssl   = opts.fetch(:verify_ssl, true)
       @bearer_token = PasswordMasker.new(nil)
+      @page_size    = opts.fetch(:page_size, 20)
 
       validate_client_options!
     end
@@ -138,10 +139,10 @@ module Vra
       response.body
     end
 
-    def http_get_paginated_array!(path, limit=20)
+    def http_get_paginated_array!(path)
       items = []
       page = 1
-      base_path = path + "?limit=#{limit}"
+      base_path = path + "?limit=#{page_size}"
 
       loop do
         response = FFI_Yajl::Parser.parse(http_get!("#{base_path}&page=#{page}"))
