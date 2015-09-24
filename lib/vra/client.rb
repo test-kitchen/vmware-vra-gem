@@ -152,7 +152,13 @@ module Vra
         page += 1
       end
 
-      items.uniq
+      raise Vra::Exception::DuplicateItemsDetected,
+            'Duplicate items were returned by the vRA API. ' \
+            'Increase your page size to avoid this vRA API bug. ' \
+            'See https://github.com/chef-partners/vmware-vra-gem#pagination ' \
+            'for more information.' if items.uniq!
+
+      items
     end
 
     def http_post(path, payload, skip_auth=nil)

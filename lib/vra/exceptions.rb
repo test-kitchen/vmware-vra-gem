@@ -20,6 +20,7 @@ require 'ffi_yajl'
 
 module Vra
   module Exception
+    class DuplicateItemsDetected < RuntimeError; end
     class NotFound < RuntimeError; end
     class RequestError < RuntimeError; end
     class Unauthorized < RuntimeError; end
