@@ -275,11 +275,12 @@ describe Vra::Client do
 
   describe '#http_get_paginated_array!' do
     it 'allows a limit override' do
+      client.page_size = 10
       expect(client).to receive(:http_get!)
         .with('/test?limit=10&page=1')
         .and_return({ 'content' => [], 'metadata' => { 'totalPages' => 1 } }.to_json)
 
-      client.http_get_paginated_array!('/test', 10)
+      client.http_get_paginated_array!('/test')
     end
 
     it 'only calls http_get! once when total pages is 0 (no items)' do
@@ -312,6 +313,14 @@ describe Vra::Client do
         .and_return({ 'content' => [], 'metadata' => { 'totalPages' => 3 } }.to_json)
 
       client.http_get_paginated_array!('/test')
+    end
+
+    it 'raises an exception if duplicate items are returned by the API' do
+      allow(client).to receive(:http_get!)
+        .with('/test?limit=20&page=1')
+        .and_return({ 'content' => [ 1, 2, 3, 1 ], 'metadata' => { 'totalPages' => 1 } }.to_json)
+
+      expect { client.http_get_paginated_array!('/test') }.to raise_error(Vra::Exception::DuplicateItemsDetected)
     end
   end
 
