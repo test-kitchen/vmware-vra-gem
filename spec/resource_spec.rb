@@ -93,6 +93,12 @@ describe Vra::Resource do
       end
     end
 
+    describe '#description' do
+      it 'returns the correct description' do
+        expect(resource.description).to eq 'test-description'
+      end
+    end
+
     describe '#status' do
       it 'returns the correct status' do
         expect(resource.status).to eq 'ACTIVE'

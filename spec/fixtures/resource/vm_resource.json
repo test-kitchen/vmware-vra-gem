@@ -6,6 +6,7 @@
     "label": "Virtual Machine"
   },
   "name": "hol-dev-11",
+  "description": "test-description",
   "status": "ACTIVE",
   "organization": {
     "tenantRef": "vsphere.local",
