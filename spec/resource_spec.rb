@@ -201,6 +201,21 @@ describe Vra::Resource do
         expect(resource.machine_on?).to eq(true)
       end
 
+      it 'returns true if the machine_status is TurningOff' do
+        allow(resource).to receive(:machine_status).and_return('TurningOff')
+        expect(resource.machine_on?).to eq(true)
+      end
+
+      it 'returns true if the machine_status is ShuttingDown' do
+        allow(resource).to receive(:machine_status).and_return('ShuttingDown')
+        expect(resource.machine_on?).to eq(true)
+      end
+
+      it 'returns true if the machine_status is On' do
+        allow(resource).to receive(:machine_status).and_return('On')
+        expect(resource.machine_on?).to eq(true)
+      end
+
       it 'returns false if the machine_status is not On' do
         allow(resource).to receive(:machine_status).and_return('Off')
         expect(resource.machine_on?).to eq(false)
