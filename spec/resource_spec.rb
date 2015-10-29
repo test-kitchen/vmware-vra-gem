@@ -201,21 +201,6 @@ describe Vra::Resource do
         expect(resource.machine_on?).to eq(true)
       end
 
-      it 'returns true if the machine_status is TurningOff' do
-        allow(resource).to receive(:machine_status).and_return('TurningOff')
-        expect(resource.machine_on?).to eq(true)
-      end
-
-      it 'returns true if the machine_status is ShuttingDown' do
-        allow(resource).to receive(:machine_status).and_return('ShuttingDown')
-        expect(resource.machine_on?).to eq(true)
-      end
-
-      it 'returns true if the machine_status is On' do
-        allow(resource).to receive(:machine_status).and_return('On')
-        expect(resource.machine_on?).to eq(true)
-      end
-
       it 'returns false if the machine_status is not On' do
         allow(resource).to receive(:machine_status).and_return('Off')
         expect(resource.machine_on?).to eq(false)
@@ -231,6 +216,35 @@ describe Vra::Resource do
       it 'returns false if the machine_status is not Off' do
         allow(resource).to receive(:machine_status).and_return('On')
         expect(resource.machine_off?).to eq(false)
+      end
+    end
+
+    describe '#machine_turning_on?' do
+      it 'returns true if the machine_status is TurningOn' do
+        allow(resource).to receive(:machine_status).and_return('TurningOn')
+        expect(resource.machine_turning_on?).to eq(true)
+      end
+
+      it 'returns false if the machine_status is not TurningOn' do
+        allow(resource).to receive(:machine_status).and_return('On')
+        expect(resource.machine_turning_on?).to eq(false)
+      end
+    end
+
+    describe '#machine_turning_off?' do
+      it 'returns true if the machine_status is TurningOff' do
+        allow(resource).to receive(:machine_status).and_return('TurningOff')
+        expect(resource.machine_turning_off?).to eq(true)
+      end
+
+      it 'returns true if the machine_status is ShuttingDown' do
+        allow(resource).to receive(:machine_status).and_return('ShuttingDown')
+        expect(resource.machine_turning_off?).to eq(true)
+      end
+
+      it 'returns false if the machine_status is not TurningOff or ShuttingDown' do
+        allow(resource).to receive(:machine_status).and_return('Off')
+        expect(resource.machine_turning_off?).to eq(false)
       end
     end
 

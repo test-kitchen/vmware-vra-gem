@@ -107,11 +107,19 @@ module Vra
     end
 
     def machine_on?
-      %w(On TurningOff ShuttingDown).include?(machine_status)
+      machine_status == 'On'
     end
 
     def machine_off?
       machine_status == 'Off'
+    end
+
+    def machine_turning_on?
+      machine_status == 'TurningOn'
+    end
+
+    def machine_turning_off?
+      %w(TurningOff ShuttingDown).include?(machine_status)
     end
 
     def network_interfaces
