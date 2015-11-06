@@ -248,6 +248,18 @@ describe Vra::Resource do
       end
     end
 
+    describe '#machine_in_provisioned_state?' do
+      it 'returns true if the machine_status is MachineProvisioned' do
+        allow(resource).to receive(:machine_status).and_return('MachineProvisioned')
+        expect(resource.machine_in_provisioned_state?).to eq(true)
+      end
+
+      it 'returns false if the machine_status is not MachineProvisioned' do
+        allow(resource).to receive(:machine_status).and_return('On')
+        expect(resource.machine_in_provisioned_state?).to eq(false)
+      end
+    end
+
     describe '#network_interfaces' do
       it 'returns an array of 2 elements' do
         expect(resource.network_interfaces.size).to be 2

@@ -122,6 +122,10 @@ module Vra
       %w(TurningOff ShuttingDown).include?(machine_status)
     end
 
+    def machine_in_provisioned_state?
+      machine_status == 'MachineProvisioned'
+    end
+
     def network_interfaces
       return unless vm?
 
