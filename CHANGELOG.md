@@ -1,3 +1,6 @@
+## v1.3.0
+* [pr#13](https://github.com/chef-partners/vmware-vra-gem/pull/13) Additional methods to support a vRA driver for Chef Provisioning
+
 ## v1.2.0
 * [pr#11](https://github.com/chef-partners/vmware-vra-gem/pull/11) Ability to set paginated results page size, which is a workaround for issue reported in #10 regarding duplicate items returned in paginated results.
 
