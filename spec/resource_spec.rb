@@ -19,6 +19,23 @@
 require 'spec_helper'
 require 'ffi_yajl'
 
+shared_examples_for 'a resource action' do |action_method, action_name|
+  context 'when the action is available' do
+    it 'calls gets the action ID and submits the request' do
+      expect(resource).to receive(:action_id_by_name).with(action_name).and_return('action-123')
+      expect(resource).to receive(:submit_action_request).with('action-123')
+      resource.send(action_method)
+    end
+  end
+
+  context 'when the action is not available' do
+    it 'raises an exception' do
+      expect(resource).to receive(:action_id_by_name).with(action_name).and_return nil
+      expect { resource.send(action_method) }.to raise_error(Vra::Exception::NotFound)
+    end
+  end
+end
+
 describe Vra::Resource do
   let(:client) do
     Vra::Client.new(username: 'user@corp.local',
@@ -93,6 +110,12 @@ describe Vra::Resource do
       end
     end
 
+    describe '#description' do
+      it 'returns the correct description' do
+        expect(resource.description).to eq 'test-description'
+      end
+    end
+
     describe '#status' do
       it 'returns the correct status' do
         expect(resource.status).to eq 'ACTIVE'
@@ -138,6 +161,102 @@ describe Vra::Resource do
     describe '#owner_names' do
       it 'returns the correct owner names' do
         expect(resource.owner_names).to eq [ 'Joe User', 'Jane User' ]
+      end
+    end
+
+    describe '#machine_status' do
+      context 'when no MachineStatus exists' do
+        let(:resource_data) { { 'resourceData' => { 'entries' => [] } } }
+
+        it 'raises an exception' do
+          allow(resource).to receive(:resource_data).and_return(resource_data)
+          expect { resource.machine_status }.to raise_error(RuntimeError)
+        end
+      end
+
+      context 'when MachineStatus Exists' do
+        let(:resource_data) do
+          {
+            'resourceData' => {
+              'entries' => [
+                {
+                  'key' => 'MachineStatus',
+                  'value' => { 'type' => 'string', 'value' => 'Off' }
+                }
+              ]
+            }
+          }
+        end
+
+        it 'returns the correct status value' do
+          allow(resource).to receive(:resource_data).and_return(resource_data)
+          expect(resource.machine_status).to eq('Off')
+        end
+      end
+    end
+
+    describe '#machine_on?' do
+      it 'returns true if the machine_status is On' do
+        allow(resource).to receive(:machine_status).and_return('On')
+        expect(resource.machine_on?).to eq(true)
+      end
+
+      it 'returns false if the machine_status is not On' do
+        allow(resource).to receive(:machine_status).and_return('Off')
+        expect(resource.machine_on?).to eq(false)
+      end
+    end
+
+    describe '#machine_off?' do
+      it 'returns true if the machine_status is Off' do
+        allow(resource).to receive(:machine_status).and_return('Off')
+        expect(resource.machine_off?).to eq(true)
+      end
+
+      it 'returns false if the machine_status is not Off' do
+        allow(resource).to receive(:machine_status).and_return('On')
+        expect(resource.machine_off?).to eq(false)
+      end
+    end
+
+    describe '#machine_turning_on?' do
+      it 'returns true if the machine_status is TurningOn' do
+        allow(resource).to receive(:machine_status).and_return('TurningOn')
+        expect(resource.machine_turning_on?).to eq(true)
+      end
+
+      it 'returns false if the machine_status is not TurningOn' do
+        allow(resource).to receive(:machine_status).and_return('On')
+        expect(resource.machine_turning_on?).to eq(false)
+      end
+    end
+
+    describe '#machine_turning_off?' do
+      it 'returns true if the machine_status is TurningOff' do
+        allow(resource).to receive(:machine_status).and_return('TurningOff')
+        expect(resource.machine_turning_off?).to eq(true)
+      end
+
+      it 'returns true if the machine_status is ShuttingDown' do
+        allow(resource).to receive(:machine_status).and_return('ShuttingDown')
+        expect(resource.machine_turning_off?).to eq(true)
+      end
+
+      it 'returns false if the machine_status is not TurningOff or ShuttingDown' do
+        allow(resource).to receive(:machine_status).and_return('Off')
+        expect(resource.machine_turning_off?).to eq(false)
+      end
+    end
+
+    describe '#machine_in_provisioned_state?' do
+      it 'returns true if the machine_status is MachineProvisioned' do
+        allow(resource).to receive(:machine_status).and_return('MachineProvisioned')
+        expect(resource.machine_in_provisioned_state?).to eq(true)
+      end
+
+      it 'returns false if the machine_status is not MachineProvisioned' do
+        allow(resource).to receive(:machine_status).and_return('On')
+        expect(resource.machine_in_provisioned_state?).to eq(false)
       end
     end
 
@@ -194,20 +313,19 @@ describe Vra::Resource do
     end
 
     describe '#destroy' do
-      context 'when the destroy action is available' do
-        it 'calls gets the action ID and submits the request' do
-          expect(resource).to receive(:action_id_by_name).with('Destroy').and_return('action-123')
-          expect(resource).to receive(:submit_action_request).with('action-123')
-          resource.destroy
-        end
-      end
+      it_behaves_like 'a resource action', :destroy, 'Destroy'
+    end
 
-      context 'when the destroy action is not available' do
-        it 'raises an exception' do
-          allow(resource).to receive(:action_id_by_name).and_return nil
-          expect { resource.destroy }.to raise_error(Vra::Exception::NotFound)
-        end
-      end
+    describe '#shutdown' do
+      it_behaves_like 'a resource action', :shutdown, 'Shutdown'
+    end
+
+    describe '#poweroff' do
+      it_behaves_like 'a resource action', :poweroff, 'Power Off'
+    end
+
+    describe '#poweron' do
+      it_behaves_like 'a resource action', :poweron, 'Power On'
     end
 
     describe '#submit_action_request' do

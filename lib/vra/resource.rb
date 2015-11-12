@@ -49,55 +49,87 @@ module Vra
     rescue Vra::Exception::HTTPNotFound
       raise Vra::Exception::NotFound, "resource ID #{@id} does not exist"
     end
+    alias_method :refresh, :fetch_resource_data
 
     def name
-      @resource_data['name']
+      resource_data['name']
+    end
+
+    def description
+      resource_data['description']
     end
 
     def status
-      @resource_data['status']
+      resource_data['status']
     end
 
     def vm?
-      @resource_data['resourceTypeRef']['id'] == 'Infrastructure.Virtual'
+      resource_data['resourceTypeRef']['id'] == 'Infrastructure.Virtual'
     end
 
     def tenant_id
-      @resource_data['organization']['tenantRef']
+      resource_data['organization']['tenantRef']
     end
 
     def tenant_name
-      @resource_data['organization']['tenantLabel']
+      resource_data['organization']['tenantLabel']
     end
 
     def subtenant_id
-      @resource_data['organization']['subtenantRef']
+      resource_data['organization']['subtenantRef']
     end
 
     def subtenant_name
-      @resource_data['organization']['subtenantLabel']
+      resource_data['organization']['subtenantLabel']
     end
 
     def catalog_id
-      @resource_data['catalogItem']['id']
+      resource_data['catalogItem']['id']
     end
 
     def catalog_name
-      @resource_data['catalogItem']['label']
+      resource_data['catalogItem']['label']
     end
 
     def owner_ids
-      @resource_data['owners'].map { |x| x['ref'] }
+      resource_data['owners'].map { |x| x['ref'] }
     end
 
     def owner_names
-      @resource_data['owners'].map { |x| x['value'] }
+      resource_data['owners'].map { |x| x['value'] }
+    end
+
+    def machine_status
+      status = resource_data['resourceData']['entries'].find { |x| x['key'] == 'MachineStatus' }
+      raise 'No MachineStatus entry available for resource' if status.nil?
+
+      status['value']['value']
+    end
+
+    def machine_on?
+      machine_status == 'On'
+    end
+
+    def machine_off?
+      machine_status == 'Off'
+    end
+
+    def machine_turning_on?
+      machine_status == 'TurningOn'
+    end
+
+    def machine_turning_off?
+      %w(TurningOff ShuttingDown).include?(machine_status)
+    end
+
+    def machine_in_provisioned_state?
+      machine_status == 'MachineProvisioned'
     end
 
     def network_interfaces
       return unless vm?
 
-      network_list = @resource_data['resourceData']['entries'].find { |x| x['key'] == 'NETWORK_LIST' }
+      network_list = resource_data['resourceData']['entries'].find { |x| x['key'] == 'NETWORK_LIST' }
       return if network_list.nil?
 
       network_list['value']['items'].each_with_object([]) do |item, nics|
@@ -127,9 +159,9 @@ module Vra
     def actions
       # if this Resource instance was created with data from a "all_resources" fetch,
       # it is likely missing operations data because the vRA API is not pleasant sometimes.
-      fetch_resource_data if @resource_data['operations'].nil?
+      fetch_resource_data if resource_data['operations'].nil?
 
-      @resource_data['operations']
+      resource_data['operations']
     end
 
     def action_id_by_name(name)
@@ -144,6 +176,27 @@ module Vra
     def destroy
       action_id = action_id_by_name('Destroy')
       raise Vra::Exception::NotFound, "No destroy action found for resource #{@id}" if action_id.nil?
+
+      submit_action_request(action_id)
+    end
+
+    def shutdown
+      action_id = action_id_by_name('Shutdown')
+      raise Vra::Exception::NotFound, "No shutdown action found for resource #{@id}" if action_id.nil?
+
+      submit_action_request(action_id)
+    end
+
+    def poweroff
+      action_id = action_id_by_name('Power Off')
+      raise Vra::Exception::NotFound, "No power-off action found for resource #{@id}" if action_id.nil?
+
+      submit_action_request(action_id)
+    end
+
+    def poweron
+      action_id = action_id_by_name('Power On')
+      raise Vra::Exception::NotFound, "No power-on action found for resource #{@id}" if action_id.nil?
 
       submit_action_request(action_id)
     end
