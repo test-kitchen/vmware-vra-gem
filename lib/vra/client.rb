@@ -23,7 +23,7 @@ require 'passwordmasker'
 module Vra
   # rubocop:disable ClassLength
   class Client
-    attr_accessor :bearer_token, :page_size
+    attr_accessor :page_size
 
     def initialize(opts)
       @base_url     = opts[:base_url]
@@ -58,6 +58,14 @@ module Vra
     #
     # client methods
     #
+
+    def bearer_token
+      @bearer_token.value
+    end
+
+    def bearer_token=(value)
+      @bearer_token.value = value
+    end
 
     def bearer_token_request_body
       {
