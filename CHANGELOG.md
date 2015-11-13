@@ -1,3 +1,6 @@
+## v1.4.0
+* [pr#14](https://github.com/chef-partners/vmware-vra-gem/pull/14) Adding appropriate methods for managing the bearer_token
+
 ## v1.3.0
 * [pr#13](https://github.com/chef-partners/vmware-vra-gem/pull/13) Additional methods to support a vRA driver for Chef Provisioning
 
