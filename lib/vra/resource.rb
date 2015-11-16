@@ -64,7 +64,7 @@ module Vra
     end
 
     def vm?
-      resource_data['resourceTypeRef']['id'] == 'Infrastructure.Virtual'
+      %w(Infrastructure.Virtual Infrastructure.Cloud).include?(resource_data['resourceTypeRef']['id'])
     end
 
     def tenant_id
