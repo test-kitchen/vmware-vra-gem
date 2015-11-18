@@ -1,3 +1,8 @@
+# vmware-vra-gem CHANGELOG
+
+## v1.5.0 (2015-11-18)
+* [pr#15](https://github.com/chef-partners/vmware-vra-gem/pull/15) Adding support for Infrastructure.Cloud resources, such as EC2 resources created by vRA catalog items
+
 ## v1.4.0
 * [pr#14](https://github.com/chef-partners/vmware-vra-gem/pull/14) Adding appropriate methods for managing the bearer_token
 
