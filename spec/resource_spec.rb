@@ -123,8 +123,28 @@ describe Vra::Resource do
     end
 
     describe '#vm?' do
-      it 'returns true for the VM resource we created' do
-        expect(resource.vm?).to be true
+      context 'when the resource type is Infrastructure.Virtual' do
+        let(:resource_data) { { 'resourceTypeRef' => { 'id' => 'Infrastructure.Virtual' } } }
+        it 'returns true' do
+          allow(resource).to receive(:resource_data).and_return(resource_data)
+          expect(resource.vm?).to eq(true)
+        end
+      end
+
+      context 'when the resource type is Infrastructure.Cloud' do
+        let(:resource_data) { { 'resourceTypeRef' => { 'id' => 'Infrastructure.Cloud' } } }
+        it 'returns true' do
+          allow(resource).to receive(:resource_data).and_return(resource_data)
+          expect(resource.vm?).to eq(true)
+        end
+      end
+
+      context 'when the resource type is an unknown type' do
+        let(:resource_data) { { 'resourceTypeRef' => { 'id' => 'Infrastructure.Unknown' } } }
+        it 'returns false' do
+          allow(resource).to receive(:resource_data).and_return(resource_data)
+          expect(resource.vm?).to eq(false)
+        end
       end
     end
 
