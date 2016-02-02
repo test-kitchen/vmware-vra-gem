@@ -26,12 +26,12 @@ module Vra
 
     def all_items
       client.http_get_paginated_array!('/catalog-service/api/consumer/catalogItems')
-        .map! { |x| Vra::CatalogItem.new(client, data: x) }
+            .map! { |x| Vra::CatalogItem.new(client, data: x) }
     end
 
     def entitled_items
       client.http_get_paginated_array!('/catalog-service/api/consumer/entitledCatalogItems')
-        .map! { |x| Vra::CatalogItem.new(client, data: x['catalogItem']) }
+            .map! { |x| Vra::CatalogItem.new(client, data: x['catalogItem']) }
     end
 
     def request(*args)

@@ -191,11 +191,11 @@ module Vra
     def raise_http_exception(caught_exception, path)
       raise unless caught_exception.respond_to?(:http_code)
 
-      if caught_exception.http_code == 404
-        klass = Vra::Exception::HTTPNotFound
-      else
-        klass = Vra::Exception::HTTPError
-      end
+      klass = if caught_exception.http_code == 404
+                Vra::Exception::HTTPNotFound
+              else
+                Vra::Exception::HTTPError
+              end
 
       exception = klass.new(code: caught_exception.http_code,
                             body: caught_exception.response,
