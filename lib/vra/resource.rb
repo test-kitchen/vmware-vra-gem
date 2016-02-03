@@ -49,7 +49,7 @@ module Vra
     rescue Vra::Exception::HTTPNotFound
       raise Vra::Exception::NotFound, "resource ID #{@id} does not exist"
     end
-    alias_method :refresh, :fetch_resource_data
+    alias refresh fetch_resource_data
 
     def name
       resource_data['name']
