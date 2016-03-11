@@ -115,7 +115,7 @@ module Vra
     end
 
     def machine_turning_on?
-      machine_status == 'TurningOn'
+      machine_status == 'TurningOn' || machine_status == 'MachineActivated'
     end
 
     def machine_turning_off?
