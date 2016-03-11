@@ -1,5 +1,8 @@
 # vmware-vra-gem CHANGELOG
 
+## v1.5.1 (2016-03-11)
+* [pr#19](https://github.com/chef-partners/vmware-vra-gem/pull/19) Treating a `MachineActivated` state as a machine in the process of being turned on. Fixes abnormal behavior in vRA 7.x.
+
 ## v1.5.0 (2015-11-18)
 * [pr#15](https://github.com/chef-partners/vmware-vra-gem/pull/15) Adding support for Infrastructure.Cloud resources, such as EC2 resources created by vRA catalog items
 
