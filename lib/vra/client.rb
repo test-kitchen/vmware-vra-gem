@@ -104,7 +104,7 @@ module Vra
       @bearer_token.value = nil
       validate_client_options!
 
-      response = http_post('/identity/api/tokens', bearer_token_request_body.to_json, :skip_auth)
+      response = http_post('/identity/api/tokens', FFI_Yajl::Encoder.encode(bearer_token_request_body), :skip_auth)
       if response.code != 200
         raise Vra::Exception::Unauthorized, "Unable to get bearer token: #{response.body}"
       end
