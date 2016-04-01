@@ -1,5 +1,8 @@
 # vmware-vra-gem CHANGELOG
 
+## v1.5.2 (2016-04-01)
+* [pr#22](https://github.com/chef-partners/vmware-vra-gem/pull/22) Bug fix: Using FFI_Yajl to encode JSON rather than the #to_json method
+
 ## v1.5.1 (2016-03-11)
 * [pr#19](https://github.com/chef-partners/vmware-vra-gem/pull/19) Treating a `MachineActivated` state as a machine in the process of being turned on. Fixes abnormal behavior in vRA 7.x.
 
