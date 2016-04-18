@@ -1,5 +1,8 @@
 # vmware-vra-gem CHANGELOG
 
+## v1.5.3 (2016-04-18)
+* [pr#25](https://github.com/chef-partners/vmware-vra-gem/pull/25) Bug fix: use the proper exception helper method when raising exceptions encountered during HTTP HEAD requests
+
 ## v1.5.2 (2016-04-01)
 * [pr#22](https://github.com/chef-partners/vmware-vra-gem/pull/22) Bug fix: Using FFI_Yajl to encode JSON rather than the #to_json method
 
