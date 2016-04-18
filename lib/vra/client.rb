@@ -124,7 +124,7 @@ module Vra
                                              headers: request_headers,
                                              verify_ssl: @verify_ssl)
     rescue => e
-      raise Vra::Exception::HTTPError, "head #{path} failed: #{e.class}: #{e.message}"
+      raise_http_exception(e, path)
     else
       response
     end

@@ -215,6 +215,14 @@ describe Vra::Client do
 
       client.http_head(path)
     end
+
+    it 'calls raise_http_exception upon a RestClient error' do
+      allow(client).to receive(:authorize!)
+      allow(RestClient::Request).to receive(:execute).and_raise(RestClient::ResourceNotFound)
+      expect(client).to receive(:raise_http_exception)
+
+      client.http_head('/404')
+    end
   end
 
   describe '#http_get' do
