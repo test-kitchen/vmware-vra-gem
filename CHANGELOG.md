@@ -1,5 +1,8 @@
 # vmware-vra-gem CHANGELOG
 
+## v1.5.4 (2016-04-27)
+* [pr#29](https://github.com/chef-partners/vmware-vra-gem/pull/29) Bug fix: handle more gracefully the situations where a resource or catalog item is missing data in the API response
+
 ## v1.5.3 (2016-04-18)
 * [pr#25](https://github.com/chef-partners/vmware-vra-gem/pull/25) Bug fix: use the proper exception helper method when raising exceptions encountered during HTTP HEAD requests
 
