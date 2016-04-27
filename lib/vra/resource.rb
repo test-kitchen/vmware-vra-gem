@@ -67,28 +67,40 @@ module Vra
       %w(Infrastructure.Virtual Infrastructure.Cloud).include?(resource_data['resourceTypeRef']['id'])
     end
 
+    def organization
+      return {} if resource_data['organization'].nil?
+
+      resource_data['organization']
+    end
+
     def tenant_id
-      resource_data['organization']['tenantRef']
+      organization['tenantRef']
     end
 
     def tenant_name
-      resource_data['organization']['tenantLabel']
+      organization['tenantLabel']
     end
 
     def subtenant_id
-      resource_data['organization']['subtenantRef']
+      organization['subtenantRef']
     end
 
     def subtenant_name
-      resource_data['organization']['subtenantLabel']
+      organization['subtenantLabel']
+    end
+
+    def catalog_item
+      return {} if resource_data['catalogItem'].nil?
+
+      resource_data['catalogItem']
     end
 
     def catalog_id
-      resource_data['catalogItem']['id']
+      catalog_item['id']
     end
 
     def catalog_name
-      resource_data['catalogItem']['label']
+      catalog_item['label']
     end
 
     def owner_ids

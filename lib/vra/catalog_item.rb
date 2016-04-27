@@ -59,20 +59,26 @@ module Vra
       @catalog_item_data['status']
     end
 
+    def organization
+      return {} if @catalog_item_data['organization'].nil?
+
+      @catalog_item_data['organization']
+    end
+
     def tenant_id
-      @catalog_item_data['organization']['tenantRef']
+      organization['tenantRef']
     end
 
     def tenant_name
-      @catalog_item_data['organization']['tenantLabel']
+      organization['tenantLabel']
     end
 
     def subtenant_id
-      @catalog_item_data['organization']['subtenantRef']
+      organization['subtenantRef']
     end
 
     def subtenant_name
-      @catalog_item_data['organization']['subtenantLabel']
+      organization['subtenantLabel']
     end
 
     def blueprint_id

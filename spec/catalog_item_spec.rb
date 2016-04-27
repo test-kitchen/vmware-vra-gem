@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-describe Vra::CatalogRequest do
+describe Vra::CatalogItem do
   let(:client) do
     Vra::Client.new(username: 'user@corp.local',
                     password: 'password',
@@ -72,7 +72,7 @@ describe Vra::CatalogRequest do
 
     context 'when catalog item data is provided' do
       it 'populates the ID correctly' do
-        catalog_item = Vra::Resource.new(client, data: catalog_item_payload)
+        catalog_item = Vra::CatalogItem.new(client, data: catalog_item_payload)
         expect(catalog_item.id).to eq catalog_id
       end
     end
@@ -92,6 +92,46 @@ describe Vra::CatalogRequest do
       it 'raises an exception' do
         allow(client).to receive(:http_get).with('/catalog-service/api/consumer/catalogItems/catalog-12345').and_raise(Vra::Exception::HTTPNotFound)
         expect { Vra::CatalogItem.new(client, id: 'catalog-12345') }.to raise_error(Vra::Exception::NotFound)
+      end
+    end
+  end
+
+  describe '#organization' do
+    let(:catalog_item) { Vra::CatalogItem.new(client, data: catalog_item_payload) }
+
+    context 'when organization data exists' do
+      let(:catalog_item_payload) do
+        {
+          '@type' => 'CatalogItem',
+          'id' => '9e98042e-5443-4082-afd5-ab5a32939bbc',
+          'organization' => {
+            'tenantRef' => 'vsphere.local',
+            'tenantLabel' => 'vsphere.local',
+            'subtenantRef' => '962ab3f9-858c-4483-a49f-fa97392c314b',
+            'subtenantLabel' => 'catalog_subtenant'
+          }
+        }
+      end
+
+      it 'returns the correct organization data' do
+        expect(catalog_item.organization['tenantRef']).to eq('vsphere.local')
+      end
+    end
+
+    context 'when organization data does not exist' do
+      let(:catalog_item_payload) do
+        {
+          '@type' => 'CatalogItem',
+          'id' => '9e98042e-5443-4082-afd5-ab5a32939bbc'
+        }
+      end
+
+      it 'returns an empty hash' do
+        expect(catalog_item.organization).to eq({})
+      end
+
+      it 'returns nil for any organization keys' do
+        expect(catalog_item.organization['tenantRef']).to eq(nil)
       end
     end
   end
