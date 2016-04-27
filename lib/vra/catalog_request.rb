@@ -105,7 +105,7 @@ module Vra
         raise
       end
 
-      request_id = response.headers[:location].split('/')[-1]
+      request_id = response.location.split('/')[-1]
       Vra::Request.new(client, request_id)
     end
   end

@@ -17,8 +17,8 @@
 #
 
 require 'ffi_yajl'
-require 'rest-client'
 require 'passwordmasker'
+require 'vra/http'
 
 module Vra
   # rubocop:disable ClassLength
@@ -93,19 +93,17 @@ module Vra
       return false if @bearer_token.value.nil?
 
       response = http_head("/identity/api/tokens/#{@bearer_token.value}", :skip_auth)
-      if response.code == 204
-        true
-      else
-        false
-      end
+      response.success_no_content?
     end
 
     def generate_bearer_token
       @bearer_token.value = nil
       validate_client_options!
 
-      response = http_post('/identity/api/tokens', FFI_Yajl::Encoder.encode(bearer_token_request_body), :skip_auth)
-      if response.code != 200
+      response = http_post('/identity/api/tokens',
+                           FFI_Yajl::Encoder.encode(bearer_token_request_body),
+                           :skip_auth)
+      unless response.success_ok?
         raise Vra::Exception::Unauthorized, "Unable to get bearer token: #{response.body}"
       end
 
@@ -116,35 +114,34 @@ module Vra
       "#{@base_url}#{path}"
     end
 
-    def http_head(path, skip_auth=nil)
+    def http_fetch(method, path, skip_auth=nil)
       authorize! unless skip_auth
 
-      response = RestClient::Request.execute(method: :head,
-                                             url: full_url(path),
-                                             headers: request_headers,
-                                             verify_ssl: @verify_ssl)
+      response = Vra::Http.execute(method: method,
+                                   url: full_url(path),
+                                   headers: request_headers,
+                                   verify_ssl: @verify_ssl)
     rescue => e
       raise_http_exception(e, path)
     else
       response
     end
 
-    def http_get(path, skip_auth=nil)
-      authorize! unless skip_auth
+    def http_head(path, skip_auth=nil)
+      http_fetch(:head, path, skip_auth)
+    end
 
-      response = RestClient::Request.execute(method: :get,
-                                             url: full_url(path),
-                                             headers: request_headers,
-                                             verify_ssl: @verify_ssl)
-    rescue => e
-      raise_http_exception(e, path)
-    else
-      response
+    def http_get(path, skip_auth=nil)
+      http_fetch(:get, path, skip_auth)
     end
 
     def http_get!(path)
       response = http_get(path)
       response.body
+    end
+
+    def get_parsed(path)
+      FFI_Yajl::Parser.parse(http_get!(path))
     end
 
     def http_get_paginated_array!(path)
@@ -153,7 +150,7 @@ module Vra
       base_path = path + "?limit=#{page_size}"
 
       loop do
-        response = FFI_Yajl::Parser.parse(http_get!("#{base_path}&page=#{page}"))
+        response = get_parsed("#{base_path}&page=#{page}")
         items += response['content']
 
         break if page >= response['metadata']['totalPages']
@@ -172,11 +169,11 @@ module Vra
     def http_post(path, payload, skip_auth=nil)
       authorize! unless skip_auth
 
-      response = RestClient::Request.execute(method: :post,
-                                             url: full_url(path),
-                                             headers: request_headers,
-                                             payload: payload,
-                                             verify_ssl: @verify_ssl)
+      response = Vra::Http.execute(method: :post,
+                                   url: full_url(path),
+                                   headers: request_headers,
+                                   payload: payload,
+                                   verify_ssl: @verify_ssl)
     rescue => e
       raise_http_exception(e, path)
     else

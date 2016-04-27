@@ -42,7 +42,7 @@ module Vra
     end
 
     def fetch_catalog_item
-      @catalog_item_data = FFI_Yajl::Parser.parse(client.http_get!("/catalog-service/api/consumer/catalogItems/#{id}"))
+      @catalog_item_data = client.get_parsed("/catalog-service/api/consumer/catalogItems/#{id}")
     rescue Vra::Exception::HTTPNotFound
       raise Vra::Exception::NotFound, "catalog ID #{id} does not exist"
     end

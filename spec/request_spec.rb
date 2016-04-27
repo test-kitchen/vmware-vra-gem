@@ -71,9 +71,9 @@ describe Vra::Request do
 
   describe '#refresh' do
     it 'calls the request API endpoint' do
-      expect(client).to receive(:http_get!)
+      expect(client).to receive(:get_parsed)
         .with("/catalog-service/api/consumer/requests/#{request_id}")
-        .and_return(in_progress_payload.to_json)
+        .and_return(in_progress_payload)
 
       request.refresh
     end
