@@ -1,5 +1,8 @@
 # vmware-vra-gem CHANGELOG
 
+## v1.6.1 (2016-05-10)
+* Bowing to the Rubocop gods.
+
 ## v1.6.0 (2016-05-10)
 * [pr#28](https://github.com/chef-partners/vmware-vra-gem/pull/28) Remove rest-client dependency
 

@@ -33,7 +33,7 @@ module Vra
         raise ArgumentError, 'must supply an id or a resource data hash'
       end
 
-      if ! @id.nil? && ! @resource_data.nil?
+      if !@id.nil? && !@resource_data.nil?
         raise ArgumentError, 'must supply an id OR a resource data hash, not both'
       end
 

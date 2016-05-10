@@ -30,7 +30,7 @@ module Vra
         raise ArgumentError, 'must supply an id or a catalog item data hash'
       end
 
-      if ! @id.nil? && ! @catalog_item_data.nil?
+      if !@id.nil? && !@catalog_item_data.nil?
         raise ArgumentError, 'must supply an id OR a catalog item data hash, not both'
       end
 
