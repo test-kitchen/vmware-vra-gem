@@ -32,7 +32,7 @@ module Vra
     end
 
     def refresh
-      @request_data = FFI_Yajl::Parser.parse(client.http_get!("/catalog-service/api/consumer/requests/#{@id}"))
+      @request_data = client.get_parsed("/catalog-service/api/consumer/requests/#{@id}")
     rescue Vra::Exception::HTTPNotFound
       raise Vra::Exception::NotFound, "request ID #{@id} is not found"
     end

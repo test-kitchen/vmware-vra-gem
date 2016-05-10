@@ -92,10 +92,10 @@ describe Vra::Resource do
   end
 
   describe '#fetch_resource_data' do
-    it 'calls http_get! against the resources API endpoint' do
-      expect(client).to receive(:http_get!)
+    it 'calls get_parsed against the resources API endpoint' do
+      expect(client).to receive(:get_parsed)
         .with("/catalog-service/api/consumer/resources/#{resource_id}")
-        .and_return('')
+        .and_return({})
 
       Vra::Resource.new(client, id: resource_id)
     end
@@ -356,7 +356,7 @@ describe Vra::Resource do
     describe '#submit_action_request' do
       before do
         allow(resource).to receive(:action_request_payload).and_return({})
-        response = double('response', code: 200, headers: { location: '/requests/request-12345' })
+        response = double('response', location: '/requests/request-12345')
         allow(client).to receive(:http_post).with('/catalog-service/api/consumer/requests', '{}').and_return(response)
       end
 

@@ -45,7 +45,7 @@ module Vra
     end
 
     def fetch_resource_data
-      @resource_data = FFI_Yajl::Parser.parse(client.http_get!("/catalog-service/api/consumer/resources/#{@id}"))
+      @resource_data = client.get_parsed("/catalog-service/api/consumer/resources/#{@id}")
     rescue Vra::Exception::HTTPNotFound
       raise Vra::Exception::NotFound, "resource ID #{@id} does not exist"
     end
@@ -239,7 +239,7 @@ module Vra
     def submit_action_request(action_id)
       payload = action_request_payload(action_id).to_json
       response = client.http_post('/catalog-service/api/consumer/requests', payload)
-      request_id = response.headers[:location].split('/')[-1]
+      request_id = response.location.split('/')[-1]
       Vra::Request.new(client, request_id)
     end
   end
