@@ -1,5 +1,8 @@
 # vmware-vra-gem CHANGELOG
 
+## v1.6.0 (2016-05-10)
+* [pr#28](https://github.com/chef-partners/vmware-vra-gem/pull/28) Remove rest-client dependency
+
 ## v1.5.4 (2016-04-27)
 * [pr#29](https://github.com/chef-partners/vmware-vra-gem/pull/29) Bug fix: handle more gracefully the situations where a resource or catalog item is missing data in the API response
 
@@ -25,7 +28,7 @@
 * [pr#11](https://github.com/chef-partners/vmware-vra-gem/pull/11) Ability to set paginated results page size, which is a workaround for issue reported in #10 regarding duplicate items returned in paginated results.
 
 ## v1.1.0
-* [pr#9](https://github.com/chef-partners/vmware-vra-gem/pull/9) Mask password and bearer token in console/debug/log output. 
+* [pr#9](https://github.com/chef-partners/vmware-vra-gem/pull/9) Mask password and bearer token in console/debug/log output.
   Thanks to [@rubytester](https://github.com/rubytester) for the idea and initial proposal to address in [pr#7](https://github.com/chef-partners/vmware-vra-gem/pull/7)
 
 ## v1.0.0
