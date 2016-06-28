@@ -69,6 +69,15 @@ describe Vra::Http do
       expect(response.code).to eq 204
     end
 
+    it 'configures ssl verification' do
+      allow(Net::HTTP).to receive(:start).and_wrap_original do |_http, *args|
+        expect(args.last).to include(verify_mode: OpenSSL::SSL::VERIFY_NONE)
+        double('response', final?: true, success?: true)
+      end
+
+      execute(:get, url: 'https://test.local', verify_ssl: false)
+    end
+
     context 'when successful' do
       it 'returns a successful response given a status 200' do
         stub_request(:head, 'http://test.local')
