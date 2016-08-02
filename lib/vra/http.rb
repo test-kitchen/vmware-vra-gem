@@ -36,8 +36,10 @@ module Vra
       def call
         uri = URI(params[:url]) || fail(':url required')
 
-        Net::HTTP.start(uri.host, uri.port,
-                        use_ssl: uri.scheme == 'https') do |http|
+        ssl_params = { use_ssl: uri.scheme == 'https' }
+        ssl_params[:verify_mode] = OpenSSL::SSL::VERIFY_NONE unless verify_ssl?
+
+        Net::HTTP.start(uri.host, uri.port, ssl_params) do |http|
           request = http_request(params[:method], uri)
           request.initialize_http_header(params[:headers] || {})
           request.body = params[:payload] || ''
@@ -62,6 +64,11 @@ module Vra
 
       def new(new_params)
         self.class.new(params.dup.merge(new_params))
+      end
+
+      def verify_ssl?
+        return true if params[:verify_ssl].nil?
+        params[:verify_ssl]
       end
     end
 

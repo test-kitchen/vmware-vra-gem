@@ -352,6 +352,33 @@ describe Vra::Client do
       client.http_post(path, payload)
     end
 
+    context 'when not verifying ssl' do
+      let(:unverified_client) do
+        Vra::Client.new(username: 'user@corp.local',
+                        password: 'password',
+                        tenant: 'tenant',
+                        base_url: 'https://vra.corp.local',
+                        verify_ssl: false)
+      end
+
+      before(:each) do
+        allow(unverified_client).to receive(:authorized?).and_return(true)
+      end
+
+      it 'configures Net::HTTP with VERIFY_NONE' do
+        allow(Net::HTTP).to receive(:start).and_wrap_original do |_http, *args|
+          expect(args.last).to include(verify_mode: OpenSSL::SSL::VERIFY_NONE)
+          double('response', final?: true, success?: true)
+        end
+
+        unverified_client.http_post('/path', 'payload')
+
+        [:head, :get].each do |method|
+          unverified_client.http_fetch(method, '/test', true)
+        end
+      end
+    end
+
     it 'calls raise_http_exception upon error' do
       allow(client).to receive(:authorize!)
       allow(Vra::Http).to receive(:execute).and_raise(StandardError)

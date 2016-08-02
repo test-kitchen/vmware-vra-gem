@@ -121,4 +121,38 @@ describe Vra::CatalogRequest do
       end
     end
   end
+
+  let(:client_without_ssl) do
+    Vra::Client.new(username: 'user@corp.local',
+                    password: 'password',
+                    tenant: 'tenant',
+                    base_url: 'https://vra.corp.local',
+                    verify_ssl: false)
+  end
+
+  context 'when ssl is not verified by the client' do
+    let(:request) do
+      client_without_ssl.catalog.request('catalog-12345',
+                                         cpus: 2,
+                                         memory: 1024,
+                                         lease_days: 15,
+                                         requested_for: 'tester@corp.local',
+                                         notes: 'test notes',
+                                         subtenant_id: 'user_subtenant')
+    end
+
+    describe do
+      it 'passes verify_false to Vra::Http' do
+        allow(request.client).to receive(:authorized?).and_return(true)
+        expect(request.client.instance_variable_get('@verify_ssl')).to eq false
+
+        expect(Vra::Http).to receive(:execute).and_wrap_original do |_http, *args|
+          expect(*args).to include(verify_ssl: false)
+          double(location: 'auth/request_id')
+        end
+
+        request.submit
+      end
+    end
+  end
 end
