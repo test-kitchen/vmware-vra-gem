@@ -1,5 +1,8 @@
 # vmware-vra-gem CHANGELOG
 
+## v1.7.0 (2016-08-02)
+* [pr#31](https://github.com/chef-partners/vmware-vra-gem/pull/31) instructing Net::HTTP not to verify SSL when verify_ssl is false
+
 ## v1.6.1 (2016-05-10)
 * Bowing to the Rubocop gods.
 
