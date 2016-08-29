@@ -82,7 +82,7 @@ module Vra
             Vra::RequestParameter.new('provider-VirtualMachine.CPU.Count', 'integer', @cpus).to_h,
             Vra::RequestParameter.new('provider-VirtualMachine.Memory.Size', 'integer', @memory).to_h,
             Vra::RequestParameter.new('provider-VirtualMachine.LeaseDays', 'integer', @lease_days).to_h,
-            Vra::RequestParameter.new('provider-__Notes', 'string', @notes).to_h
+            Vra::RequestParameter.new('description', 'string', @notes).to_h
           ]
         }
       }
