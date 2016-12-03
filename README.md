@@ -8,6 +8,12 @@ to interact with the catalog, requests, and existing items is included.
 The primary goal of this gem is to provide a reusable set of methods in order
 to create Chef plugins for knife, test-kitchen, and provisioning.
 
+## Versions
+
+`1.7.0` version can and will support vRA 6 and below.
+
+`2.0.0` version and forward will support vRA 7+.
+
 ## Installation
 
 Add this line to your application's Gemfile:
