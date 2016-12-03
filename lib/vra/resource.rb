@@ -160,11 +160,30 @@ module Vra
       return if !vm? || network_interfaces.nil?
 
       addrs = []
-      network_interfaces.each do |nic|
-        next unless nic.key?('NETWORK_ADDRESS')
-        addrs << nic['NETWORK_ADDRESS']
+
+      request_id = @resource_data['requestId']
+
+      resource_views = @client.http_get("/catalog-service/api/consumer/requests/#{request_id}/resourceViews")
+
+      data_zero = JSON.parse((resource_views.body))['content'][0]['data']['ip_address']
+      data_one = JSON.parse((resource_views.body))['content'][1]['data']['ip_address']
+
+      print "Waiting For vRA to collect the IP"
+      while ((data_zero == "" || data_one == "") && (data_zero == nil || data_one == nil))
+        resource_views = @client.http_get("/catalog-service/api/consumer/requests/#{request_id}/resourceViews")
+        data_zero = JSON.parse((resource_views.body))['content'][0]['data']['ip_address']
+        data_one = JSON.parse((resource_views.body))['content'][1]['data']['ip_address']
+        sleep 10
+        print "."
       end
 
+      if JSON.parse((resource_views.body))['content'][0]['data']['ip_address'] == nil
+        ip_address = JSON.parse((resource_views.body))['content'][1]['data']['ip_address']
+      else
+        ip_address = JSON.parse((resource_views.body))['content'][0]['data']['ip_address']
+      end
+
+      addrs << ip_address
       addrs
     end
 

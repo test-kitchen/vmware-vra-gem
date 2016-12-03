@@ -305,6 +305,10 @@ describe Vra::Resource do
 
     describe '#ip_addresses' do
       it 'returns the correct IP addresses' do
+        stub_request(:post, "https://vra.corp.local/identity/api/tokens").
+          with(:body => "{\"username\":\"user@corp.local\",\"password\":\"password\",\"tenant\":\"tenant\"}",
+               :headers => {'Accept'=>'application/json', 'Content-Type'=>'application/json'}).
+          to_return(:status => 200, :body => "", :headers => {})
         expect(resource.ip_addresses).to eq [ '192.168.110.200', '192.168.220.200' ]
       end
 

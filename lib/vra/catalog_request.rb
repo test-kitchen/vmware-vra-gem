@@ -98,14 +98,15 @@ module Vra
       validate_params!
 
       begin
-        response = client.http_post('/catalog-service/api/consumer/requests', request_payload.to_json)
+        response = client.http_get("/catalog-service/api/consumer/entitledCatalogItems/#{@catalog_id}/requests/template")
+        post_response = client.http_post("/catalog-service/api/consumer/entitledCatalogItems/#{@catalog_id}/requests", response.body.to_s)
       rescue Vra::Exception::HTTPError => e
         raise Vra::Exception::RequestError, "Unable to submit request: #{e.errors.join(', ')}"
       rescue
         raise
       end
 
-      request_id = response.location.split('/')[-1]
+      request_id = JSON.parse(post_response.body)['id']
       Vra::Request.new(client, request_id)
     end
   end
