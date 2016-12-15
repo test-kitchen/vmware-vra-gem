@@ -17,5 +17,5 @@
 #
 
 module Vra
-  VERSION = '2.0.0.pre2'.freeze
+  VERSION = '2.0.0'.freeze
 end
