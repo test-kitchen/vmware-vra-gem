@@ -37,6 +37,16 @@ module Vra
       validate_client_options!
     end
 
+    # Text representation of client.
+    # mask secret values: password, bearer_token
+    def inspect
+      inspected = super
+      mask      = '********'
+      inspected.gsub! "@password=\"#{@password}\"", "@password=\"#{mask}\"" if @password
+      inspected.gsub! @bearer_token, mask if @bearer_token
+      inspected
+    end
+
     #########################
     #
     # methods to other classes

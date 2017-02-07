@@ -26,6 +26,17 @@ describe Vra::Client do
                     base_url: 'https://vra.corp.local')
   end
 
+  describe '#inspect' do
+    it 'mask password' do
+      expect(client.inspect).to include('@password="********"')
+    end
+
+    it 'mask bearer_token' do
+      client.bearer_token="12345"
+      expect(client.inspect).to include('@bearer_token="********"')
+    end
+  end
+
   describe '#initialize' do
     it 'calls validate_client_options!' do
       client = Vra::Client.allocate
