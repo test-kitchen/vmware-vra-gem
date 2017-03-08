@@ -105,7 +105,7 @@ module Vra
 			hash_payload['description']= @notes 
 
 			parameters.each do |param|
-				hash_payload['data'][blueprint_name]['data'][param.key] = param.value
+				hash_payload['data'][param.key] = param.value
 			end
 
 			JSON.pretty_generate(hash_payload)
