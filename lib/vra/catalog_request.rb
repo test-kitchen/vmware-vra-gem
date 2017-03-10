@@ -61,39 +61,6 @@ module Vra
       raise ArgumentError, "Unable to submit request, required param(s) missing => #{missing_params.join(', ')}" unless missing_params.empty?
     end
 
-    def request_payload
-      payload = {
-        '@type' => 'CatalogItemRequest',
-        'catalogItemRef' => {
-          'id' => @catalog_id
-        },
-        'organization' => {
-          'tenantRef'    => catalog_item.tenant_id,
-          'subtenantRef' => subtenant_id
-        },
-        'requestedFor' => @requested_for,
-        'state' => 'SUBMITTED',
-        'requestNumber' => 0,
-        'requestData' => {
-          'entries' => [
-            Vra::RequestParameter.new('provider-blueprintId', 'string', catalog_item.blueprint_id).to_h,
-            Vra::RequestParameter.new('provider-provisioningGroupId', 'string', subtenant_id).to_h,
-            Vra::RequestParameter.new('requestedFor', 'string', @requested_for).to_h,
-            Vra::RequestParameter.new('provider-VirtualMachine.CPU.Count', 'integer', @cpus).to_h,
-            Vra::RequestParameter.new('provider-VirtualMachine.Memory.Size', 'integer', @memory).to_h,
-            Vra::RequestParameter.new('provider-VirtualMachine.LeaseDays', 'integer', @lease_days).to_h,
-            Vra::RequestParameter.new('description', 'string', @notes).to_h
-          ]
-        }
-      }
-
-      parameters.each do |entry|
-        payload['requestData']['entries'] << entry.to_h
-      end
-
-      payload
-    end
-
 		def merge_payload(payload)
 			hash_payload = JSON.parse(payload)
 			blueprint_name = hash_payload['data'].select {|k,v| v.is_a?(Hash)}.keys.first
@@ -105,7 +72,7 @@ module Vra
 			hash_payload['description']= @notes 
 
 			parameters.each do |param|
-				hash_payload['data'][param.key] = param.value
+				hash_payload['data'][blueprint_name]['data'][param.key] = param.value
 			end
 
 			JSON.pretty_generate(hash_payload)
