@@ -61,22 +61,22 @@ module Vra
       raise ArgumentError, "Unable to submit request, required param(s) missing => #{missing_params.join(', ')}" unless missing_params.empty?
     end
 
-		def merge_payload(payload)
-			hash_payload = JSON.parse(payload)
-			blueprint_name = hash_payload['data'].select {|k,v| v.is_a?(Hash)}.keys.first
+    def merge_payload(payload)
+      hash_payload = JSON.parse(payload)
+      blueprint_name = hash_payload['data'].select {|k,v| v.is_a?(Hash)}.keys.first
 
-			hash_payload['data'][blueprint_name]['data']['cpu'] = @cpus
-			hash_payload['data'][blueprint_name]['data']['memory'] = @memory
-			hash_payload['requestedFor'] = @requested_for 
-			hash_payload['data']['_leaseDays'] = @lease_days
-			hash_payload['description']= @notes 
+      hash_payload['data'][blueprint_name]['data']['cpu'] = @cpus
+      hash_payload['data'][blueprint_name]['data']['memory'] = @memory
+      hash_payload['requestedFor'] = @requested_for 
+      hash_payload['data']['_leaseDays'] = @lease_days
+      hash_payload['description']= @notes 
 
-			parameters.each do |param|
-				hash_payload['data'][blueprint_name]['data'][param.key] = param.value
-			end
+      parameters.each do |param|
+        hash_payload['data'][blueprint_name]['data'][param.key] = param.value
+      end
 
-			JSON.pretty_generate(hash_payload)
-		end
+      JSON.pretty_generate(hash_payload)
+    end
 
     def submit
       validate_params!
