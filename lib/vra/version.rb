@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
 # Copyright:: Copyright (c) 2015 Chef Software, Inc.
@@ -17,5 +18,5 @@
 #
 
 module Vra
-  VERSION = '2.0.0'.freeze
+  VERSION = '2.1.0'
 end

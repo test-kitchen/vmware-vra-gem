@@ -1,7 +1,19 @@
 # Change Log
 
-## [v2.0.0](https://github.com/chef-partners/vmware-vra-gem/tree/v2.0.0.pre2) (2016-12-14)
-[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.0.0.pre1...v2.0.0)
+## [v2.1.0](https://github.com/chef-partners/vmware-vra-gem/tree/v2.1.0)
+
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.0.0...v2.1.0)
+
+**Merged pull requests:**
+
+- Added skips [\#40](https://github.com/chef-partners/vmware-vra-gem/pull/40) ([jjasghar](https://github.com/jjasghar))
+- Support extra params for vra7 [\#39](https://github.com/chef-partners/vmware-vra-gem/pull/39) ([nsdavidson](https://github.com/nsdavidson))
+
+## [v2.0.0](https://github.com/chef-partners/vmware-vra-gem/tree/v2.0.0) (2016-12-15)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.0.0.pre2...v2.0.0)
+
+## [v2.0.0.pre2](https://github.com/chef-partners/vmware-vra-gem/tree/v2.0.0.pre2) (2016-12-08)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.0.0.pre1...v2.0.0.pre2)
 
 **Closed issues:**
 

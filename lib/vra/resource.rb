@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
 # Copyright:: Copyright (c) 2015 Chef Software, Inc.
@@ -156,7 +157,7 @@ module Vra
       end
     end
 
-    def ip_addresses
+    def ip_addresses # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       return if !vm? || network_interfaces.nil?
 
       addrs = []
@@ -165,23 +166,23 @@ module Vra
 
       resource_views = @client.http_get("/catalog-service/api/consumer/requests/#{request_id}/resourceViews")
 
-      data_zero = JSON.parse((resource_views.body))['content'][0]['data']['ip_address']
-      data_one = JSON.parse((resource_views.body))['content'][1]['data']['ip_address']
+      data_zero = JSON.parse(resource_views.body)['content'][0]['data']['ip_address']
+      data_one = JSON.parse(resource_views.body)['content'][1]['data']['ip_address']
 
-      print "Waiting For vRA to collect the IP"
-      while ((data_zero == "" || data_one == "") && (data_zero == nil || data_one == nil))
+      print 'Waiting For vRA to collect the IP'
+      while (data_zero == '' || data_one == '') && (data_zero.nil? || data_one.nil?)
         resource_views = @client.http_get("/catalog-service/api/consumer/requests/#{request_id}/resourceViews")
-        data_zero = JSON.parse((resource_views.body))['content'][0]['data']['ip_address']
-        data_one = JSON.parse((resource_views.body))['content'][1]['data']['ip_address']
+        data_zero = JSON.parse(resource_views.body)['content'][0]['data']['ip_address']
+        data_one = JSON.parse(resource_views.body)['content'][1]['data']['ip_address']
         sleep 10
-        print "."
+        print '.'
       end
 
-      if JSON.parse((resource_views.body))['content'][0]['data']['ip_address'] == nil
-        ip_address = JSON.parse((resource_views.body))['content'][1]['data']['ip_address']
-      else
-        ip_address = JSON.parse((resource_views.body))['content'][0]['data']['ip_address']
-      end
+      ip_address = if JSON.parse(resource_views.body)['content'][0]['data']['ip_address'].nil?
+                     JSON.parse(resource_views.body)['content'][1]['data']['ip_address']
+                   else
+                     JSON.parse(resource_views.body)['content'][0]['data']['ip_address']
+                   end
 
       addrs << ip_address
       addrs

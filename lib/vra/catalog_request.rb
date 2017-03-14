@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
 # Copyright:: Copyright (c) 2015 Chef Software, Inc.
@@ -63,13 +64,13 @@ module Vra
 
     def merge_payload(payload)
       hash_payload = JSON.parse(payload)
-      blueprint_name = hash_payload['data'].select {|k,v| v.is_a?(Hash)}.keys.first
+      blueprint_name = hash_payload['data'].select { |_k, v| v.is_a?(Hash) }.keys.first
 
       hash_payload['data'][blueprint_name]['data']['cpu'] = @cpus
       hash_payload['data'][blueprint_name]['data']['memory'] = @memory
-      hash_payload['requestedFor'] = @requested_for 
+      hash_payload['requestedFor'] = @requested_for
       hash_payload['data']['_leaseDays'] = @lease_days
-      hash_payload['description']= @notes 
+      hash_payload['description'] = @notes
 
       parameters.each do |param|
         hash_payload['data'][blueprint_name]['data'][param.key] = param.value

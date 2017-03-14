@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
 # Copyright:: Copyright (c) 2015 Chef Software, Inc.
@@ -92,8 +93,8 @@ describe Vra::CatalogRequest do
         request.set_parameter('param1', 'string', 'my string')
         request.set_parameter('param2', 'integer', '2468')
 
-				template = File.read('spec/fixtures/resource/catalog_request.json')
-				payload = JSON.parse(request.merge_payload(template))
+        template = File.read('spec/fixtures/resource/catalog_request.json')
+        payload = JSON.parse(request.merge_payload(template))
         param1 = payload['data']['my_blueprint']['data']['param1']
         param2 = payload['data']['my_blueprint']['data']['param2']
 
@@ -112,14 +113,14 @@ describe Vra::CatalogRequest do
       end
 
       it 'calls http_post' do
-        skip "broken and needs to be updated per changes -JJ 2017-04-14"
+        skip 'broken and needs to be updated per changes -JJ 2017-04-14'
         expect(client).to receive(:http_post).with('/catalog-service/api/consumer/requests', '{}')
 
         request.submit
       end
 
       it 'returns a Vra::Request object' do
-        skip "broken and needs to be updated per changes -JJ 2017-04-14"
+        skip 'broken and needs to be updated per changes -JJ 2017-04-14'
         expect(request.submit).to be_an_instance_of(Vra::Request)
       end
     end
@@ -146,7 +147,7 @@ describe Vra::CatalogRequest do
 
     describe do
       it 'passes verify_false to Vra::Http' do
-        skip "broken and needs to be updated per changes -JJ 2017-04-14"
+        skip 'broken and needs to be updated per changes -JJ 2017-04-14'
         allow(request.client).to receive(:authorized?).and_return(true)
         expect(request.client.instance_variable_get('@verify_ssl')).to eq false
 

@@ -1,4 +1,6 @@
 # VMware vRA Gem
+[![Gem Version](https://badge.fury.io/rb/vmware-vra-gem.svg)](http://badge.fury.io/rb/vmware-vra-gem)
+[![Build Status](https://travis-ci.org/chef-partners/vmware-vra-gem.svg?branch=master)](https://travis-ci.org/chef-partners/vmware-vra-gem)
 
 Client gem for interacting with VMware's vRealize Automation application.
 
