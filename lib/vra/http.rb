@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'net/http'
+require "net/http"
 
 module Vra
   module Http
@@ -7,7 +7,7 @@ module Vra
       request = Request.new(params)
       response = request.call
       response = response.forward(request).call until response.final?
-      fail error(response) unless response.success?
+      raise error(response) unless response.success?
       response
     end
 
@@ -35,15 +35,15 @@ module Vra
       end
 
       def call
-        uri = URI(params[:url]) || fail(':url required')
+        uri = URI(params[:url]) || raise(":url required")
 
-        ssl_params = { use_ssl: uri.scheme == 'https' }
+        ssl_params = { use_ssl: uri.scheme == "https" }
         ssl_params[:verify_mode] = OpenSSL::SSL::VERIFY_NONE unless verify_ssl?
 
         Net::HTTP.start(uri.host, uri.port, ssl_params) do |http|
           request = http_request(params[:method], uri)
           request.initialize_http_header(params[:headers] || {})
-          request.body = params[:payload] || ''
+          request.body = params[:payload] || ""
 
           Response.new(http.request(request))
         end
@@ -53,10 +53,10 @@ module Vra
         type = {
           get: Net::HTTP::Get,
           head: Net::HTTP::Head,
-          post: Net::HTTP::Post
+          post: Net::HTTP::Post,
         }.fetch(method, nil)
 
-        fail "Unknown HTTP method #{method}!" unless type
+        raise "Unknown HTTP method #{method}!" unless type
 
         type.new(uri)
       end
@@ -82,7 +82,7 @@ module Vra
 
       def forward(request)
         if redirect?
-          fail Http.error(self) unless request.redirectable?
+          raise Http.error(self) unless request.redirectable?
           request.redirect_to(location)
         elsif see_other?
           request.see_other(location)
@@ -92,7 +92,7 @@ module Vra
       end
 
       def location
-        @response['location']
+        @response["location"]
       end
 
       def body

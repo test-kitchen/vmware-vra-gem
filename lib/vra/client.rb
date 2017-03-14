@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-require 'ffi_yajl'
-require 'passwordmasker'
-require 'vra/http'
+require "ffi_yajl"
+require "passwordmasker"
+require "vra/http"
 
 module Vra
   # rubocop:disable ClassLength
@@ -70,24 +70,24 @@ module Vra
 
     def bearer_token_request_body
       {
-        'username' => @username,
-        'password' => @password.value,
-        'tenant'   => @tenant
+        "username" => @username,
+        "password" => @password.value,
+        "tenant"   => @tenant,
       }
     end
 
     def request_headers
       headers = {}
-      headers['Accept']        = 'application/json'
-      headers['Content-Type']  = 'application/json'
-      headers['Authorization'] = "Bearer #{@bearer_token.value}" unless @bearer_token.value.nil?
+      headers["Accept"]        = "application/json"
+      headers["Content-Type"]  = "application/json"
+      headers["Authorization"] = "Bearer #{@bearer_token.value}" unless @bearer_token.value.nil?
       headers
     end
 
     def authorize!
       generate_bearer_token unless authorized?
 
-      raise Vra::Exception::Unauthorized, 'Unable to authorize against vRA' unless authorized?
+      raise Vra::Exception::Unauthorized, "Unable to authorize against vRA" unless authorized?
     end
 
     def authorized?
@@ -101,21 +101,21 @@ module Vra
       @bearer_token.value = nil
       validate_client_options!
 
-      response = http_post('/identity/api/tokens',
+      response = http_post("/identity/api/tokens",
                            FFI_Yajl::Encoder.encode(bearer_token_request_body),
                            :skip_auth)
       unless response.success_ok?
         raise Vra::Exception::Unauthorized, "Unable to get bearer token: #{response.body}"
       end
 
-      @bearer_token.value = FFI_Yajl::Parser.parse(response.body)['id']
+      @bearer_token.value = FFI_Yajl::Parser.parse(response.body)["id"]
     end
 
     def full_url(path)
       "#{@base_url}#{path}"
     end
 
-    def http_fetch(method, path, skip_auth=nil)
+    def http_fetch(method, path, skip_auth = nil)
       authorize! unless skip_auth
 
       response = Vra::Http.execute(method: method,
@@ -128,11 +128,11 @@ module Vra
       response
     end
 
-    def http_head(path, skip_auth=nil)
+    def http_head(path, skip_auth = nil)
       http_fetch(:head, path, skip_auth)
     end
 
-    def http_get(path, skip_auth=nil)
+    def http_get(path, skip_auth = nil)
       http_fetch(:get, path, skip_auth)
     end
 
@@ -152,22 +152,24 @@ module Vra
 
       loop do
         response = get_parsed("#{base_path}&page=#{page}")
-        items += response['content']
+        items += response["content"]
 
-        break if page >= response['metadata']['totalPages']
+        break if page >= response["metadata"]["totalPages"]
         page += 1
       end
 
-      raise Vra::Exception::DuplicateItemsDetected,
-            'Duplicate items were returned by the vRA API. ' \
-            'Increase your page size to avoid this vRA API bug. ' \
-            'See https://github.com/chef-partners/vmware-vra-gem#pagination ' \
-            'for more information.' if items.uniq!
+      if items.uniq!
+        raise Vra::Exception::DuplicateItemsDetected,
+              "Duplicate items were returned by the vRA API. " \
+              "Increase your page size to avoid this vRA API bug. " \
+              "See https://github.com/chef-partners/vmware-vra-gem#pagination " \
+              "for more information."
+      end
 
       items
     end
 
-    def http_post(path, payload, skip_auth=nil)
+    def http_post(path, payload, skip_auth = nil)
       authorize! unless skip_auth
 
       response = Vra::Http.execute(method: :post,
@@ -200,14 +202,14 @@ module Vra
                             klass: caught_exception.class,
                             path: path)
 
-      message = exception.errors.empty? ? caught_exception.message : exception.errors.join(', ')
+      message = exception.errors.empty? ? caught_exception.message : exception.errors.join(", ")
       raise exception, message
     end
 
     def validate_client_options!
-      raise ArgumentError, 'Username and password are required' if @username.nil? || @password.value.nil?
-      raise ArgumentError, 'A tenant is required' if @tenant.nil?
-      raise ArgumentError, 'A base URL is required' if @base_url.nil?
+      raise ArgumentError, "Username and password are required" if @username.nil? || @password.value.nil?
+      raise ArgumentError, "A tenant is required" if @tenant.nil?
+      raise ArgumentError, "A base URL is required" if @base_url.nil?
       raise ArgumentError, "Base URL #{@base_url} is not a valid URI." unless valid_uri?(@base_url)
     end
 

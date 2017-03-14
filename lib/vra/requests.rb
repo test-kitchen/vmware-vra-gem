@@ -26,9 +26,9 @@ module Vra
     def all_requests
       requests = []
 
-      items = @client.http_get_paginated_array!('/catalog-service/api/consumer/requests')
+      items = @client.http_get_paginated_array!("/catalog-service/api/consumer/requests")
       items.each do |item|
-        requests << Vra::Request.new(@client, item['id'])
+        requests << Vra::Request.new(@client, item["id"])
       end
 
       requests
