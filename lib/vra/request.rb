@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-require 'ffi_yajl'
+require "ffi_yajl"
 
 module Vra
   class Request
@@ -50,7 +50,7 @@ module Vra
       refresh_if_empty
       return if request_empty?
 
-      @request_data['phase']
+      @request_data["phase"]
     end
 
     def completed?
@@ -58,25 +58,25 @@ module Vra
     end
 
     def successful?
-      status == 'SUCCESSFUL'
+      status == "SUCCESSFUL"
     end
 
     def failed?
-      status == 'FAILED'
+      status == "FAILED"
     end
 
     def completion_state
       refresh_if_empty
       return if request_empty?
 
-      @request_data['requestCompletion']['requestCompletionState']
+      @request_data["requestCompletion"]["requestCompletionState"]
     end
 
     def completion_details
       refresh_if_empty
       return if request_empty?
 
-      @request_data['requestCompletion']['completionDetails']
+      @request_data["requestCompletion"]["completionDetails"]
     end
 
     def resources

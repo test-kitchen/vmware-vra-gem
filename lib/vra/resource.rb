@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-require 'ffi_yajl'
+require "ffi_yajl"
 
 module Vra
   # rubocop:disable ClassLength
@@ -31,17 +31,17 @@ module Vra
       @resource_actions = []
 
       if @id.nil? && @resource_data.nil?
-        raise ArgumentError, 'must supply an id or a resource data hash'
+        raise ArgumentError, "must supply an id or a resource data hash"
       end
 
       if !@id.nil? && !@resource_data.nil?
-        raise ArgumentError, 'must supply an id OR a resource data hash, not both'
+        raise ArgumentError, "must supply an id OR a resource data hash, not both"
       end
 
       if @resource_data.nil?
         fetch_resource_data
       else
-        @id = @resource_data['id']
+        @id = @resource_data["id"]
       end
     end
 
@@ -53,103 +53,103 @@ module Vra
     alias refresh fetch_resource_data
 
     def name
-      resource_data['name']
+      resource_data["name"]
     end
 
     def description
-      resource_data['description']
+      resource_data["description"]
     end
 
     def status
-      resource_data['status']
+      resource_data["status"]
     end
 
     def vm?
-      %w(Infrastructure.Virtual Infrastructure.Cloud).include?(resource_data['resourceTypeRef']['id'])
+      %w{Infrastructure.Virtual Infrastructure.Cloud}.include?(resource_data["resourceTypeRef"]["id"])
     end
 
     def organization
-      return {} if resource_data['organization'].nil?
+      return {} if resource_data["organization"].nil?
 
-      resource_data['organization']
+      resource_data["organization"]
     end
 
     def tenant_id
-      organization['tenantRef']
+      organization["tenantRef"]
     end
 
     def tenant_name
-      organization['tenantLabel']
+      organization["tenantLabel"]
     end
 
     def subtenant_id
-      organization['subtenantRef']
+      organization["subtenantRef"]
     end
 
     def subtenant_name
-      organization['subtenantLabel']
+      organization["subtenantLabel"]
     end
 
     def catalog_item
-      return {} if resource_data['catalogItem'].nil?
+      return {} if resource_data["catalogItem"].nil?
 
-      resource_data['catalogItem']
+      resource_data["catalogItem"]
     end
 
     def catalog_id
-      catalog_item['id']
+      catalog_item["id"]
     end
 
     def catalog_name
-      catalog_item['label']
+      catalog_item["label"]
     end
 
     def owner_ids
-      resource_data['owners'].map { |x| x['ref'] }
+      resource_data["owners"].map { |x| x["ref"] }
     end
 
     def owner_names
-      resource_data['owners'].map { |x| x['value'] }
+      resource_data["owners"].map { |x| x["value"] }
     end
 
     def machine_status
-      status = resource_data['resourceData']['entries'].find { |x| x['key'] == 'MachineStatus' }
-      raise 'No MachineStatus entry available for resource' if status.nil?
+      status = resource_data["resourceData"]["entries"].find { |x| x["key"] == "MachineStatus" }
+      raise "No MachineStatus entry available for resource" if status.nil?
 
-      status['value']['value']
+      status["value"]["value"]
     end
 
     def machine_on?
-      machine_status == 'On'
+      machine_status == "On"
     end
 
     def machine_off?
-      machine_status == 'Off'
+      machine_status == "Off"
     end
 
     def machine_turning_on?
-      machine_status == 'TurningOn' || machine_status == 'MachineActivated'
+      machine_status == "TurningOn" || machine_status == "MachineActivated"
     end
 
     def machine_turning_off?
-      %w(TurningOff ShuttingDown).include?(machine_status)
+      %w{TurningOff ShuttingDown}.include?(machine_status)
     end
 
     def machine_in_provisioned_state?
-      machine_status == 'MachineProvisioned'
+      machine_status == "MachineProvisioned"
     end
 
     def network_interfaces
       return unless vm?
 
-      network_list = resource_data['resourceData']['entries'].find { |x| x['key'] == 'NETWORK_LIST' }
+      network_list = resource_data["resourceData"]["entries"].find { |x| x["key"] == "NETWORK_LIST" }
       return if network_list.nil?
 
-      network_list['value']['items'].each_with_object([]) do |item, nics|
+      network_list["value"]["items"].each_with_object([]) do |item, nics|
         nic = {}
-        item['values']['entries'].each do |entry|
-          key = entry['key']
-          value = entry['value']['value']
+        item["values"]["entries"].each do |entry|
+          key = entry["key"]
+          value = entry["value"]["value"]
           nic[key] = value
         end
 
@@ -162,26 +162,26 @@ module Vra
 
       addrs = []
 
-      request_id = @resource_data['requestId']
+      request_id = @resource_data["requestId"]
 
       resource_views = @client.http_get("/catalog-service/api/consumer/requests/#{request_id}/resourceViews")
 
-      data_zero = JSON.parse(resource_views.body)['content'][0]['data']['ip_address']
-      data_one = JSON.parse(resource_views.body)['content'][1]['data']['ip_address']
+      data_zero = JSON.parse(resource_views.body)["content"][0]["data"]["ip_address"]
+      data_one = JSON.parse(resource_views.body)["content"][1]["data"]["ip_address"]
 
-      print 'Waiting For vRA to collect the IP'
-      while (data_zero == '' || data_one == '') && (data_zero.nil? || data_one.nil?)
+      print "Waiting For vRA to collect the IP"
+      while (data_zero == "" || data_one == "") && (data_zero.nil? || data_one.nil?)
         resource_views = @client.http_get("/catalog-service/api/consumer/requests/#{request_id}/resourceViews")
-        data_zero = JSON.parse(resource_views.body)['content'][0]['data']['ip_address']
-        data_one = JSON.parse(resource_views.body)['content'][1]['data']['ip_address']
+        data_zero = JSON.parse(resource_views.body)["content"][0]["data"]["ip_address"]
+        data_one = JSON.parse(resource_views.body)["content"][1]["data"]["ip_address"]
         sleep 10
-        print '.'
+        print "."
       end
 
-      ip_address = if JSON.parse(resource_views.body)['content'][0]['data']['ip_address'].nil?
-                     JSON.parse(resource_views.body)['content'][1]['data']['ip_address']
+      ip_address = if JSON.parse(resource_views.body)["content"][0]["data"]["ip_address"].nil?
+                     JSON.parse(resource_views.body)["content"][1]["data"]["ip_address"]
                    else
-                     JSON.parse(resource_views.body)['content'][0]['data']['ip_address']
+                     JSON.parse(resource_views.body)["content"][0]["data"]["ip_address"]
                    end
 
       addrs << ip_address
@@ -191,43 +191,43 @@ module Vra
     def actions
       # if this Resource instance was created with data from a "all_resources" fetch,
       # it is likely missing operations data because the vRA API is not pleasant sometimes.
-      fetch_resource_data if resource_data['operations'].nil?
+      fetch_resource_data if resource_data["operations"].nil?
 
-      resource_data['operations']
+      resource_data["operations"]
     end
 
     def action_id_by_name(name)
       return if actions.nil?
 
-      action = actions.find { |x| x['name'] == name }
+      action = actions.find { |x| x["name"] == name }
       return if action.nil?
 
-      action['id']
+      action["id"]
     end
 
     def destroy
-      action_id = action_id_by_name('Destroy')
+      action_id = action_id_by_name("Destroy")
       raise Vra::Exception::NotFound, "No destroy action found for resource #{@id}" if action_id.nil?
 
       submit_action_request(action_id)
     end
 
     def shutdown
-      action_id = action_id_by_name('Shutdown')
+      action_id = action_id_by_name("Shutdown")
       raise Vra::Exception::NotFound, "No shutdown action found for resource #{@id}" if action_id.nil?
 
       submit_action_request(action_id)
     end
 
     def poweroff
-      action_id = action_id_by_name('Power Off')
+      action_id = action_id_by_name("Power Off")
       raise Vra::Exception::NotFound, "No power-off action found for resource #{@id}" if action_id.nil?
 
       submit_action_request(action_id)
     end
 
     def poweron
-      action_id = action_id_by_name('Power On')
+      action_id = action_id_by_name("Power On")
       raise Vra::Exception::NotFound, "No power-on action found for resource #{@id}" if action_id.nil?
 
       submit_action_request(action_id)
@@ -235,31 +235,31 @@ module Vra
 
     def action_request_payload(action_id)
       {
-        '@type' => 'ResourceActionRequest',
-        'resourceRef' => {
-          'id' => @id
+        "@type" => "ResourceActionRequest",
+        "resourceRef" => {
+          "id" => @id,
         },
-        'resourceActionRef' => {
-          'id' => action_id
+        "resourceActionRef" => {
+          "id" => action_id,
         },
-        'organization' => {
-          'tenantRef' => tenant_id,
-          'tenantLabel' => tenant_name,
-          'subtenantRef' => subtenant_id,
-          'subtenantLabel' => subtenant_name
+        "organization" => {
+          "tenantRef" => tenant_id,
+          "tenantLabel" => tenant_name,
+          "subtenantRef" => subtenant_id,
+          "subtenantLabel" => subtenant_name,
         },
-        'state' => 'SUBMITTED',
-        'requestNumber' => 0,
-        'requestData' => {
-          'entries' => []
-        }
+        "state" => "SUBMITTED",
+        "requestNumber" => 0,
+        "requestData" => {
+          "entries" => [],
+        },
       }
     end
 
     def submit_action_request(action_id)
       payload = action_request_payload(action_id).to_json
-      response = client.http_post('/catalog-service/api/consumer/requests', payload)
-      request_id = response.location.split('/')[-1]
+      response = client.http_post("/catalog-service/api/consumer/requests", payload)
+      request_id = response.location.split("/")[-1]
       Vra::Request.new(client, request_id)
     end
   end

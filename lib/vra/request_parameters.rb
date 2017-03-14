@@ -46,19 +46,19 @@ module Vra
 
     def to_h
       {
-        'key' => @key,
-        'value' => {
-          'type' => @type,
-          'value' => format_value
-        }
+        "key" => @key,
+        "value" => {
+          "type" => @type,
+          "value" => format_value,
+        },
       }
     end
 
     def format_value
       case @type
-      when 'integer'
+      when "integer"
         @value.to_i
-      when 'string'
+      when "string"
         @value.to_s
       else
         @value.to_s

@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-require 'vra'
-require 'webmock/rspec'
+require "vra"
+require "webmock/rspec"
 
 WebMock.disable_net_connect!(allow_localhost: true)

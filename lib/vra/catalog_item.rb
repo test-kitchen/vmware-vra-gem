@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-require 'ffi_yajl'
+require "ffi_yajl"
 
 module Vra
   class CatalogItem
@@ -28,17 +28,17 @@ module Vra
       @catalog_item_data = opts[:data]
 
       if @id.nil? && @catalog_item_data.nil?
-        raise ArgumentError, 'must supply an id or a catalog item data hash'
+        raise ArgumentError, "must supply an id or a catalog item data hash"
       end
 
       if !@id.nil? && !@catalog_item_data.nil?
-        raise ArgumentError, 'must supply an id OR a catalog item data hash, not both'
+        raise ArgumentError, "must supply an id OR a catalog item data hash, not both"
       end
 
       if @catalog_item_data.nil?
         fetch_catalog_item
       else
-        @id = @catalog_item_data['id']
+        @id = @catalog_item_data["id"]
       end
     end
 
@@ -49,41 +49,41 @@ module Vra
     end
 
     def name
-      @catalog_item_data['name']
+      @catalog_item_data["name"]
     end
 
     def description
-      @catalog_item_data['description']
+      @catalog_item_data["description"]
     end
 
     def status
-      @catalog_item_data['status']
+      @catalog_item_data["status"]
     end
 
     def organization
-      return {} if @catalog_item_data['organization'].nil?
+      return {} if @catalog_item_data["organization"].nil?
 
-      @catalog_item_data['organization']
+      @catalog_item_data["organization"]
     end
 
     def tenant_id
-      organization['tenantRef']
+      organization["tenantRef"]
     end
 
     def tenant_name
-      organization['tenantLabel']
+      organization["tenantLabel"]
     end
 
     def subtenant_id
-      organization['subtenantRef']
+      organization["subtenantRef"]
     end
 
     def subtenant_name
-      organization['subtenantLabel']
+      organization["subtenantLabel"]
     end
 
     def blueprint_id
-      @catalog_item_data['providerBinding']['bindingId']
+      @catalog_item_data["providerBinding"]["bindingId"]
     end
   end
 end

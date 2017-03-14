@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-require 'ffi_yajl'
+require "ffi_yajl"
 
 module Vra
   module Exception
@@ -28,7 +28,7 @@ module Vra
 
     class HTTPError < RuntimeError
       attr_accessor :klass, :code, :body, :errors, :path
-      def initialize(opts={})
+      def initialize(opts = {})
         @code = opts[:code]
         @body = opts[:body]
         @path = opts[:path]
@@ -46,10 +46,10 @@ module Vra
         end
 
         return if data.nil?
-        return unless data['errors'].respond_to?(:each)
+        return unless data["errors"].respond_to?(:each)
 
-        data['errors'].each do |error|
-          @errors << error['systemMessage']
+        data["errors"].each do |error|
+          @errors << error["systemMessage"]
         end
       end
     end

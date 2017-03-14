@@ -17,31 +17,31 @@
 # limitations under the License.
 #
 
-require 'spec_helper'
+require "spec_helper"
 
 describe Vra::Requests do
   let(:client) do
-    Vra::Client.new(username: 'user@corp.local',
-                    password: 'password',
-                    tenant: 'tenant',
-                    base_url: 'https://vra.corp.local')
+    Vra::Client.new(username: "user@corp.local",
+                    password: "password",
+                    tenant: "tenant",
+                    base_url: "https://vra.corp.local")
   end
 
   let(:requests) { Vra::Requests.new(client) }
 
-  describe '#all_resources' do
-    it 'calls the requests API endpoint' do
+  describe "#all_resources" do
+    it "calls the requests API endpoint" do
       expect(client).to receive(:http_get_paginated_array!)
-        .with('/catalog-service/api/consumer/requests')
+        .with("/catalog-service/api/consumer/requests")
         .and_return([])
 
       requests.all_requests
     end
 
-    it 'returns an array of request objects' do
+    it "returns an array of request objects" do
       allow(client).to receive(:http_get_paginated_array!)
-        .with('/catalog-service/api/consumer/requests')
-        .and_return([ { 'id' => '1' }, { 'id' => '2' } ])
+        .with("/catalog-service/api/consumer/requests")
+        .and_return([ { "id" => "1" }, { "id" => "2" } ])
 
       items = requests.all_requests
 
@@ -50,11 +50,11 @@ describe Vra::Requests do
     end
   end
 
-  describe '#by_id' do
-    it 'returns a request object' do
-      expect(Vra::Request).to receive(:new).with(client, '12345')
+  describe "#by_id" do
+    it "returns a request object" do
+      expect(Vra::Request).to receive(:new).with(client, "12345")
 
-      requests.by_id('12345')
+      requests.by_id("12345")
     end
   end
 end

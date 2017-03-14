@@ -17,31 +17,31 @@
 # limitations under the License.
 #
 
-require 'spec_helper'
+require "spec_helper"
 
 describe Vra::Resources do
   let(:client) do
-    Vra::Client.new(username: 'user@corp.local',
-                    password: 'password',
-                    tenant: 'tenant',
-                    base_url: 'https://vra.corp.local')
+    Vra::Client.new(username: "user@corp.local",
+                    password: "password",
+                    tenant: "tenant",
+                    base_url: "https://vra.corp.local")
   end
 
   let(:resources) { Vra::Resources.new(client) }
 
-  describe '#all_resources' do
-    it 'calls the resources API endpoint' do
+  describe "#all_resources" do
+    it "calls the resources API endpoint" do
       expect(client).to receive(:http_get_paginated_array!)
-        .with('/catalog-service/api/consumer/resources')
+        .with("/catalog-service/api/consumer/resources")
         .and_return([])
 
       resources.all_resources
     end
 
-    it 'returns an array of resource objects' do
+    it "returns an array of resource objects" do
       allow(client).to receive(:http_get_paginated_array!)
-        .with('/catalog-service/api/consumer/resources')
-        .and_return([ { 'id' => '1' }, { 'id' => '2' } ])
+        .with("/catalog-service/api/consumer/resources")
+        .and_return([ { "id" => "1" }, { "id" => "2" } ])
 
       items = resources.all_resources
 
@@ -50,11 +50,11 @@ describe Vra::Resources do
     end
   end
 
-  describe '#by_id' do
-    it 'returns a resource object' do
-      expect(Vra::Resource).to receive(:new).with(client, id: '12345')
+  describe "#by_id" do
+    it "returns a resource object" do
+      expect(Vra::Resource).to receive(:new).with(client, id: "12345")
 
-      resources.by_id('12345')
+      resources.by_id("12345")
     end
   end
 end
