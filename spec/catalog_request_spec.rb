@@ -87,19 +87,20 @@ describe Vra::CatalogRequest do
       end
     end
 
-    describe '#request_payload' do
+    describe '#merge_payload' do
       it 'properly handles additional parameters' do
         request.set_parameter('param1', 'string', 'my string')
         request.set_parameter('param2', 'integer', '2468')
 
-        payload = request.request_payload
-        param1 = payload['requestData']['entries'].find { |x| x['key'] == 'param1' }
-        param2 = payload['requestData']['entries'].find { |x| x['key'] == 'param2' }
+				template = File.read('spec/fixtures/resource/catalog_request.json')
+				payload = JSON.parse(request.merge_payload(template))
+        param1 = payload['data']['my_blueprint']['data']['param1']
+        param2 = payload['data']['my_blueprint']['data']['param2']
 
-        expect(param1).to be_a(Hash)
-        expect(param2).to be_a(Hash)
-        expect(param1['value']['value']).to eq 'my string'
-        expect(param2['value']['value']).to eq 2468
+        expect(param1).to be_a(String)
+        expect(param2).to be_a(String)
+        expect(param1).to eq 'my string'
+        expect(param2).to eq '2468'
       end
     end
 

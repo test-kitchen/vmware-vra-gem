@@ -1,0 +1,53 @@
+
+{
+   "type": "com.vmware.vcac.catalog.domain.request.CatalogItemProvisioningRequest",
+   "catalogItemId":"45f66899-3cac-41a1-8343-7ed6514afa98",
+   "requestedFor":"vraadmin@vsphere.local",
+   "businessGroupId":"d0fb4a04-7099-4ba1-a262-b578e129a758",
+   "description":null,
+   "reasons":null,
+   "data":{  
+      "_leaseDays":null,
+      "_number_of_instances":1,
+      "my_blueprint":{  
+         "componentTypeId":"com.vmware.csp.component.cafe.composition",
+         "componentId":null,
+         "classId":"Blueprint.Component.Declaration",
+         "typeFilter":"",
+         "data":{  
+            "_allocation":{  },
+            "_cluster":1,
+            "_hasChildren":false,
+            "cpu":1,
+            "datacenter_location":null,
+            "description":null,
+            "disks":[  ],
+            "display_location":false,
+            "param1":"",
+            "guest_customization_specification":"",
+            "machine_prefix":null,
+            "max_network_adapters":-1,
+            "max_per_user":0,
+            "max_volumes":60,
+            "memory":512,
+            "nics":[  ],
+            "os_arch":"x86_64",
+            "os_distribution":null,
+            "os_type":"Linux",
+            "os_version":null,
+            "property_groups":null,
+            "provider-foo":"",
+            "reservation_policy":null,
+            "security_groups":[  
+
+            ],
+            "security_tags":[  
+
+            ],
+            "source_machine_external_snapshot":null,
+            "source_machine_vmsnapshot":null,
+            "storage":40
+         }
+      }
+   }
+}

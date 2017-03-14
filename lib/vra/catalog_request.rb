@@ -61,37 +61,21 @@ module Vra
       raise ArgumentError, "Unable to submit request, required param(s) missing => #{missing_params.join(', ')}" unless missing_params.empty?
     end
 
-    def request_payload
-      payload = {
-        '@type' => 'CatalogItemRequest',
-        'catalogItemRef' => {
-          'id' => @catalog_id
-        },
-        'organization' => {
-          'tenantRef'    => catalog_item.tenant_id,
-          'subtenantRef' => subtenant_id
-        },
-        'requestedFor' => @requested_for,
-        'state' => 'SUBMITTED',
-        'requestNumber' => 0,
-        'requestData' => {
-          'entries' => [
-            Vra::RequestParameter.new('provider-blueprintId', 'string', catalog_item.blueprint_id).to_h,
-            Vra::RequestParameter.new('provider-provisioningGroupId', 'string', subtenant_id).to_h,
-            Vra::RequestParameter.new('requestedFor', 'string', @requested_for).to_h,
-            Vra::RequestParameter.new('provider-VirtualMachine.CPU.Count', 'integer', @cpus).to_h,
-            Vra::RequestParameter.new('provider-VirtualMachine.Memory.Size', 'integer', @memory).to_h,
-            Vra::RequestParameter.new('provider-VirtualMachine.LeaseDays', 'integer', @lease_days).to_h,
-            Vra::RequestParameter.new('description', 'string', @notes).to_h
-          ]
-        }
-      }
+    def merge_payload(payload)
+      hash_payload = JSON.parse(payload)
+      blueprint_name = hash_payload['data'].select {|k,v| v.is_a?(Hash)}.keys.first
 
-      parameters.each do |entry|
-        payload['requestData']['entries'] << entry.to_h
+      hash_payload['data'][blueprint_name]['data']['cpu'] = @cpus
+      hash_payload['data'][blueprint_name]['data']['memory'] = @memory
+      hash_payload['requestedFor'] = @requested_for 
+      hash_payload['data']['_leaseDays'] = @lease_days
+      hash_payload['description']= @notes 
+
+      parameters.each do |param|
+        hash_payload['data'][blueprint_name]['data'][param.key] = param.value
       end
 
-      payload
+      JSON.pretty_generate(hash_payload)
     end
 
     def submit
@@ -99,7 +83,7 @@ module Vra
 
       begin
         response = client.http_get("/catalog-service/api/consumer/entitledCatalogItems/#{@catalog_id}/requests/template")
-        post_response = client.http_post("/catalog-service/api/consumer/entitledCatalogItems/#{@catalog_id}/requests", response.body.to_s)
+        post_response = client.http_post("/catalog-service/api/consumer/entitledCatalogItems/#{@catalog_id}/requests", merge_payload(response.body))
       rescue Vra::Exception::HTTPError => e
         raise Vra::Exception::RequestError, "Unable to submit request: #{e.errors.join(', ')}"
       rescue
