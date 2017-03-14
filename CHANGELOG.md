@@ -1,7 +1,14 @@
 # Change Log
 
-## [v2.1.0](https://github.com/chef-partners/vmware-vra-gem/tree/v2.1.0)
+## [v2.2.1](https://github.com/chef-partners/vmware-vra-gem/tree/)
 
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.1.0...v2.1.1)
+
+**Merged pull requests:**
+
+- Converted to chefstyle [\#41](https://github.com/chef-partners/vmware-vra-gem/pull/41) ([jjasghar](https://github.com/jjasghar))
+
+## [v2.1.0](https://github.com/chef-partners/vmware-vra-gem/tree/v2.1.0) (2017-03-14)
 [Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.0.0...v2.1.0)
 
 **Merged pull requests:**
