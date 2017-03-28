@@ -22,7 +22,6 @@ require "passwordmasker"
 require "vra/http"
 
 module Vra
-  # rubocop:disable ClassLength
   class Client
     attr_accessor :page_size
 

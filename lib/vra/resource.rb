@@ -20,7 +20,6 @@
 require "ffi_yajl"
 
 module Vra
-  # rubocop:disable ClassLength
   class Resource
     attr_reader :client, :id, :resource_data
 
@@ -157,7 +156,7 @@ module Vra
       end
     end
 
-    def ip_addresses # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    def ip_addresses
       return if !vm? || network_interfaces.nil?
 
       addrs = []
