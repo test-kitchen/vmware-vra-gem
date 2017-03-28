@@ -1,7 +1,14 @@
 # Change Log
 
-## [v2.2.1](https://github.com/chef-partners/vmware-vra-gem/tree/)
+## [v2.1.2](https://github.com/chef-partners/vmware-vra-gem/tree/v2.1.2)
 
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.1.1...v2.1.2)
+
+**Merged pull requests:**
+
+- Updates extra\_params to check for top level props [\#42](https://github.com/chef-partners/vmware-vra-gem/pull/42) ([nsdavidson](https://github.com/nsdavidson))
+
+## [v2.1.1](https://github.com/chef-partners/vmware-vra-gem/tree/v2.1.1) (2017-03-14)
 [Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.1.0...v2.1.1)
 
 **Merged pull requests:**
