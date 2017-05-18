@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require "net/http"
+require "openssl"
 
 module Vra
   module Http
