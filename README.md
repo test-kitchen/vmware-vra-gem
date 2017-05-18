@@ -96,6 +96,52 @@ If your catalog blueprint item requires additional parameters to successfully su
 catalog_request.set_parameter('my_parameter', 'string', 'my value')
 ```
 
+### Creating a request from a yaml or json payload
+Should you want to create a request ahead of time you can create the parameters up front by 
+reading from a file or a hard coded payload you use every time.  This is not required by any means but allows
+for some extra flexibility when using this request object directly.  The only difference is that you can pass 
+in the request parameters instead of having to set them after you create the object.
+
+Given a sample request object like the following you will want to read the yaml into an ruby object:
+
+```yaml
+requestData:
+  entries:
+    key: provider-provisioningGroupId
+    value:
+      type: string
+      value: 93992-3929392-32323828-832882394
+    key: provider-datacenter
+      type: string
+      value: datacenter1
+    key: provider-domain
+      type: string
+      value: chef.com
+
+```
+
+And now use that data to create the Vra::RequestParameters to feed into the catalog request.
+
+```ruby
+# read in the request data
+yaml_data = YAML,load(data)
+# create a parameters array
+parameters = yaml_data['requestData']['entries'].map {|item| [item['key'], item['value'].values].flatten }
+# We put the values in a array so we can easily explode the parameters using the splat operator later
+request_parans = Vra::RequestParameters.new
+# loop through each parameter and setting each parameter 
+parameters.each {|p| request_params.set(*p)  # splat
+request_options = {
+  cpus: 1,
+  memory: 1024,
+  requested_for: 'me@me.com',
+  lease_days: 2,
+  additional_params: request_parans
+}
+# create the request
+catalog_request = vra.catalog.request(blueprint, request_options)
+```
+
 Now, submit your request!  The client will return a new "Request" object you can use to query for status.
 
 ```
