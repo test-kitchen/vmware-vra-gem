@@ -2,7 +2,7 @@
 
 ## [v2.1.3](https://github.com/chef-partners/vmware-vra-gem/tree/v2.1.3)
 
-[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.1.2...v2.1.3)
+    [Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.1.2...v2.1.3)
 
 **Merged pull requests:**
 
