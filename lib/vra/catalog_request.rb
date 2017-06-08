@@ -32,7 +32,7 @@ module Vra
       @lease_days        = opts[:lease_days]
       @notes             = opts[:notes]
       @subtenant_id      = opts[:subtenant_id]
-      @additional_params = Vra::RequestParameters.new
+      @additional_params = opts[:additional_params] || Vra::RequestParameters.new
 
       @catalog_item = Vra::CatalogItem.new(client, id: catalog_id)
     end
