@@ -1,8 +1,22 @@
 # Change Log
 
-## [v2.1.3](https://github.com/chef-partners/vmware-vra-gem/tree/v2.1.3)
+## [2.2.0](https://github.com/chef-partners/vmware-vra-gem/tree/2.2.0) (2017-06-08)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.1.3...2.2.0)
 
-    [Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.1.2...v2.1.3)
+**Closed issues:**
+
+- usage of openssl raises error [\#45](https://github.com/chef-partners/vmware-vra-gem/issues/45)
+- why is chefstyle a runtime dependency? [\#44](https://github.com/chef-partners/vmware-vra-gem/issues/44)
+- Error when using set\_parameter and support for extra\_parameters [\#38](https://github.com/chef-partners/vmware-vra-gem/issues/38)
+
+**Merged pull requests:**
+
+- Fixes issue with chefstyle and unnecessary runtime dependency [\#48](https://github.com/chef-partners/vmware-vra-gem/pull/48) ([logicminds](https://github.com/logicminds))
+- adds ability to specify additional params to catalog request [\#47](https://github.com/chef-partners/vmware-vra-gem/pull/47) ([logicminds](https://github.com/logicminds))
+- Fixes \#45 - usage of openssl raises error [\#46](https://github.com/chef-partners/vmware-vra-gem/pull/46) ([logicminds](https://github.com/logicminds))
+
+## [v2.1.3](https://github.com/chef-partners/vmware-vra-gem/tree/v2.1.3) (2017-03-28)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.1.2...v2.1.3)
 
 **Merged pull requests:**
 
