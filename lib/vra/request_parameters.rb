@@ -34,7 +34,8 @@ module Vra
         if parent.nil?
           p = set(key, nil, nil)
         else
-          p = parent.add_child(Vra::RequestParameter.new(key, nil, nil))
+          p = Vra::RequestParameter.new(key, nil, nil)
+          parent.add_child(p)
         end
         
         value_data.each do |k, data|
@@ -54,6 +55,18 @@ module Vra
     def all_entries
       @entries.values
     end
+
+    def to_json
+      json = "{\"data\": {"
+
+      @entries.each do |e|
+        json += e[1].to_json
+      end
+
+      json += "}}"
+
+      json
+    end
   end
 
   class RequestParameter
@@ -65,14 +78,28 @@ module Vra
       @children = []
     end
 
+    def add_child(child)
+      @children.push(child)
+    end
+
     def to_h
-      {
+      hash = {
         "key" => @key,
         "value" => {
           "type" => @type,
           "value" => format_value,
         },
       }
+
+      if @children.count > 0
+        hash['data'] = []
+
+        @children.each do |c|
+          hash['data'].push(c.to_h)
+        end
+      end
+
+      hash
     end
 
     def to_json
@@ -81,12 +108,10 @@ module Vra
         @children.each do |c|
           children_to_json += c.to_json
         end
+
+        "\"#{@key}\":{\"data\": {#{children_to_json.chop}}}"
       else
-        "\"#{@key}\" : {
-          \"data\": {
-            #{children_to_json.chop}
-          }
-        }"
+        "\"#{@key}\" : \"#{format_value}\","
       end
     end
 
