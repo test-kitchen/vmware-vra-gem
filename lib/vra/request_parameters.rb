@@ -23,6 +23,26 @@ module Vra
       @entries = {}
     end
 
+    def set_parameters(key, value_data, parent = nil)
+      if value_data.key?(:type)
+        if parent.nil?
+          set(key, value_data[:type], value_data[:value])
+        else
+          parent.add_child(Vra::RequestParameter.new(key, value_data[:type], value_data[:value]))
+        end
+      else
+        if parent.nil?
+          p = set(key, nil, nil)
+        else
+          p = parent.add_child(Vra::RequestParameter.new(key, nil, nil))
+        end
+        
+        value_data.each do |k, data|
+          set_parameters(k, data, p)
+        end
+      end
+    end
+
     def set(key, type, value)
       @entries[key] = Vra::RequestParameter.new(key, type, value)
     end
@@ -37,11 +57,12 @@ module Vra
   end
 
   class RequestParameter
-    attr_accessor :key, :type, :value
+    attr_accessor :key, :type, :value, :children
     def initialize(key, type, value)
       @key   = key
       @type  = type
       @value = value
+      @children = []
     end
 
     def to_h
@@ -52,6 +73,21 @@ module Vra
           "value" => format_value,
         },
       }
+    end
+
+    def to_json
+      if @value.nil? && @type.nil?
+        children_to_json = ""
+        @children.each do |c|
+          children_to_json += c.to_json
+        end
+      else
+        "\"#{@key}\" : {
+          \"data\": {
+            #{children_to_json.chop}
+          }
+        }"
+      end
     end
 
     def format_value
