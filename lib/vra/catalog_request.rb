@@ -37,8 +37,9 @@ module Vra
       @catalog_item = Vra::CatalogItem.new(client, id: catalog_id)
     end
 
-    def set_parameter(key, type, value)
-      @additional_params.set(key, type, value)
+    def set_parameter(key, value_data)
+      @additional_params.set_parameters(key, value_data)
+      #@additional_params.set(key, type, value)
     end
 
     def delete_parameter(key)
