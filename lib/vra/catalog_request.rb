@@ -37,9 +37,12 @@ module Vra
       @catalog_item = Vra::CatalogItem.new(client, id: catalog_id)
     end
 
-    def set_parameter(key, value_data)
+    def set_parameter(key, type, value)
+      @additional_params.set(key, type, value)
+    end
+
+    def set_parameters(key, value_data)
       @additional_params.set_parameters(key, value_data)
-      #@additional_params.set(key, type, value)
     end
 
     def delete_parameter(key)
@@ -47,7 +50,7 @@ module Vra
     end
 
     def parameters
-      @additional_params.all_entries
+      @additional_params.to_vra
     end
 
     def subtenant_id
@@ -73,15 +76,7 @@ module Vra
       hash_payload["data"]["_leaseDays"] = @lease_days
       hash_payload["description"] = @notes
 
-      parameters.each do |param|
-        if hash_payload["data"].key? param.key
-          hash_payload["data"][param.key] = param.value
-        else
-          hash_payload["data"][blueprint_name]["data"][param.key] = param.value
-        end
-      end
-
-      JSON.pretty_generate(hash_payload)
+      JSON.pretty_generate(deep_merge(hash_payload, parameters))
     end
 
     def submit
@@ -99,5 +94,12 @@ module Vra
       request_id = JSON.parse(post_response.body)["id"]
       Vra::Request.new(client, request_id)
     end
+
+    def deep_merge(first, second)
+      merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : Array === v1 && Array === v2 ? v1 | v2 : [:undefined, nil, :nil].include?(v2) ? v1 : v2 }
+      first.merge(second.to_h, &merger)
+    end
+
+    private :deep_merge
   end
 end

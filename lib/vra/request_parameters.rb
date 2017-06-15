@@ -56,16 +56,28 @@ module Vra
       @entries.values
     end
 
-    def to_json
-      json = "{\"data\": {"
+    def to_h
+      hash = {}
 
-      @entries.each do |e|
-        json += e[1].to_json
+      @entries.each do |k, v|
+        hash[v.key] = {}
+        hash.merge!(v.to_h)
       end
 
-      json += "}}"
+      hash
+    end
 
-      json
+    def to_vra
+      hash = {
+        'data' => {}
+      }
+
+      @entries.each do |k, v|
+        hash['data'][v.key.to_s] = {}
+        hash['data'].merge!(v.to_vra)
+      end
+
+      hash
     end
   end
 
@@ -83,36 +95,37 @@ module Vra
     end
 
     def to_h
-      hash = {
-        "key" => @key,
-        "value" => {
-          "type" => @type,
-          "value" => format_value,
-        },
-      }
+      hash = {}
 
       if @children.count > 0
-        hash['data'] = []
+        hash[@key.to_s] = {}
 
         @children.each do |c|
-          hash['data'].push(c.to_h)
+          hash[@key.to_s].merge!(c.to_h)
         end
+      else
+        hash[@key.to_s] = format_value
       end
 
       hash
     end
 
-    def to_json
-      if @value.nil? && @type.nil?
-        children_to_json = ""
-        @children.each do |c|
-          children_to_json += c.to_json
-        end
+    def to_vra
+      hash = {}
 
-        "\"#{@key}\":{\"data\": {#{children_to_json.chop}}}"
+      if @children.count > 0
+        hash[@key.to_s] = {}
+
+        hash[@key.to_s]['data'] = {}
+
+        @children.each do |c|
+          hash[@key.to_s]['data'].merge!(c.to_h)
+        end
       else
-        "\"#{@key}\" : \"#{format_value}\","
+        hash[@key.to_s] = format_value
       end
+
+      hash
     end
 
     def format_value
