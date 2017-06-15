@@ -37,7 +37,7 @@ module Vra
           p = Vra::RequestParameter.new(key, nil, nil)
           parent.add_child(p)
         end
-        
+
         value_data.each do |k, data|
           set_parameters(k, data, p)
         end
@@ -69,12 +69,12 @@ module Vra
 
     def to_vra
       hash = {
-        'data' => {}
+        "data": {}
       }
 
       @entries.each do |k, v|
-        hash['data'][v.key.to_s] = {}
-        hash['data'].merge!(v.to_vra)
+        hash[:data][v.key] = {}
+        hash[:data].merge!(v.to_vra)
       end
 
       hash
@@ -98,13 +98,13 @@ module Vra
       hash = {}
 
       if @children.count > 0
-        hash[@key.to_s] = {}
+        hash[@key] = {}
 
         @children.each do |c|
-          hash[@key.to_s].merge!(c.to_h)
+          hash[@key].merge!(c.to_h)
         end
       else
-        hash[@key.to_s] = format_value
+        hash[@key] = format_value
       end
 
       hash
@@ -114,15 +114,15 @@ module Vra
       hash = {}
 
       if @children.count > 0
-        hash[@key.to_s] = {}
+        hash[@key] = {}
 
-        hash[@key.to_s]['data'] = {}
+        hash[@key]['data'] = {}
 
         @children.each do |c|
-          hash[@key.to_s]['data'].merge!(c.to_h)
+          hash[@key]['data'].merge!(c.to_vra)
         end
       else
-        hash[@key.to_s] = format_value
+        hash[@key] = format_value
       end
 
       hash
@@ -133,9 +133,9 @@ module Vra
       when "integer"
         @value.to_i
       when "string"
-        @value.to_s
+        @value
       else
-        @value.to_s
+        @value
       end
     end
   end
