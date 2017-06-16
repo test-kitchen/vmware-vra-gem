@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+require 'pry'
 module Vra
   class RequestParameters
     def initialize
@@ -45,7 +45,28 @@ module Vra
     end
 
     def set(key, type, value)
-      @entries[key] = Vra::RequestParameter.new(key, type, value)
+      if key.include? '~'
+        split_key = key.split('~')
+        parent = nil
+        for i in 0..split_key.count - 1
+          # binding.pry
+          if i == 0
+            if @entries[split_key[i]].nil?
+              @entries[split_key[i]] = Vra::RequestParameter.new(split_key[i], nil, nil)
+            end
+            parent = @entries[split_key[i]]
+          elsif i == (split_key.count - 1)
+            c = Vra::RequestParameter.new(split_key[i], type, value)
+            parent.add_child(c)
+          else
+            p = Vra::RequestParameter.new(split_key[i], nil, nil)
+            parent.add_child(p)
+            parent = p
+          end
+        end
+      else
+        @entries[key] = Vra::RequestParameter.new(key, type, value)
+      end
     end
 
     def delete(key)

@@ -104,6 +104,21 @@ describe Vra::CatalogRequest do
         expect(param2).to eq 2468
       end
 
+      it "properly handles additional nested parameters" do
+        request.set_parameter("BP1~param1", "string", "my string")
+        request.set_parameter("BP1~BP2~param2", "integer", 2468)
+
+        template = File.read("spec/fixtures/resource/catalog_request.json")
+        payload = JSON.parse(request.merge_payload(template))
+        param1 = payload["data"]["BP1"]["data"]["param1"]
+        param2 = payload["data"]["BP1"]["data"]["BP2"]["data"]["param2"]
+
+        expect(param1).to be_a(String)
+        expect(param2).to be_a(Integer)
+        expect(param1).to eq "my string"
+        expect(param2).to eq 2468
+      end
+
       it "properly handles nested parameters" do
         parameters = {
           'BP1' => {
