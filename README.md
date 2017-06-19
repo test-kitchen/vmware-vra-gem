@@ -96,6 +96,12 @@ If your catalog blueprint item requires additional parameters to successfully su
 catalog_request.set_parameter('my_parameter', 'string', 'my value')
 ```
 
+If you need to set a parameter on a child object in the blueprint, you can add them by using a ~:
+
+```
+catalog_request.set_parameter('object~my_parameter', 'string', 'my value')
+```
+
 ### Creating a request from a yaml or json payload
 Should you want to create a request ahead of time you can create the parameters up front by 
 reading from a file or a hard coded payload you use every time.  This is not required by any means but allows
