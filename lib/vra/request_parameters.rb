@@ -16,7 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-require 'pry'
 module Vra
   class RequestParameters
     def initialize
@@ -49,7 +48,6 @@ module Vra
         split_key = key.split('~')
         parent = nil
         for i in 0..split_key.count - 1
-          # binding.pry
           if i == 0
             if @entries[split_key[i]].nil?
               @entries[split_key[i]] = Vra::RequestParameter.new(split_key[i], nil, nil)
