@@ -45,7 +45,7 @@ module Vra
     end
 
     def set(key, type, value)
-      if key.include? '~'
+      if key.to_s.include? '~'
         split_key = key.split('~')
         parent = nil
         for i in 0..split_key.count - 1
@@ -81,7 +81,6 @@ module Vra
       hash = {}
 
       @entries.each do |k, v|
-        hash[v.key] = {}
         hash.merge!(v.to_h)
       end
 
@@ -94,7 +93,6 @@ module Vra
       }
 
       @entries.each do |k, v|
-        hash[:data][v.key] = {}
         hash[:data].merge!(v.to_vra)
       end
 
