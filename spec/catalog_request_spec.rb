@@ -148,7 +148,6 @@ describe Vra::CatalogRequest do
         expect(param2).to be_a(Integer)
         expect(param1).to eq "my string"
         expect(param2).to eq 2468
-
       end
     end
 
