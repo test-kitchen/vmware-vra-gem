@@ -96,6 +96,12 @@ If your catalog blueprint item requires additional parameters to successfully su
 catalog_request.set_parameter('my_parameter', 'string', 'my value')
 ```
 
+If you need to set a parameter on a child object in the blueprint, you can add them by using a ~:
+
+```
+catalog_request.set_parameter('object~my_parameter', 'string', 'my value')
+```
+
 Now, submit your request!  The client will return a new "Request" object you can use to query for status.
 
 ```
