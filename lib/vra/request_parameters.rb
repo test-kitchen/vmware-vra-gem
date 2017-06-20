@@ -91,7 +91,7 @@ module Vra
       }
 
       @entries.each do |k, v|
-        hash[:data].merge!(v.to_vra)
+        hash["data"].merge!(v.to_vra)
       end
 
       hash
@@ -133,10 +133,10 @@ module Vra
       if @children.count > 0
         hash[@key] = {}
 
-        hash[@key]['data'] = {}
+        hash[@key]["data"] = {}
 
         @children.each do |c|
-          hash[@key]['data'].merge!(c.to_vra)
+          hash[@key]["data"].merge!(c.to_vra)
         end
       else
         hash[@key] = format_value
