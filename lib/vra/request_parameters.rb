@@ -44,20 +44,20 @@ module Vra
     end
 
     def set(key, type, value)
-      if key.to_s.include? '~'
-        split_key = key.split('~')
+      if key.to_s.include? "~"
+        split_key = key.split("~")
         parent = nil
-        for i in 0..split_key.count - 1
-          if i == 0
-            if @entries[split_key[i]].nil?
-              @entries[split_key[i]] = Vra::RequestParameter.new(split_key[i], nil, nil)
+        split_key.each_with_index do |item, index|
+          if index == 0
+            if @entries[item].nil?
+              @entries[item] = Vra::RequestParameter.new(item, nil, nil)
             end
-            parent = @entries[split_key[i]]
-          elsif i == (split_key.count - 1)
-            c = Vra::RequestParameter.new(split_key[i], type, value)
+            parent = @entries[item]
+          elsif index == (split_key.count - 1)
+            c = Vra::RequestParameter.new(item, type, value)
             parent.add_child(c)
           else
-            p = Vra::RequestParameter.new(split_key[i], nil, nil)
+            p = Vra::RequestParameter.new(item, nil, nil)
             parent.add_child(p)
             parent = p
           end

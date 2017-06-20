@@ -96,7 +96,17 @@ module Vra
     end
 
     def deep_merge(first, second)
-      merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : Array === v1 && Array === v2 ? v1 | v2 : [:undefined, nil, :nil].include?(v2) ? v1 : v2 }
+      merger = proc do |key, v1, v2|
+        if Hash === v1 && Hash === v2
+          v1.merge(v2, &merger)
+        elsif Array === v1 && Array === v2
+          v1 | v2
+        elsif [:undefined, nil, :nil].include?(v2)
+          v1
+        else
+          v2
+        end
+      end
       first.merge(second.to_h, &merger)
     end
 
