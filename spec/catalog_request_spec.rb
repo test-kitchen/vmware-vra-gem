@@ -121,18 +121,18 @@ describe Vra::CatalogRequest do
 
       it "properly handles nested parameters" do
         parameters = {
-          'BP1' => {
-              'param1' => {
-                type: 'string',
-                value: 'my string'
+          "BP1" => {
+              "param1" => {
+                type: "string",
+                value: "my string",
               },
-              'BP2' => {
-                  'param2' => {
-                    type: 'integer',
-                    value: 2468
-                  }
-                }
-            }
+              "BP2" => {
+                  "param2" => {
+                    type: "integer",
+                    value: 2468,
+                  },
+                },
+            },
         }
 
         parameters.each do |k, v|

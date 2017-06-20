@@ -87,7 +87,7 @@ module Vra
 
     def to_vra
       hash = {
-        "data": {}
+        "data" => {},
       }
 
       @entries.each do |k, v|
