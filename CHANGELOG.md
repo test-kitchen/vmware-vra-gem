@@ -1,7 +1,20 @@
 # Change Log
 
-## [2.2.0](https://github.com/chef-partners/vmware-vra-gem/tree/2.2.0) (2017-06-08)
-[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.1.3...2.2.0)
+## [2.3.0](https://github.com/chef-partners/vmware-vra-gem/tree/2.3.0) (2017-06-30)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.2.0...2.3.0)
+
+**Closed issues:**
+
+- catalog\_request SSLError [\#30](https://github.com/chef-partners/vmware-vra-gem/issues/30)
+- Incompatible with vagrant 1.8+ \(at least\) [\#26](https://github.com/chef-partners/vmware-vra-gem/issues/26)
+
+**Merged pull requests:**
+
+- Extra parameters [\#50](https://github.com/chef-partners/vmware-vra-gem/pull/50) ([lloydsmithjr03](https://github.com/lloydsmithjr03))
+- Initial Jenkinsfile for integration tests [\#49](https://github.com/chef-partners/vmware-vra-gem/pull/49) ([jjasghar](https://github.com/jjasghar))
+
+## [v2.2.0](https://github.com/chef-partners/vmware-vra-gem/tree/v2.2.0) (2017-06-08)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.1.3...v2.2.0)
 
 **Closed issues:**
 
