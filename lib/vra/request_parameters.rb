@@ -16,15 +16,55 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 module Vra
   class RequestParameters
     def initialize
       @entries = {}
     end
 
+    def set_parameters(key, value_data, parent = nil)
+      if value_data.key?(:type)
+        if parent.nil?
+          set(key, value_data[:type], value_data[:value])
+        else
+          parent.add_child(Vra::RequestParameter.new(key, value_data[:type], value_data[:value]))
+        end
+      else
+        if parent.nil?
+          p = set(key, nil, nil)
+        else
+          p = Vra::RequestParameter.new(key, nil, nil)
+          parent.add_child(p)
+        end
+
+        value_data.each do |k, data|
+          set_parameters(k, data, p)
+        end
+      end
+    end
+
     def set(key, type, value)
-      @entries[key] = Vra::RequestParameter.new(key, type, value)
+      if key.to_s.include? "~"
+        split_key = key.split("~")
+        parent = nil
+        split_key.each_with_index do |item, index|
+          if index == 0
+            if @entries[item].nil?
+              @entries[item] = Vra::RequestParameter.new(item, nil, nil)
+            end
+            parent = @entries[item]
+          elsif index == (split_key.count - 1)
+            c = Vra::RequestParameter.new(item, type, value)
+            parent.add_child(c)
+          else
+            p = Vra::RequestParameter.new(item, nil, nil)
+            parent.add_child(p)
+            parent = p
+          end
+        end
+      else
+        @entries[key] = Vra::RequestParameter.new(key, type, value)
+      end
     end
 
     def delete(key)
@@ -34,24 +74,75 @@ module Vra
     def all_entries
       @entries.values
     end
+
+    def to_h
+      hash = {}
+
+      @entries.each do |k, v|
+        hash.merge!(v.to_h)
+      end
+
+      hash
+    end
+
+    def to_vra
+      hash = {
+        "data" => {},
+      }
+
+      @entries.each do |k, v|
+        hash["data"].merge!(v.to_vra)
+      end
+
+      hash
+    end
   end
 
   class RequestParameter
-    attr_accessor :key, :type, :value
+    attr_accessor :key, :type, :value, :children
     def initialize(key, type, value)
       @key   = key
       @type  = type
       @value = value
+      @children = []
+    end
+
+    def add_child(child)
+      @children.push(child)
     end
 
     def to_h
-      {
-        "key" => @key,
-        "value" => {
-          "type" => @type,
-          "value" => format_value,
-        },
-      }
+      hash = {}
+
+      if @children.count > 0
+        hash[@key] = {}
+
+        @children.each do |c|
+          hash[@key].merge!(c.to_h)
+        end
+      else
+        hash[@key] = format_value
+      end
+
+      hash
+    end
+
+    def to_vra
+      hash = {}
+
+      if @children.count > 0
+        hash[@key] = {}
+
+        hash[@key]["data"] = {}
+
+        @children.each do |c|
+          hash[@key]["data"].merge!(c.to_vra)
+        end
+      else
+        hash[@key] = format_value
+      end
+
+      hash
     end
 
     def format_value
@@ -59,9 +150,9 @@ module Vra
       when "integer"
         @value.to_i
       when "string"
-        @value.to_s
+        @value
       else
-        @value.to_s
+        @value
       end
     end
   end
