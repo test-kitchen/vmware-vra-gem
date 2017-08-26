@@ -22,12 +22,18 @@ module Vra
       @entries = {}
     end
 
+    # @param key [String] - the name of the key
+    # @param value_data [Hash] - the data of the key name
+    # @note - the value_data must have type and value property in the hash
     def set_parameters(key, value_data, parent = nil)
-      if value_data.key?(:type)
+      value_type = value_data[:type] || value_data["type"]
+      data_value = value_data[:value] || value_data["value"]
+
+      if value_type
         if parent.nil?
-          set(key, value_data[:type], value_data[:value])
+          set(key, value_type, data_value)
         else
-          parent.add_child(Vra::RequestParameter.new(key, value_data[:type], value_data[:value]))
+          parent.add_child(Vra::RequestParameter.new(key, value_type, data_value))
         end
       else
         if parent.nil?
