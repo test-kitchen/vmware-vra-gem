@@ -103,9 +103,9 @@ catalog_request.set_parameter('object~my_parameter', 'string', 'my value')
 ```
 
 ### Creating a request from a yaml or json payload
-Should you want to create a request ahead of time you can create the parameters up front by 
+Should you want to create a request ahead of time you can create the parameters up front by
 reading from a file or a hard coded payload you use every time.  This is not required by any means but allows
-for some extra flexibility when using this request object directly.  The only difference is that you can pass 
+for some extra flexibility when using this request object directly.  The only difference is that you can pass
 in the request parameters instead of having to set them after you create the object.
 
 Given a sample request object like the following you will want to read the yaml into an ruby object:
@@ -131,18 +131,18 @@ And now use that data to create the Vra::RequestParameters to feed into the cata
 ```ruby
 # read in the request data
 yaml_data = YAML,load(data)
-# create a parameters array
+# create a parameters array, although this only works with VRA6, since VRA7 can have complex data
 parameters = yaml_data['requestData']['entries'].map {|item| [item['key'], item['value'].values].flatten }
 # We put the values in a array so we can easily explode the parameters using the splat operator later
-request_parans = Vra::RequestParameters.new
-# loop through each parameter and setting each parameter 
+request_params = Vra::RequestParameters.new
+# loop through each parameter and setting each parameter
 parameters.each {|p| request_params.set(*p)  # splat
 request_options = {
   cpus: 1,
   memory: 1024,
   requested_for: 'me@me.com',
   lease_days: 2,
-  additional_params: request_parans
+  additional_params: request_params
 }
 # create the request
 catalog_request = vra.catalog.request(blueprint, request_options)
