@@ -230,6 +230,19 @@ vra.resources.all_resources
 vra.requests.all_requests
 ```
 
+### Download VRA catalog templates
+It can be quite useful to download the catalog templates from your VRA server for future playback or inspection.  This
+can now be easily done with some helpful class methods.
+
+To get a json string representation of the catalog template you can use `Vra::CatalogItem.dump_template(client, catalog_id)`
+
+To dump the catalog template to a file instead of a string `Vra::CatalogItem.write_template(client, catalog_id)`.  This will create a file like `windows2012.json`.
+
+If you just want to dump all the templates you can use `Vra::CatalogItem.dump_templates(client)`.  This will create a directory named vra_templates
+with all the entitled templates for the current user.  
+
+There are additional options you can provide to these methods in order to customize output file names and directories, so please see the source code in lib/vra/catalog_item.rb
+
 ### Pagination
 
 vRA paginates API requests where lists of items are returned.  By default, this gem will ask vRA to provide items in groups of 20.  However, as reported in [Issue 10](https://github.com/chef-partners/vmware-vra-gem/issues/10), it appears vRA may have a pagination bug.  You can change the default page size from 20 to a value of your choice by passing in a `page_size` option when setting up the client:
