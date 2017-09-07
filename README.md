@@ -243,6 +243,30 @@ with all the entitled templates for the current user.
 
 There are additional options you can provide to these methods in order to customize output file names and directories, so please see the source code in lib/vra/catalog_item.rb
 
+### Supply custom VRA catalog template and create request
+If you previously had some custom templates already in JSON format you can now use those to create requests instead of setting
+a bunch of parameters.  This can be especially useful when your request has complex parameters or you have a bunch of templates
+that you want to create unique requests for.
+
+To use you can do something like:
+
+```ruby
+payload_file = '/tmp/windows_2012.json'  # must be in json format
+cr = Vra::CatalogRequest.request_from_payload(client, payload_file)
+cr.submit
+
+```
+
+If you already have a catalog request object you can still supply a custom payload by simply setting the template_payload property.
+Note this custom payload will be merged with the properties originally set when creating the catalog request object.
+
+```ruby
+cr = Vra::CatalogRequest.new(id, opts)
+cr.template_payload = File.read('/tmp/windows_2012.json')
+cr.submit
+
+```
+
 ### Pagination
 
 vRA paginates API requests where lists of items are returned.  By default, this gem will ask vRA to provide items in groups of 20.  However, as reported in [Issue 10](https://github.com/chef-partners/vmware-vra-gem/issues/10), it appears vRA may have a pagination bug.  You can change the default page size from 20 to a value of your choice by passing in a `page_size` option when setting up the client:

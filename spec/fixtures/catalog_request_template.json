@@ -1,0 +1,130 @@
+{
+  "type": "com.vmware.vcac.catalog.domain.request.CatalogItemProvisioningRequest",
+  "catalogItemId": "7c8275d6-1bd6-452a-97c4-d6c053e4baa4",
+  "requestedFor": "csummers@example.com",
+  "businessGroupId": "c0683388-6db2-4cb5-9033-b24d15ad3766",
+  "description": null,
+  "reasons": null,
+  "data": {
+    "superduper_key": "superduper_value",
+    "Existing_Network_1": {
+      "componentTypeId": "com.vmware.csp.component.cafe.composition",
+      "componentId": null,
+      "classId": "Blueprint.Component.Declaration",
+      "typeFilter": "LinuxDemo*Existing_Network_1",
+      "data": {
+        "_cluster": 1,
+        "_hasChildren": false,
+        "description": null,
+        "name": "Existing Network",
+        "networkname": "Existing Network",
+        "subnetmask": "255.255.255.0"
+      }
+    },
+    "vSphere-Linux": {
+      "componentTypeId": "com.vmware.csp.component.cafe.composition",
+      "componentId": null,
+      "classId": "Blueprint.Component.Declaration",
+      "typeFilter": "LinuxDemo*vSphere-Linux",
+      "data": {
+        "Cafe.Shim.VirtualMachine.MaxCost": 0,
+        "Cafe.Shim.VirtualMachine.MinCost": 0,
+        "_cluster": 1,
+        "_hasChildren": false,
+        "action": "FullClone",
+        "allow_storage_policies": false,
+        "archive_days": 0,
+        "blueprint_type": "1",
+        "cpu": 1,
+        "custom_properties": [],
+        "daily_cost": 0,
+        "datacenter_location": null,
+        "description": null,
+        "disks": [
+          {
+            "componentTypeId": "com.vmware.csp.iaas.blueprint.service",
+            "componentId": null,
+            "classId": "Infrastructure.Compute.Machine.MachineDisk",
+            "typeFilter": null,
+            "data": {
+              "capacity": 6,
+              "id": 0,
+              "initial_location": "",
+              "is_clone": false,
+              "label": "",
+              "storage_reservation_policy": "",
+              "userCreated": true,
+              "volumeId": 0
+            }
+          }
+        ],
+        "display_location": false,
+        "guest_customization_specification": null,
+        "lease_days": 0,
+        "machine_actions": [
+          "DESTROY",
+          "POWER_ON",
+          "CONNECT_RDP_SSH",
+          "REPROVISION",
+          "POWER_CYCLE",
+          "EXPIRE",
+          "SUSPEND",
+          "CONNECT_REMOTE_CONSOLE",
+          "CONNECT_USING_VDI"
+        ],
+        "machine_prefix": {
+          "componentId": null,
+          "classId": "Infrastructure.Compute.MachinePrefix",
+          "id": "Use group default"
+        },
+        "max_network_adapters": 0,
+        "max_per_user": 0,
+        "max_volumes": 60,
+        "memory": 4096,
+        "nics": [
+          {
+            "componentTypeId": "com.vmware.csp.iaas.blueprint.service",
+            "componentId": null,
+            "classId": "Infrastructure.Compute.Machine.Nic",
+            "typeFilter": null,
+            "data": {
+              "address": "",
+              "assignment_type": "DHCP",
+              "custom_properties": null,
+              "id": 0,
+              "load_balancing": "",
+              "network_profile": "Existing Network"
+            }
+          }
+        ],
+        "number_of_instances": 1,
+        "os_arch": "x86_64",
+        "os_distribution": null,
+        "os_type": "Linux",
+        "os_version": null,
+        "platform_name": "vsphere",
+        "platform_type": "virtual",
+        "property_groups": [
+          null
+        ],
+        "provisioning_workflow": {
+          "componentId": null,
+          "classId": "Infrastructure.Compute.ProvisioningWorkflow",
+          "id": "CloneWorkflow"
+        },
+        "reservation_policy": {
+          "componentId": null,
+          "classId": "Infrastructure.Reservation.Policy.ComputeResource",
+          "id": "None"
+        },
+        "security_groups": [],
+        "security_tags": [],
+        "source_machine": null,
+        "source_machine_external_snapshot": null,
+        "source_machine_name": "cbpcentos_63_x86",
+        "source_machine_vmsnapshot": null,
+        "storage": 6
+      }
+    }
+  }
+}
