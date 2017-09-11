@@ -190,18 +190,17 @@ module Vra
     def actions
       # if this Resource instance was created with data from a "all_resources" fetch,
       # it is likely missing operations data because the vRA API is not pleasant sometimes.
-      fetch_resource_data if resource_data["operations"].nil?
+      fetch_resource_data if resource_data["resourceData"]["entries"].nil?
 
-      resource_data["operations"]
+      resource_data["resourceData"]["entries"].each_with_object({}) do |pair, h|
+        h[pair["key"]] = pair["value"]
+      end
     end
 
     def action_id_by_name(name)
       return if actions.nil?
 
-      action = actions.find { |x| x["name"] == name }
-      return if action.nil?
-
-      action["id"]
+      action = actions.fetch(name)
     end
 
     def destroy
