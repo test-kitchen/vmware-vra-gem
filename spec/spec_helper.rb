@@ -20,4 +20,11 @@
 require "vra"
 require "webmock/rspec"
 
+def fixtures_dir
+  @fixtures_dir ||= begin
+    base_dir = File.dirname(__FILE__)
+    File.join(base_dir, "fixtures")
+  end
+end
+
 WebMock.disable_net_connect!(allow_localhost: true)

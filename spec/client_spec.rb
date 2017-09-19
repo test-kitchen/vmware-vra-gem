@@ -27,6 +27,14 @@ describe Vra::Client do
                     base_url: "https://vra.corp.local")
   end
 
+  let(:client_without_ssl) do
+    Vra::Client.new(username: "user@corp.local",
+                    password: "password",
+                    tenant: "tenant",
+                    base_url: "https://vra.corp.local",
+                    verify_ssl: false)
+  end
+
   describe "#initialize" do
     it "calls validate_client_options!" do
       client = Vra::Client.allocate
@@ -204,6 +212,23 @@ describe Vra::Client do
         .and_return(response)
 
       client.http_head(path)
+    end
+
+    it "calls Vra::Http.execute with verify_ssl false" do
+      response   = double("response")
+      path       = "/test"
+      full_url   = "https://vra.corp.local/test"
+      headers    = { "Accept" => "application/json", "Content-Type" => "application/json" }
+      verify_ssl = false
+
+      allow(client_without_ssl).to receive(:authorize!)
+      expect(Vra::Http).to receive(:execute).with(method: :head,
+                                                  url: full_url,
+                                                  headers: headers,
+                                                  verify_ssl: verify_ssl)
+                               .and_return(response)
+
+      client_without_ssl.http_head(path)
     end
 
     it "raises an HTTPNotFound on a 404 error" do

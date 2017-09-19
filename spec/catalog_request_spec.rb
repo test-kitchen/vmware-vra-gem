@@ -35,6 +35,50 @@ describe Vra::CatalogRequest do
                     base_url: "https://vra.corp.local")
   end
 
+  let(:catalog_item_payload) do
+    {
+        "@type" => "CatalogItem",
+        "id" => "9e98042e-5443-4082-afd5-ab5a32939bbc",
+        "version" => 2,
+        "name" => "CentOS 6.6",
+        "description" => "Blueprint for deploying a CentOS Linux development server",
+        "status" => "PUBLISHED",
+        "statusName" => "Published",
+        "organization" => {
+            "tenantRef" => "vsphere.local",
+            "tenantLabel" => "vsphere.local",
+            "subtenantRef" => "962ab3f9-858c-4483-a49f-fa97392c314b",
+            "subtenantLabel" => "catalog_subtenant",
+        },
+        "providerBinding" => {
+            "bindingId" => "33af5413-4f20-4b3b-8268-32edad434dfb",
+            "providerRef" => {
+                "id" => "c3b2bc30-47b0-454f-b57d-df02a7356fe6",
+                "label" => "iaas-service",
+            },
+        },
+        "requestedFor" => "me@me.com",
+        "data" => {
+            "_leaseDays" => "2",
+            "my_blueprint" => {
+            "componentTypeId" => "com.vmware.csp.component.cafe.composition",
+            "componentId" => nil,
+            "classId" => "Blueprint.Component.Declaration",
+            "typeFilter" => "",
+            "data" => {
+                "cpu" => "2",
+                "memory" => "4096",
+
+            },
+          },
+        },
+    }
+  end
+
+  let(:request_template_response) do
+    double("response", code: 200, body: catalog_item_payload.to_json)
+  end
+
   context "when no subtenant ID is provided" do
     let(:request) do
       client.catalog.request("catalog-12345",
@@ -152,58 +196,72 @@ describe Vra::CatalogRequest do
     end
 
     describe "#submit" do
+      let(:response) do
+        double("response", code: 200, body: { id: "12345678910" }.to_json)
+      end
+
       before do
         allow(request).to receive(:request_payload).and_return({})
-        response = double("response", location: "/requests/request-12345")
+        allow(client).to receive(:authorize!).and_return(true)
         allow(client).to receive(:http_post).with("/catalog-service/api/consumer/requests", "{}").and_return(response)
+        allow(client).to receive(:http_get).with("/catalog-service/api/consumer/entitledCatalogItems/catalog-12345/requests/template")
+                             .and_return(request_template_response)
+      end
+
+      it "calls http_get template" do
+        expect(client).to receive(:http_get).with("/catalog-service/api/consumer/entitledCatalogItems/catalog-12345/requests/template")
+                              .and_return(request_template_response)
+        allow(client).to receive(:http_post).with("/catalog-service/api/consumer/entitledCatalogItems/catalog-12345/requests", request.merged_payload).and_return(response)
+        request.submit
       end
 
       it "calls http_post" do
-        skip "broken and needs to be updated per changes -JJ 2017-04-14"
-        expect(client).to receive(:http_post).with("/catalog-service/api/consumer/requests", "{}")
-
+        expect(client).to receive(:http_post).with("/catalog-service/api/consumer/entitledCatalogItems/catalog-12345/requests", request.merged_payload).and_return(response)
         request.submit
       end
 
-      it "returns a Vra::Request object" do
-        skip "broken and needs to be updated per changes -JJ 2017-04-14"
-        expect(request.submit).to be_an_instance_of(Vra::Request)
+      it "returns Vra::Request" do
+        allow(client).to receive(:http_post).with("/catalog-service/api/consumer/entitledCatalogItems/catalog-12345/requests", request.merged_payload).and_return(response)
+        expect(request.submit).to be_a(Vra::Request)
       end
     end
   end
 
-  let(:client_without_ssl) do
-    Vra::Client.new(username: "user@corp.local",
-                    password: "password",
-                    tenant: "tenant",
-                    base_url: "https://vra.corp.local",
-                    verify_ssl: false)
-  end
-
-  context "when ssl is not verified by the client" do
+  describe "merges payload" do
     let(:request) do
-      client_without_ssl.catalog.request("catalog-12345",
-                                         cpus: 2,
-                                         memory: 1024,
-                                         lease_days: 15,
-                                         requested_for: "tester@corp.local",
-                                         notes: "test notes",
-                                         subtenant_id: "user_subtenant")
+      client.catalog.request("catalog-12345",
+                             cpus: 2,
+                             memory: 1024,
+                             lease_days: 15,
+                             requested_for: "tester@corp.local",
+                             notes: "test notes")
+    end
+    before(:each) do
+      allow(Vra::CatalogItem).to receive(:dump_template).and_return({ data2: { key2: "value2" } }.merge(catalog_item_payload).to_json)
     end
 
-    describe do
-      it "passes verify_false to Vra::Http" do
-        skip "broken and needs to be updated per changes -JJ 2017-04-14"
-        allow(request.client).to receive(:authorized?).and_return(true)
-        expect(request.client.instance_variable_get("@verify_ssl")).to eq false
-
-        expect(Vra::Http).to receive(:execute).and_wrap_original do |_http, *args|
-          expect(*args).to include(verify_ssl: false)
-          double(location: "auth/request_id")
-        end
-
-        request.submit
-      end
+    it "without catalog template" do
+      request.template_payload = { data2: { key1: "value1" } }.merge(catalog_item_payload).to_json
+      template = JSON.parse(request.merged_payload)
+      expect(template["data2"].keys).to_not include("key2")
     end
+
+    it "with catalog template" do
+      request.template_payload = nil
+      template = JSON.parse(request.merged_payload)
+      expect(template["data2"].keys).to include("key2")
+    end
+  end
+
+  it "creates request" do
+    payload_file = File.join(fixtures_dir, "catalog_request_template.json")
+    expect(Vra::CatalogRequest.request_from_payload(client, payload_file)).to be_a(Vra::CatalogRequest)
+  end
+
+  it "creates request with correct payload" do
+    payload_file = File.join(fixtures_dir, "catalog_request_template.json")
+    cr = Vra::CatalogRequest.request_from_payload(client, payload_file)
+    data = JSON.parse(cr.merged_payload)
+    expect(data["data"]["superduper_key"]).to eq("superduper_value")
   end
 end
