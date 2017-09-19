@@ -1,7 +1,21 @@
 # Change Log
 
-## [2.3.0](https://github.com/chef-partners/vmware-vra-gem/tree/2.3.0) (2017-06-30)
-[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.2.0...2.3.0)
+## [2.4.0](https://github.com/chef-partners/vmware-vra-gem/tree/2.4.0) (2017-09-19)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.3.0...2.4.0)
+
+**Closed issues:**
+
+- cpu and memory parameters request [\#52](https://github.com/chef-partners/vmware-vra-gem/issues/52)
+- Minor typo in README [\#51](https://github.com/chef-partners/vmware-vra-gem/issues/51)
+
+**Merged pull requests:**
+
+- Adds ability to supply template files to catalog request [\#57](https://github.com/chef-partners/vmware-vra-gem/pull/57) ([logicminds](https://github.com/logicminds))
+- Adds the ability to dump catalog templates via class methods [\#56](https://github.com/chef-partners/vmware-vra-gem/pull/56) ([logicminds](https://github.com/logicminds))
+- Symbols [\#53](https://github.com/chef-partners/vmware-vra-gem/pull/53) ([logicminds](https://github.com/logicminds))
+
+## [v2.3.0](https://github.com/chef-partners/vmware-vra-gem/tree/v2.3.0) (2017-06-30)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.2.0...v2.3.0)
 
 **Closed issues:**
 
