@@ -66,25 +66,12 @@ module Vra
       raise ArgumentError, "Unable to submit request, required param(s) missing => #{missing_params.join(', ')}" unless missing_params.empty?
     end
 
-    def merge_payload(payload)
-      hash_payload = JSON.parse(payload)
-      blueprint_name = hash_payload["data"].select { |_k, v| v.is_a?(Hash) }.keys.first
-
-      hash_payload["data"][blueprint_name]["data"]["cpu"] = @cpus
-      hash_payload["data"][blueprint_name]["data"]["memory"] = @memory
-      hash_payload["requestedFor"] = @requested_for
-      hash_payload["data"]["_leaseDays"] = @lease_days
-      hash_payload["description"] = @notes
-
-      JSON.pretty_generate(deep_merge(hash_payload, parameters))
-    end
-
     def submit
       validate_params!
 
       begin
         response = client.http_get("/catalog-service/api/consumer/entitledCatalogItems/#{@catalog_id}/requests/template")
-        post_response = client.http_post("/catalog-service/api/consumer/entitledCatalogItems/#{@catalog_id}/requests", merge_payload(response.body))
+        post_response = client.http_post("/catalog-service/api/consumer/entitledCatalogItems/#{@catalog_id}/requests", response.body)
       rescue Vra::Exception::HTTPError => e
         raise Vra::Exception::RequestError, "Unable to submit request: #{e.errors.join(', ')}"
       rescue
