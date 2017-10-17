@@ -80,19 +80,12 @@ module Vra
     end
 
     def resources
-      resources = []
-
       begin
         request_resources = client.http_get_paginated_array!("/catalog-service/api/consumer/requests/#{@id}/resources")
       rescue Vra::Exception::HTTPNotFound
         raise Vra::Exception::NotFound, "resources for request ID #{@id} are not found"
       end
-
-      request_resources.each do |resource|
-        resources << Vra::Resource.new(client, data: resource)
-      end
-
-      resources
+      request_resources.map { |resource| Vra::Resource.new(client, data: resource) }
     end
   end
 end
