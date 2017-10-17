@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
 # Copyright:: Copyright (c) 2015 Chef Software, Inc.
@@ -25,15 +26,16 @@ module Vra
       @client = client
     end
 
-    def all_resources
-      resources = []
-
+    # @return [Array[Vra::Resource]] - returns an array of all the resources owned by the user
+    # @param [Vra::Client]
+    def self.all(client)
       items = client.http_get_paginated_array!("/catalog-service/api/consumer/resources")
-      items.each do |item|
-        resources << Vra::Resource.new(client, data: item)
-      end
+      items.map { |item| Vra::Resource.new(client, data: item) }
+    end
 
-      resources
+    # @return [Array[Vra::Resource]] - returns an array of all the resources owned by the user
+    def all_resources
+      self.class.all(client)
     end
 
     def by_id(id)

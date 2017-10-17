@@ -67,6 +67,24 @@ describe Vra::Resource do
                                                "non_vm_resource.json")))
   end
 
+  describe "#by_name" do
+    it "can lookup and return resource" do
+      resource = Vra::Resource.allocate
+      allow(resource).to receive(:name).and_return("host1234")
+      name = resource.name
+      allow(Vra::Resources).to receive(:all).and_return([resource])
+      expect(Vra::Resource.by_name(client, name)).to eq(resource)
+    end
+
+    it "returns nil if nothing found" do
+      resource = Vra::Resource.allocate
+      allow(resource).to receive(:name).and_return("host1234")
+      name = "somethingelse1234"
+      allow(Vra::Resources).to receive(:all).and_return([resource])
+      expect(Vra::Resource.by_name(client, name)).to be nil
+    end
+  end
+
   describe "#initialize" do
     it "raises an error if no ID or resource data have been provided" do
       expect { Vra::Resource.new }.to raise_error(ArgumentError)

@@ -29,6 +29,17 @@ describe Vra::Resources do
 
   let(:resources) { Vra::Resources.new(client) }
 
+  it "#all" do
+    allow(client).to receive(:http_get_paginated_array!)
+    .with("/catalog-service/api/consumer/resources")
+    .and_return([ { "id" => "1" }, { "id" => "2" } ])
+
+    items = resources.all_resources
+
+    expect(items[0]).to be_an_instance_of(Vra::Resource)
+    expect(items[1]).to be_an_instance_of(Vra::Resource)
+  end
+
   describe "#all_resources" do
     it "calls the resources API endpoint" do
       expect(client).to receive(:http_get_paginated_array!)
