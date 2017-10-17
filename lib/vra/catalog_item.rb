@@ -118,7 +118,7 @@ module Vra
     # @param [Boolean] - set to true if you wish the file name to be the id of the catalog item
     # @return [Array[String]] - a array of all the files that were generated
     def self.dump_templates(client, dir_name = "vra_templates", use_id = false)
-      FileUtils.mkdir(dir_name) unless File.exist?(dir_name)
+      FileUtils.mkdir_p(dir_name) unless File.exist?(dir_name)
       client.catalog.entitled_items.map do |c|
         id = use_id ? c.id : c.name.tr(" ", "_")
         filename = File.join(dir_name, "#{id}.json").downcase
