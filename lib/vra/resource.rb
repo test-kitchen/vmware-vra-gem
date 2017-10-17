@@ -44,6 +44,15 @@ module Vra
       end
     end
 
+    # @param client [Vra::Client]
+    # @param name [String] - the hostname of the client you wish to lookup
+    # @preturn [Vra::Resource] - return nil if not found, otherwise the resource associated with the name
+    def self.by_name(client, name)
+      raise ArgumentError.new("name cannot be nil") if name.nil?
+      raise ArgumentError.new("client cannot be nil") if client.nil?
+      Resources.all.find { |r| r.name.downcase =~ /#{name.downcase}/ }
+    end
+
     def fetch_resource_data
       @resource_data = client.get_parsed("/catalog-service/api/consumer/resources/#{@id}")
     rescue Vra::Exception::HTTPNotFound
