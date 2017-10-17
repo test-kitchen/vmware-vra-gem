@@ -1,7 +1,18 @@
 # Change Log
 
-## [2.4.0](https://github.com/chef-partners/vmware-vra-gem/tree/2.4.0) (2017-09-19)
-[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.3.0...2.4.0)
+## [2.5.0](https://github.com/chef-partners/vmware-vra-gem/tree/2.5.0) (2017-10-17)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.4.0...2.5.0)
+
+**Closed issues:**
+
+- Use mkdir\_p when creating template directory [\#60](https://github.com/chef-partners/vmware-vra-gem/issues/60)
+
+**Merged pull requests:**
+
+- Adds ability to lookup resource by name [\#62](https://github.com/chef-partners/vmware-vra-gem/pull/62) ([logicminds](https://github.com/logicminds))
+
+## [v2.4.0](https://github.com/chef-partners/vmware-vra-gem/tree/v2.4.0) (2017-09-19)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.3.0...v2.4.0)
 
 **Closed issues:**
 
