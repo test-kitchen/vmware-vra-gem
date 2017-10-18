@@ -50,7 +50,7 @@ module Vra
     def self.by_name(client, name)
       raise ArgumentError.new("name cannot be nil") if name.nil?
       raise ArgumentError.new("client cannot be nil") if client.nil?
-      Resources.all.find { |r| r.name.downcase =~ /#{name.downcase}/ }
+      Resources.all(client).find { |r| r.name.downcase =~ /#{name.downcase}/ }
     end
 
     def fetch_resource_data

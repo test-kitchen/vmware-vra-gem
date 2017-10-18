@@ -72,7 +72,7 @@ describe Vra::Resource do
       resource = Vra::Resource.allocate
       allow(resource).to receive(:name).and_return("host1234")
       name = resource.name
-      allow(Vra::Resources).to receive(:all).and_return([resource])
+      expect(Vra::Resources).to receive(:all).with(client).and_return([resource])
       expect(Vra::Resource.by_name(client, name)).to eq(resource)
     end
 
@@ -80,7 +80,7 @@ describe Vra::Resource do
       resource = Vra::Resource.allocate
       allow(resource).to receive(:name).and_return("host1234")
       name = "somethingelse1234"
-      allow(Vra::Resources).to receive(:all).and_return([resource])
+      expect(Vra::Resources).to receive(:all).with(client).and_return([resource])
       expect(Vra::Resource.by_name(client, name)).to be nil
     end
   end
