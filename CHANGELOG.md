@@ -1,7 +1,14 @@
 # Change Log
 
-## [2.5.0](https://github.com/chef-partners/vmware-vra-gem/tree/2.5.0) (2017-10-17)
-[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.4.0...2.5.0)
+## [2.5.1](https://github.com/chef-partners/vmware-vra-gem/tree/2.5.1) (2017-10-19)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.5.0...2.5.1)
+
+**Merged pull requests:**
+
+- Fixes a bug with Resource.by\_name [\#63](https://github.com/chef-partners/vmware-vra-gem/pull/63) ([logicminds](https://github.com/logicminds))
+
+## [v2.5.0](https://github.com/chef-partners/vmware-vra-gem/tree/v2.5.0) (2017-10-17)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.4.0...v2.5.0)
 
 **Closed issues:**
 
