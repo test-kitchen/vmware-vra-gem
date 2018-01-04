@@ -38,5 +38,9 @@ module Vra
     def request(*args)
       Vra::CatalogRequest.new(@client, *args)
     end
+
+    def fetch_catalog_items(catalog_name)
+      client.http_get("/catalog-service/api/consumer/entitledCatalogItemViews?%24filter=name+eq+'#{catalog_name}'")
+    end
   end
 end
