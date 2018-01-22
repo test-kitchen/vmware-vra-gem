@@ -69,6 +69,13 @@ catalog_request = vra.catalog.request('a9cd6148-6e0b-4a80-ac47-f5255c52b43d', cp
 => #<Vra::CatalogRequest:0x00000003477c20 ... >
 ```
 
+To retrive catalog id from catalog name:
+
+```
+vra.catalog.fetch_catalog_items('my_catalog_name')
+=> #<Vra::CatalogRequest:0x00000004477c20 ... >  
+```
+
 vRA requires your sub-tenant (a.k.a. "business group") to be specified when requesting an item from the catalog. If the catalog item you are requesting is specifically created for a given business group, the gem will use that ID automatically without you needing to specify it.
 
 However, if there is no sub-tenant ID available for us to use, you will receive an error when you submit:

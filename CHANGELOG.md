@@ -1,5 +1,12 @@
 # Change Log
 
+## [2..5.2] (https://github.com/chef-partners/vmware-vra-gem/tree/2.5.2) (2018-01-04)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.5.1...2.5.2)
+
+**Enhanced:**
+
+- Added a method to retrive catalog id from  catalog name
+
 ## [2.5.1](https://github.com/chef-partners/vmware-vra-gem/tree/2.5.1) (2017-10-19)
 [Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.5.0...2.5.1)
 
