@@ -218,5 +218,10 @@ module Vra
     rescue URI::InvalidURIError
       false
     end
+
+    def fetch_subtenant_items(tenant, subtenant_name)
+      http_get("/identity/api/tenants/#{tenant}/subtenants?%24filter=name+eq+'#{subtenant_name}'")
+    end
+
   end
 end
