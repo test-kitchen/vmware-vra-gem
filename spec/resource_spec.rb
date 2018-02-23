@@ -339,18 +339,39 @@ describe Vra::Resource do
       end
 
       before do
-        stub_request(:post, "https://vra.corp.local/identity/api/tokens").
-          with(:body => authn_payload,
-               :headers => {"Accept"=>"application/json", "Content-Type"=>"application/json"}).
-         to_return(:status => 200, :body => '{"id":"12345"}', :headers => {})
+        stub_request(
+          :post,
+          "https://vra.corp.local/identity/api/tokens"
+        ).with(
+          :body => authn_payload,
+          :headers => { "Accept" => "application/json", "Content-Type" => "application/json" }
+        ).to_return(
+          :status => 200,
+          :body => '{"id":"12345"}',
+          :headers => {}
+        )
 
-       stub_request(:head, "https://vra.corp.local/identity/api/tokens/12345").
-         with(:headers => {"Accept" => "application/json", "Authorization" => "Bearer 12345", "Content-Type" => "application/json"}).
-         to_return(:status => 204, :body => "", :headers => {})
+        stub_request(
+          :head,
+          "https://vra.corp.local/identity/api/tokens/12345"
+        ).with(
+          :headers => { "Accept" => "application/json", "Authorization" => "Bearer 12345", "Content-Type" => "application/json" }
+        ).to_return(
+          :status => 204,
+          :body => "",
+          :headers => {}
+        )
 
-        stub_request(:get, "https://vra.corp.local/catalog-service/api/consumer/requests/bogus/resourceViews")
-          .with(headers: { "Accept" => "application/json", "Content-Type" => "application/json" })
-          .to_return(status: 200, body: resource_view_body, headers: {})
+        stub_request(
+          :get,
+          "https://vra.corp.local/catalog-service/api/consumer/requests/bogus/resourceViews"
+        ).with(
+          headers: { "Accept" => "application/json", "Content-Type" => "application/json" }
+        ).to_return(
+          status: 200,
+          body: resource_view_body,
+          headers: {}
+        )
       end
 
       context "with IP address in the second element" do
