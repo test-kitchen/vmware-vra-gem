@@ -333,19 +333,19 @@ describe Vra::Resource do
 
       let(:resource_view_body) do
         File.read(File.join(File.dirname(__FILE__),
-          'fixtures',
-          'resource',
-          'ip_address.txt'))
+          "fixtures",
+          "resource",
+          "ip_address.txt"))
       end
 
       before do
         stub_request(:post, "https://vra.corp.local/identity/api/tokens").
           with(:body => authn_payload,
-              :headers => {'Accept'=>'application/json', 'Content-Type'=>'application/json'}).
+               :headers => {"Accept"=>"application/json", "Content-Type"=>"application/json"}).
          to_return(:status => 200, :body => '{"id":"12345"}', :headers => {})
 
        stub_request(:head, "https://vra.corp.local/identity/api/tokens/12345").
-         with(:headers => {'Accept'=>'application/json', 'Authorization'=>'Bearer 12345', 'Content-Type'=>'application/json'}).
+         with(:headers => {"Accept" => "application/json", "Authorization" => "Bearer 12345", "Content-Type" => "application/json"}).
          to_return(:status => 204, :body => "", :headers => {})
 
         stub_request(:get, "https://vra.corp.local/catalog-service/api/consumer/requests/bogus/resourceViews")
@@ -353,22 +353,22 @@ describe Vra::Resource do
           .to_return(status: 200, body: resource_view_body, headers: {})
       end
 
-      context 'with IP address in the second element' do
+      context "with IP address in the second element" do
         it "returns the correct IP addresses" do
-          expect(resource.ip_addresses).to eq [ '172.16.20.147' ]
+          expect(resource.ip_addresses).to eq [ "172.16.20.147" ]
         end
       end
 
-      context 'with IP address in the third element' do
+      context "with IP address in the third element" do
         let(:resource_view_body) do
           File.read(File.join(File.dirname(__FILE__),
-            'fixtures',
-            'resource',
-            'ip_address_third_element.txt'))
+            "fixtures",
+            "resource",
+            "ip_address_third_element.txt"))
         end
 
         it "returns the correct IP addresses" do
-          expect(resource.ip_addresses).to eq [ '172.16.20.147' ]
+          expect(resource.ip_addresses).to eq [ "172.16.20.147" ]
         end
       end
 
