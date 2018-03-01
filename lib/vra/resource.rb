@@ -172,27 +172,24 @@ module Vra
 
       request_id = @resource_data["requestId"]
 
-      resource_views = @client.http_get("/catalog-service/api/consumer/requests/#{request_id}/resourceViews")
-
-      data_zero = JSON.parse(resource_views.body)["content"][0]["data"]["ip_address"]
-      data_one = JSON.parse(resource_views.body)["content"][1]["data"]["ip_address"]
-
       print "Waiting For vRA to collect the IP"
-      while (data_zero == "" || data_one == "") && (data_zero.nil? || data_one.nil?)
+
+      loop do
         resource_views = @client.http_get("/catalog-service/api/consumer/requests/#{request_id}/resourceViews")
-        data_zero = JSON.parse(resource_views.body)["content"][0]["data"]["ip_address"]
-        data_one = JSON.parse(resource_views.body)["content"][1]["data"]["ip_address"]
+
+        JSON.parse(resource_views.body)["content"].each do |content|
+          if content.has_key?("data") &&
+              !(content["data"]["ip_address"].nil? ||
+                content["data"]["ip_address"] == "")
+            addrs << content["data"]["ip_address"]
+          end
+        end
+
+        break unless addrs.empty?
+
         sleep 10
-        print "."
       end
 
-      ip_address = if JSON.parse(resource_views.body)["content"][0]["data"]["ip_address"].nil?
-                     JSON.parse(resource_views.body)["content"][1]["data"]["ip_address"]
-                   else
-                     JSON.parse(resource_views.body)["content"][0]["data"]["ip_address"]
-                   end
-
-      addrs << ip_address
       addrs
     end
 

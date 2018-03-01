@@ -1,6 +1,7 @@
 {
   "@type": "CatalogResource",
   "id": "31a7badc-6562-458d-84f3-ec58d74a6953",
+  "requestId": "bogus",
   "resourceTypeRef": {
     "id": "Infrastructure.Virtual",
     "label": "Virtual Machine"
