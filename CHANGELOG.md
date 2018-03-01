@@ -1,5 +1,12 @@
 # Change Log
 
+## [2..5.3] (https://github.com/chef-partners/vmware-vra-gem/tree/2.5.3) (2018-02-22)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.5.2...2.5.3)
+
+**Enhanced:**
+
+- Added a method to retrive subtenant id from  subtenant name
+
 ## [2..5.2] (https://github.com/chef-partners/vmware-vra-gem/tree/2.5.2) (2018-01-04)
 [Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.5.1...2.5.2)
 

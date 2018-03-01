@@ -78,7 +78,15 @@ vra.catalog.fetch_catalog_items('my_catalog_name')
 
 vRA requires your sub-tenant (a.k.a. "business group") to be specified when requesting an item from the catalog. If the catalog item you are requesting is specifically created for a given business group, the gem will use that ID automatically without you needing to specify it.
 
-However, if there is no sub-tenant ID available for us to use, you will receive an error when you submit:
+An easier option has been provided to end user to provide a friendly sub-tenant name instead of sub-tenant id, and the driver would take care of retrieving the sub-tenant id for the corresponding sub-tenant name. Tenant name is also required along with sub-tenant name to retrieve sub-tenant id. 
+
+To retrieve sub-tenant id from sub-tenant name:
+
+```
+vra.fetch_subtenant_items('my_tenant', 'my_subtenant_name')
+```
+
+However, if there is no sub-tenant ID or sub-tenant name available for us to use, you will receive an error when you submit:
 
 ```
 request = catalog_request.submit
