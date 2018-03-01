@@ -1,21 +1,27 @@
 # Change Log
 
-## [2..5.3] (https://github.com/chef-partners/vmware-vra-gem/tree/2.5.3) (2018-02-22)
-[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.5.2...2.5.3)
+## [v2.6.0](https://github.com/chef-partners/vmware-vra-gem/tree/v2.6.0)
 
-**Enhanced:**
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.5.2...v2.6.0)
 
-- Added a method to retrive subtenant id from  subtenant name
+**Closed issues:**
 
-## [2..5.2] (https://github.com/chef-partners/vmware-vra-gem/tree/2.5.2) (2018-01-04)
-[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.5.1...2.5.2)
+- undefined method `\[\]' for nil:NilClass if data for json content is of single entity [\#55](https://github.com/chef-partners/vmware-vra-gem/issues/55)
 
-**Enhanced:**
+**Merged pull requests:**
 
-- Added a method to retrive catalog id from  catalog name
+- Accept subtenant name as input in kitchen.yml [\#67](https://github.com/chef-partners/vmware-vra-gem/pull/67) ([vinuphilip](https://github.com/vinuphilip))
+- Lgustafson/fix 65 [\#66](https://github.com/chef-partners/vmware-vra-gem/pull/66) ([lgustafson](https://github.com/lgustafson))
 
-## [2.5.1](https://github.com/chef-partners/vmware-vra-gem/tree/2.5.1) (2017-10-19)
-[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.5.0...2.5.1)
+## [v2.5.2](https://github.com/chef-partners/vmware-vra-gem/tree/v2.5.2) (2018-01-22)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.5.1...v2.5.2)
+
+**Merged pull requests:**
+
+- Added a method to retrieve catalog id's from catalog name [\#64](https://github.com/chef-partners/vmware-vra-gem/pull/64) ([rupeshpatel88](https://github.com/rupeshpatel88))
+
+## [v2.5.1](https://github.com/chef-partners/vmware-vra-gem/tree/v2.5.1) (2017-10-19)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.5.0...v2.5.1)
 
 **Merged pull requests:**
 
