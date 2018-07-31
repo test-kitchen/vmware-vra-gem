@@ -1,7 +1,17 @@
 # Change Log
 
-## [v2.6.0](https://github.com/chef-partners/vmware-vra-gem/tree/v2.6.0)
+## [2.6.1](https://github.com/chef-partners/vmware-vra-gem/tree/2.6.1) (2018-07-31)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.6.0...2.6.1)
 
+**Closed issues:**
+
+- Vra::Resource\#ip\_addresses non-deterministically returns an empty array in error [\#65](https://github.com/chef-partners/vmware-vra-gem/issues/65)
+
+**Merged pull requests:**
+
+- Removed the deep merge [\#68](https://github.com/chef-partners/vmware-vra-gem/pull/68) ([jjasghar](https://github.com/jjasghar))
+
+## [v2.6.0](https://github.com/chef-partners/vmware-vra-gem/tree/v2.6.0) (2018-03-01)
 [Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.5.2...v2.6.0)
 
 **Closed issues:**
