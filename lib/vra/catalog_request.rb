@@ -20,7 +20,7 @@ require "vra/catalog_item"
 
 module Vra
   class CatalogRequest
-    attr_reader :catalog_id, :catalog_item, :client, :custom_fields
+    attr_reader :catalog_id, :catalog_item, :client, :custom_fields, :deep_merge
     attr_writer :subtenant_id
     attr_accessor :cpus, :memory, :requested_for, :lease_days, :notes, :template_payload
 
@@ -35,6 +35,7 @@ module Vra
       @subtenant_id      = opts[:subtenant_id]
       @additional_params = opts[:additional_params] || Vra::RequestParameters.new
       @catalog_item = Vra::CatalogItem.new(client, id: catalog_id)
+      @deep_merge        = client.instance_variable_get(:@deep_merge)
     end
 
     # @param payload_file [String] - A json payload that represents the catalog template you want to merge with this request
@@ -96,6 +97,7 @@ module Vra
       hash_payload["requestedFor"] = @requested_for
       hash_payload["data"]["_leaseDays"] = @lease_days
       hash_payload["description"] = @notes
+      JSON.pretty_generate(deep_merge(hash_payload, parameters))
     end
 
     # @return [String] - the current catalog template payload merged with the settings applied from this request
@@ -113,7 +115,11 @@ module Vra
       validate_params!
 
       begin
-        post_response = client.http_post("/catalog-service/api/consumer/entitledCatalogItems/#{@catalog_id}/requests", template_payload)
+        if @deep_merge
+          post_response = client.http_post("/catalog-service/api/consumer/entitledCatalogItems/#{@catalog_id}/requests", merge_payload)
+        else
+          post_response = client.http_post("/catalog-service/api/consumer/entitledCatalogItems/#{@catalog_id}/requests", template_payload)
+        end
       rescue Vra::Exception::HTTPError => e
         raise Vra::Exception::RequestError, "Unable to submit request: #{e.errors.join(', ')}"
       rescue
@@ -122,5 +128,22 @@ module Vra
       request_id = JSON.parse(post_response.body)["id"]
       Vra::Request.new(client, request_id)
     end
+
+    def deep_merge(first, second)
+      merger = proc do |key, v1, v2|
+        if Hash === v1 && Hash === v2
+          v1.merge(v2, &merger)
+        elsif Array === v1 && Array === v2
+          v1 | v2
+        elsif [:undefined, nil, :nil].include?(v2)
+          v1
+        else
+          v2
+        end
+      end
+      first.merge(second.to_h, &merger)
+    end
+
+    private :deep_merge
   end
 end

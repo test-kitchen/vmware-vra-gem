@@ -33,7 +33,7 @@ module Vra
       @verify_ssl   = opts.fetch(:verify_ssl, true)
       @bearer_token = PasswordMasker.new(nil)
       @page_size    = opts.fetch(:page_size, 20)
-
+      @deep_merge   = opts[:deep_merge]
       validate_client_options!
     end
 
