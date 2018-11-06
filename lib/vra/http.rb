@@ -55,6 +55,7 @@ module Vra
           get: Net::HTTP::Get,
           head: Net::HTTP::Head,
           post: Net::HTTP::Post,
+          delete: Net::HTTP::Delete
         }.fetch(method, nil)
 
         raise "Unknown HTTP method #{method}!" unless type

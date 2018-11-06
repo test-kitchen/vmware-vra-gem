@@ -187,6 +187,15 @@ module Vra
       response.body
     end
 
+    def http_delete(path, skip_auth = nil)
+      http_fetch(:delete, path, skip_auth)
+    end
+
+    def http_delete!(path)
+      response = http_delete(path)
+      response.body
+    end
+
     def raise_http_exception(caught_exception, path)
       raise unless caught_exception.respond_to?(:http_code)
 
