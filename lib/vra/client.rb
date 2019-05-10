@@ -71,7 +71,7 @@ module Vra
       {
         "username" => @username,
         "password" => @password.value,
-        "tenant"   => @tenant,
+        "tenant" => @tenant,
       }
     end
 

@@ -133,7 +133,7 @@ describe Vra::Client do
     payload = {
       "username" => "user@corp.local",
       "password" => "password",
-      "tenant"   => "tenant",
+      "tenant" => "tenant",
     }.to_json
 
     it "posts to the tokens API endpoint" do

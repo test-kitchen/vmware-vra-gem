@@ -327,7 +327,7 @@ describe Vra::Resource do
         {
           "username" => "user@corp.local",
           "password" => "password",
-          "tenant"   => "tenant",
+          "tenant" => "tenant",
         }.to_json
       end
 
@@ -343,23 +343,23 @@ describe Vra::Resource do
           :post,
           "https://vra.corp.local/identity/api/tokens"
         ).with(
-          :body => authn_payload,
-          :headers => { "Accept" => "application/json", "Content-Type" => "application/json" }
+          body: authn_payload,
+          headers: { "Accept" => "application/json", "Content-Type" => "application/json" }
         ).to_return(
-          :status => 200,
-          :body => '{"id":"12345"}',
-          :headers => {}
+          status: 200,
+          body: '{"id":"12345"}',
+          headers: {}
         )
 
         stub_request(
           :head,
           "https://vra.corp.local/identity/api/tokens/12345"
         ).with(
-          :headers => { "Accept" => "application/json", "Authorization" => "Bearer 12345", "Content-Type" => "application/json" }
+          headers: { "Accept" => "application/json", "Authorization" => "Bearer 12345", "Content-Type" => "application/json" }
         ).to_return(
-          :status => 204,
-          :body => "",
-          :headers => {}
+          status: 204,
+          body: "",
+          headers: {}
         )
 
         stub_request(

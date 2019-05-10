@@ -178,7 +178,7 @@ module Vra
         resource_views = @client.http_get("/catalog-service/api/consumer/requests/#{request_id}/resourceViews")
 
         JSON.parse(resource_views.body)["content"].each do |content|
-          if content.has_key?("data") &&
+          if content.key?("data") &&
               !(content["data"]["ip_address"].nil? ||
                 content["data"]["ip_address"] == "")
             addrs << content["data"]["ip_address"]
