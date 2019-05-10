@@ -21,8 +21,8 @@ require "vra/catalog_item"
 module Vra
   class CatalogRequest
     attr_reader :catalog_id, :catalog_item, :client, :custom_fields
-    attr_writer :subtenant_id
-    attr_accessor :cpus, :memory, :requested_for, :lease_days, :notes, :template_payload
+    attr_writer :subtenant_id, :template_payload
+    attr_accessor :cpus, :memory, :requested_for, :lease_days, :notes
 
     def initialize(client, catalog_id, opts = {})
       @client            = client
@@ -96,6 +96,8 @@ module Vra
       hash_payload["requestedFor"] = @requested_for
       hash_payload["data"]["_leaseDays"] = @lease_days
       hash_payload["description"] = @notes
+      hash_payload["data"][blueprint_name]["data"].merge!(parameters["data"]) unless parameters.empty?
+      hash_payload.to_json
     end
 
     # @return [String] - the current catalog template payload merged with the settings applied from this request
@@ -111,9 +113,8 @@ module Vra
     # @return [Vra::Request] - submits and returns the request, validating before hand
     def submit
       validate_params!
-
       begin
-        post_response = client.http_post("/catalog-service/api/consumer/entitledCatalogItems/#{@catalog_id}/requests", template_payload)
+        post_response = client.http_post("/catalog-service/api/consumer/entitledCatalogItems/#{@catalog_id}/requests", merged_payload)
       rescue Vra::Exception::HTTPError => e
         raise Vra::Exception::RequestError, "Unable to submit request: #{e.errors.join(', ')}"
       rescue
