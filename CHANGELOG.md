@@ -1,6 +1,17 @@
 # Change Log
 
-## [2.6.1](https://github.com/chef-partners/vmware-vra-gem/tree/2.6.1) (2018-07-31)
+## [2.7.0](https://github.com/chef-partners/vmware-vra-gem/tree/v2.7.0) (2019-05-10)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.6.1...v2.7.0)
+
+**Closed issues:**
+
+- Extra Parameters Not Being Sent to vRA [\#73](https://github.com/chef-partners/vmware-vra-gem/issues/73)
+
+**Merged pull requests:**
+
+- vRA7 multiple fixes for nested, non-nested and merged parameters for a Blueprint [\#74](https://github.com/chef-partners/vmware-vra-gem/pull/74) ([stuartpreston](https://github.com/stuartpreston))
+
+## [2.6.1](https://github.com/chef-partners/vmware-vra-gem/tree/v2.6.1) (2018-07-31)
 [Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.6.0...2.6.1)
 
 **Closed issues:**
