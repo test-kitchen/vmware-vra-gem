@@ -51,7 +51,7 @@ module Vra
 
     def set(key, type, value)
       if key.to_s.include? "~"
-        split_key = key.split("~")
+        split_key = key.to_s.split("~")
         parent = nil
         split_key.each_with_index do |item, index|
           if index == 0
@@ -135,7 +135,6 @@ module Vra
 
     def to_vra
       hash = {}
-
       if @children.count > 0
         hash[@key] = {}
 
@@ -148,7 +147,7 @@ module Vra
         hash[@key] = format_value
       end
 
-      hash
+      hash.each_with_object({}) { |(key, value), h| h[key.to_s] = value }
     end
 
     def format_value
