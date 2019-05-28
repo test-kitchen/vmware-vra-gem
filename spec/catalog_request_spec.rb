@@ -136,15 +136,18 @@ describe Vra::CatalogRequest do
       it "properly handles additional parameters" do
         request.set_parameter("param1", "string", "my string")
         request.set_parameter("param2", "integer", "2468")
+        request.set_parameter("param3", "boolean", "true")
 
         template = File.read("spec/fixtures/resource/catalog_request.json")
         payload = JSON.parse(request.merge_payload(template))
-        param1 = payload["data"]["my_blueprint"]["data"]["param1"]
-        param2 = payload["data"]["my_blueprint"]["data"]["param2"]
+        param1 = payload["data"]["param1"]
+        param2 = payload["data"]["param2"]
+        param3 = payload["data"]["param3"]
         expect(param1).to be_a(String)
         expect(param2).to be_a(Integer)
         expect(param1).to eq "my string"
         expect(param2).to eq 2468
+        expect(param3).to be_truthy
       end
 
       it "properly handles additional nested parameters" do
@@ -153,8 +156,8 @@ describe Vra::CatalogRequest do
 
         template = File.read("spec/fixtures/resource/catalog_request.json")
         payload = JSON.parse(request.merge_payload(template))
-        param1 = payload["data"]["my_blueprint"]["data"]["BP1"]["data"]["param1"]
-        param2 = payload["data"]["my_blueprint"]["data"]["BP1"]["data"]["BP2"]["data"]["param2"]
+        param1 = payload["data"]["BP1"]["data"]["param1"]
+        param2 = payload["data"]["BP1"]["data"]["BP2"]["data"]["param2"]
         expect(param1).to be_a(String)
         expect(param2).to be_a(Integer)
         expect(param1).to eq "my string"
@@ -183,8 +186,8 @@ describe Vra::CatalogRequest do
 
         template = File.read("spec/fixtures/resource/catalog_request.json")
         payload = JSON.parse(request.merge_payload(template))
-        param1 = payload["data"]["my_blueprint"]["data"]["BP1"]["data"]["param1"]
-        param2 = payload["data"]["my_blueprint"]["data"]["BP1"]["data"]["BP2"]["data"]["param2"]
+        param1 = payload["data"]["BP1"]["data"]["param1"]
+        param2 = payload["data"]["BP1"]["data"]["BP2"]["data"]["param2"]
 
         expect(param1).to be_a(String)
         expect(param2).to be_a(Integer)

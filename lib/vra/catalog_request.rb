@@ -18,6 +18,13 @@
 #
 require "vra/catalog_item"
 
+class ::Hash
+  def deep_merge(second)
+    merger = proc { |key, v1, v2| Hash === v1 && Hash === v2 ? v1.merge(v2, &merger) : v2 }
+    merge(second, &merger)
+  end
+end
+
 module Vra
   class CatalogRequest
     attr_reader :catalog_id, :catalog_item, :client, :custom_fields
@@ -96,7 +103,7 @@ module Vra
       hash_payload["requestedFor"] = @requested_for
       hash_payload["data"]["_leaseDays"] = @lease_days
       hash_payload["description"] = @notes
-      hash_payload["data"][blueprint_name]["data"].merge!(parameters["data"]) unless parameters.empty?
+      hash_payload["data"] = hash_payload["data"].deep_merge(parameters["data"]) unless parameters.empty?
       hash_payload.to_json
     end
 

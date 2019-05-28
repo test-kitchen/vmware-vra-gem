@@ -156,6 +156,8 @@ module Vra
         @value.to_i
       when "string"
         @value
+      when "boolean"
+        @value.to_s == "true"
       else
         @value
       end
