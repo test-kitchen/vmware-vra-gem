@@ -1,5 +1,16 @@
 # Change Log
 
+## [2.7.1](https://github.com/chef-partners/vmware-vra-gem/tree/v2.7.1) (2019-05-28)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.7.0...v2.7.1)
+
+**Closed issues:**
+
+- Some Extra Parameters are not passing through to VRA [\#75](https://github.com/chef-partners/vmware-vra-gem/issues/75)
+
+**Merged pull requests:**
+
+- Add support for boolean vRA parameters, fix deep merge, add tracing [\#76](https://github.com/chef-partners/vmware-vra-gem/pull/76) ([stuartpreston](https://github.com/stuartpreston))
+
 ## [2.7.0](https://github.com/chef-partners/vmware-vra-gem/tree/v2.7.0) (2019-05-10)
 [Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.6.1...v2.7.0)
 

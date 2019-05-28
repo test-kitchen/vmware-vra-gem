@@ -296,6 +296,20 @@ vra = Vra::Client.new(username: 'devmgr@corp.local', password: 'mypassword', ten
 client.page_size = 100
 ```
 
+### Debugging
+
+To aid diagnosis of deep API issues, set the following environment variable to enable logging of all API requests. Note that this will include requests to retrieve the bearer token.
+
+MacOS/Linux:
+```ruby
+export VRA_HTTP_TRACE=1
+```
+
+Windows:
+```powershell
+$env:VRA_HTTP_TRACE=1
+```
+
 ## License and Authors
 
 Author:: Chef Partner Engineering (<partnereng@chef.io>)
