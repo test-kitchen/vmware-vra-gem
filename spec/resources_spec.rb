@@ -31,8 +31,8 @@ describe Vra::Resources do
 
   it "#all" do
     allow(client).to receive(:http_get_paginated_array!)
-    .with("/catalog-service/api/consumer/resources")
-    .and_return([ { "id" => "1" }, { "id" => "2" } ])
+      .with("/catalog-service/api/consumer/resources")
+      .and_return([ { "id" => "1" }, { "id" => "2" } ])
 
     items = resources.all_resources
 

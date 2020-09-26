@@ -86,11 +86,11 @@ module Vra
 
     def validate_params!
       missing_params = []
-      [ :catalog_id, :cpus, :memory, :requested_for, :subtenant_id ].each do |param|
+      %i{catalog_id cpus memory requested_for subtenant_id }.each do |param|
         missing_params << param.to_s if send(param).nil?
       end
 
-      raise ArgumentError, "Unable to submit request, required param(s) missing => #{missing_params.join(', ')}" unless missing_params.empty?
+      raise ArgumentError, "Unable to submit request, required param(s) missing => #{missing_params.join(", ")}" unless missing_params.empty?
     end
 
     # @return [String] - the current catalog template payload merged with the settings applied from this request
@@ -123,7 +123,7 @@ module Vra
       begin
         post_response = client.http_post("/catalog-service/api/consumer/entitledCatalogItems/#{@catalog_id}/requests", merged_payload)
       rescue Vra::Exception::HTTPError => e
-        raise Vra::Exception::RequestError, "Unable to submit request: #{e.errors.join(', ')}"
+        raise Vra::Exception::RequestError, "Unable to submit request: #{e.errors.join(", ")}"
       rescue
         raise
       end

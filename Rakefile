@@ -20,4 +20,4 @@ rescue LoadError
   puts "github_changelog_generator is not available. gem install github_changelog_generator to generate changelogs"
 end
 
-task default: [ :spec, :rubocop ]
+task default: %i{spec rubocop}

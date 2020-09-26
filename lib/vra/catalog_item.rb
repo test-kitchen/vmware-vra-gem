@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-require "ffi_yajl"
+require "ffi_yajl" unless defined?(FFI_Yajl)
 require "vra/catalog"
 
 module Vra
@@ -107,7 +107,7 @@ module Vra
         data = JSON.parse(contents)
         pretty_contents = JSON.pretty_generate(data)
         File.write(filename, pretty_contents)
-        return filename
+        filename
       rescue Vra::Exception::HTTPError => e
         raise e
       end
