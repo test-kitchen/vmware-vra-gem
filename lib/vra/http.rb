@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require "net/http"
-require "openssl"
+require "net/http" unless defined?(Net::HTTP)
+require "openssl" unless defined?(OpenSSL)
 
 module Vra
   module Http
@@ -14,6 +14,7 @@ module Vra
         puts "<<<<< #{JSON.parse(response.body).to_json}" unless response.body.nil?
       end
       raise error(response) unless response.success?
+
       response
     end
 
@@ -29,7 +30,7 @@ module Vra
       end
 
       def redirectable?
-        [:get, :head].include?(params[:method])
+        %i{get head}.include?(params[:method])
       end
 
       def redirect_to(location)
@@ -75,6 +76,7 @@ module Vra
 
       def verify_ssl?
         return true if params[:verify_ssl].nil?
+
         params[:verify_ssl]
       end
     end
@@ -89,6 +91,7 @@ module Vra
       def forward(request)
         if redirect?
           raise Http.error(self) unless request.redirectable?
+
           request.redirect_to(location)
         elsif see_other?
           request.see_other(location)

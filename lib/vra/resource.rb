@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-require "ffi_yajl"
+require "ffi_yajl" unless defined?(FFI_Yajl)
 
 module Vra
   class Resource
@@ -50,6 +50,7 @@ module Vra
     def self.by_name(client, name)
       raise ArgumentError.new("name cannot be nil") if name.nil?
       raise ArgumentError.new("client cannot be nil") if client.nil?
+
       Resources.all(client).find { |r| r.name.downcase =~ /#{name.downcase}/ }
     end
 

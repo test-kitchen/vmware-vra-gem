@@ -226,7 +226,7 @@ describe Vra::Client do
                                                   url: full_url,
                                                   headers: headers,
                                                   verify_ssl: verify_ssl)
-                               .and_return(response)
+        .and_return(response)
 
       client_without_ssl.http_head(path)
     end
@@ -399,7 +399,7 @@ describe Vra::Client do
 
         unverified_client.http_post("/path", "payload")
 
-        [:head, :get].each do |method|
+        %i{head get}.each do |method|
           unverified_client.http_fetch(method, "/test", true)
         end
       end

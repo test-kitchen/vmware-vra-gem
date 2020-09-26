@@ -206,12 +206,12 @@ describe Vra::CatalogRequest do
         allow(client).to receive(:authorize!).and_return(true)
         allow(client).to receive(:http_post).with("/catalog-service/api/consumer/requests", "{}").and_return(response)
         allow(client).to receive(:http_get).with("/catalog-service/api/consumer/entitledCatalogItems/catalog-12345/requests/template")
-                             .and_return(request_template_response)
+          .and_return(request_template_response)
       end
 
       it "calls http_get template" do
         expect(client).to receive(:http_get).with("/catalog-service/api/consumer/entitledCatalogItems/catalog-12345/requests/template")
-                              .and_return(request_template_response)
+          .and_return(request_template_response)
         allow(client).to receive(:http_post).with("/catalog-service/api/consumer/entitledCatalogItems/catalog-12345/requests", request.merged_payload).and_return(response)
         request.submit
       end

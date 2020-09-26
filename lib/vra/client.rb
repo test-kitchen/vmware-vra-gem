@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-require "ffi_yajl"
+require "ffi_yajl" unless defined?(FFI_Yajl)
 require "passwordmasker"
 require "vra/http"
 
@@ -154,6 +154,7 @@ module Vra
         items += response["content"]
 
         break if page >= response["metadata"]["totalPages"]
+
         page += 1
       end
 

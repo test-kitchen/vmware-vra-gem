@@ -117,7 +117,7 @@ describe Vra::Http do
 
     context "when redirected" do
       [301, 302, 307].each do |status|
-        [:get, :head].each do |method|
+        %i{get head}.each do |method|
           it "follows #{status} redirected #{method.to_s.upcase} requests" do
             stub_request(method, "http://test.local")
               .to_return(status: [status, "redirect"],
@@ -140,7 +140,7 @@ describe Vra::Http do
         end
       end
 
-      [:head, :post].each do |method|
+      %i{head post}.each do |method|
         it "converts #{method.to_s.upcase} to GET on 303 redirect" do
           stub_request(method, "http://test.local")
             .to_return(status: [303, "See Other"],
