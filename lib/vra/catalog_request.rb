@@ -29,7 +29,7 @@ module Vra
   class CatalogRequest
     attr_reader :catalog_id, :catalog_item, :client, :custom_fields
     attr_writer :subtenant_id, :template_payload
-    attr_accessor :cpus, :memory, :shirt_size,  :requested_for, :lease_days, :notes
+    attr_accessor :cpus, :memory, :shirt_size, :requested_for, :lease_days, :notes
 
     def initialize(client, catalog_id, opts = {})
       @client            = client

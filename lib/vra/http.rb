@@ -10,7 +10,7 @@ module Vra
       response = response.forward(request).call until response.final?
       if ENV["VRA_HTTP_TRACE"]
         puts "#{request.params[:method].upcase} #{request.params[:url]}" unless request.params.nil?
-        puts ">>>>> #{JSON.parse(request.params[:payload]).to_json.gsub(/\"password\":\"(.+)\",/,'"password":"********",' )}" unless request.params[:payload].nil?
+        puts ">>>>> #{JSON.parse(request.params[:payload]).to_json.gsub(/\"password\":\"(.+)\",/, '"password":"********",' )}" unless request.params[:payload].nil?
         puts "<<<<< #{JSON.parse(response.body).to_json}" unless response.body.nil?
       end
       raise error(response) unless response.success?
