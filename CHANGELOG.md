@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.7.2](https://github.com/chef-partners/vmware-vra-gem/tree/v2.7.2) (2020-09-09)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.7.1...v2.7.2)
+
+- Added an extra option to handle shirt size parameter
+- Masking user credentials(password) in debug mode
+
 ## [2.7.1](https://github.com/chef-partners/vmware-vra-gem/tree/v2.7.1) (2019-05-28)
 [Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.7.0...v2.7.1)
 

@@ -29,13 +29,14 @@ module Vra
   class CatalogRequest
     attr_reader :catalog_id, :catalog_item, :client, :custom_fields
     attr_writer :subtenant_id, :template_payload
-    attr_accessor :cpus, :memory, :requested_for, :lease_days, :notes
+    attr_accessor :cpus, :memory, :shirt_size,  :requested_for, :lease_days, :notes
 
     def initialize(client, catalog_id, opts = {})
       @client            = client
       @catalog_id        = catalog_id
       @cpus              = opts[:cpus]
       @memory            = opts[:memory]
+      @shirt_size        = opts[:shirt_size]
       @requested_for     = opts[:requested_for]
       @lease_days        = opts[:lease_days]
       @notes             = opts[:notes]
@@ -55,6 +56,7 @@ module Vra
       opts = {}
       opts[:cpus] = blueprint_data["data"]["cpu"]
       opts[:memory] = blueprint_data["data"]["memory"]
+      opts[:shirt_size] = blueprint_data["data"]["size"]
       opts[:requested_for] = hash_payload["requestedFor"]
       opts[:lease_days] = blueprint_data.fetch("leaseDays", nil) || hash_payload["data"].fetch("_lease_days", 1)
       opts[:description] = hash_payload["description"]
@@ -100,6 +102,7 @@ module Vra
       blueprint_name = hash_payload["data"].select { |_k, v| v.is_a?(Hash) }.keys.first
       hash_payload["data"][blueprint_name]["data"]["cpu"] = @cpus
       hash_payload["data"][blueprint_name]["data"]["memory"] = @memory
+      hash_payload["data"][blueprint_name]["data"]["size"] = @shirt_size
       hash_payload["requestedFor"] = @requested_for
       hash_payload["data"]["_leaseDays"] = @lease_days
       hash_payload["description"] = @notes

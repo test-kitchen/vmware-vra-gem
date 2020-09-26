@@ -162,6 +162,7 @@ request_options = {
 # create the request
 catalog_request = vra.catalog.request(blueprint, request_options)
 ```
+In the above option instead of cpus and memory, shirt_size can be used as well if the blueprint has shirt size option enabled. e.g. of shirt size can be like value.small, value.medium etc, 
 
 Now, submit your request!  The client will return a new "Request" object you can use to query for status.
 
