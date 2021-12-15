@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 #
-# Author:: Chef Partner Engineering (<partnereng@chef.io>)
+# Author:: Ashique Saidalavi (<ashique.saidalavi@progress.com>)
 # Copyright:: Copyright (c) 2015 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
@@ -16,26 +16,41 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 module Vra
-  class Requests
-    def initialize(client)
-      @client = client
+  # Class that represents the Catalog Type
+  class CatalogType < Vra::CatalogBase
+    INDEX_URL = '/catalog/api/types'
+
+    def initialize(client, opts)
+      super
+      validate!
+      fetch_data
     end
 
-    def all_requests
-      requests = []
-
-      items = @client.http_get_paginated_array!("/catalog-service/api/consumer/requests")
-      items.each do |item|
-        requests << Vra::Request.new(@client, item["id"])
-      end
-
-      requests
+    def name
+      @data['name']
     end
 
-    def by_id(id)
-      Vra::Request.new(@client, id)
+    def base_url
+      @data['baseUrl']
+    end
+
+    def config_schema
+      @data['configSchema']
+    end
+
+    def icon_id
+      @data['iconId']
+    end
+
+    private
+
+    def fetch_data
+      @id = @data['id'] && return unless @data.nil?
+
+      @data = client.get_parsed("/catalog/api/types/#{id}")
+    rescue Vra::Exception::HTTPNotFound
+      raise Vra::Exception::NotFound, "catalog type ID #{id} does not exist"
     end
   end
 end

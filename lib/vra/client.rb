@@ -17,22 +17,23 @@
 # limitations under the License.
 #
 
-require "ffi_yajl" unless defined?(FFI_Yajl)
-require "passwordmasker"
-require "vra/http"
+require 'ffi_yajl' unless defined?(FFI_Yajl)
+require 'passwordmasker'
+require 'vra/http'
 
 module Vra
   class Client
     attr_accessor :page_size
 
     def initialize(opts)
-      @base_url     = opts[:base_url]
-      @username     = opts[:username]
-      @password     = PasswordMasker.new(opts[:password])
-      @tenant       = opts[:tenant]
-      @verify_ssl   = opts.fetch(:verify_ssl, true)
-      @bearer_token = PasswordMasker.new(nil)
-      @page_size    = opts.fetch(:page_size, 20)
+      @base_url      = opts[:base_url]
+      @username      = opts[:username]
+      @password      = PasswordMasker.new(opts[:password])
+      @tenant        = opts[:tenant]
+      @verify_ssl    = opts.fetch(:verify_ssl, true)
+      @refresh_token = PasswordMasker.new(nil)
+      @access_token  = PasswordMasker.new(nil)
+      @page_size     = opts.fetch(:page_size, 20)
 
       validate_client_options!
     end
@@ -59,55 +60,65 @@ module Vra
     # client methods
     #
 
-    def bearer_token
-      @bearer_token.value
+    def access_token
+      @access_token.value
     end
 
-    def bearer_token=(value)
-      @bearer_token.value = value
+    def refresh_token
+      @refresh_token.value
     end
 
-    def bearer_token_request_body
+    def access_token=(value)
+      @access_token.value = value
+    end
+
+    def refresh_token=(value)
+      puts "inside the setter method"
+      @refresh_token.value = value
+    end
+
+    def token_params
       {
-        "username" => @username,
-        "password" => @password.value,
-        "tenant" => @tenant,
+        'username': @username,
+        'password': @password.value,
+        'tenant': @tenant
       }
     end
 
     def request_headers
-      headers = {}
-      headers["Accept"]        = "application/json"
-      headers["Content-Type"]  = "application/json"
-      headers["Authorization"] = "Bearer #{@bearer_token.value}" unless @bearer_token.value.nil?
+      headers                   = {}
+      headers['Accept']         = 'application/json'
+      headers['Content-Type']   = 'application/json'
+      headers['csp-auth-token'] = @access_token.value unless @access_token.value.nil?
+
       headers
     end
 
     def authorize!
-      generate_bearer_token unless authorized?
+      generate_access_token unless authorized?
 
-      raise Vra::Exception::Unauthorized, "Unable to authorize against vRA" unless authorized?
+      raise Vra::Exception::Unauthorized, 'Unable to authorize against vRA' unless authorized?
     end
 
     def authorized?
-      return false if @bearer_token.value.nil?
+      return false if @access_token.value.nil?
 
-      response = http_head("/identity/api/tokens/#{@bearer_token.value}", :skip_auth)
-      response.success_no_content?
+      response = http_head('/csp/gateway/am/api/loggedin/user/orgs', :skip_auth)
+      response.success?
     end
 
-    def generate_bearer_token
-      @bearer_token.value = nil
+    def generate_access_token
+      @access_token.value = nil
       validate_client_options!
 
-      response = http_post("/identity/api/tokens",
-                           FFI_Yajl::Encoder.encode(bearer_token_request_body),
+      response = http_post('/csp/gateway/am/api/login?access_token',
+                           FFI_Yajl::Encoder.encode(token_params),
                            :skip_auth)
-      unless response.success_ok?
-        raise Vra::Exception::Unauthorized, "Unable to get bearer token: #{response.body}"
-      end
+      raise Vra::Exception::Unauthorized, "Unable to get bearer token: #{response.body}" unless response.success_ok?
 
-      @bearer_token.value = FFI_Yajl::Parser.parse(response.body)["id"]
+      response_body = FFI_Yajl::Parser.parse(response.body)
+      @access_token.value = response_body['access_token']
+      @refresh_token.value = response_body['refresh_token']
     end
 
     def full_url(path)
@@ -144,18 +155,18 @@ module Vra
       FFI_Yajl::Parser.parse(http_get!(path))
     end
 
-    def http_get_paginated_array!(path)
+    def http_get_paginated_array!(path, filter = nil)
       items = []
-      page = 1
-      base_path = path + "?limit=#{page_size}"
+      page = 0
+      base_path = path + "?$top=#{page_size}"
+      base_path += "&#{filter}" if filter
 
       loop do
-        response = get_parsed("#{base_path}&page=#{page}")
+        response = get_parsed("#{base_path}&$skip=#{page * page_size}")
         items += response["content"]
 
-        break if page >= response["metadata"]["totalPages"]
-
         page += 1
+        break if page >= response["totalPages"]
       end
 
       if items.uniq!

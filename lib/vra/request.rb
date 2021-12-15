@@ -17,16 +17,16 @@
 # limitations under the License.
 #
 
-require "ffi_yajl" unless defined?(FFI_Yajl)
-
 module Vra
+  # class to represent the Deployment request
   class Request
     attr_reader :client, :id
-    def initialize(client, id)
-      @client = client
-      @id     = id
 
-      @request_data       = nil
+    def initialize(client, opts)
+      @client = client
+      @id     = opts[:id]
+
+      @request_data       = opts[:data]
       @status             = nil
       @completion_state   = nil
       @completion_details = nil
@@ -50,7 +50,7 @@ module Vra
       refresh_if_empty
       return if request_empty?
 
-      @request_data["phase"]
+      @request_data['status']
     end
 
     def completed?
@@ -58,34 +58,11 @@ module Vra
     end
 
     def successful?
-      status == "SUCCESSFUL"
+      status == 'SUCCESSFUL'
     end
 
     def failed?
-      status == "FAILED"
-    end
-
-    def completion_state
-      refresh_if_empty
-      return if request_empty?
-
-      @request_data["requestCompletion"]["requestCompletionState"]
-    end
-
-    def completion_details
-      refresh_if_empty
-      return if request_empty?
-
-      @request_data["requestCompletion"]["completionDetails"]
-    end
-
-    def resources
-      begin
-        request_resources = client.http_get_paginated_array!("/catalog-service/api/consumer/requests/#{@id}/resources")
-      rescue Vra::Exception::HTTPNotFound
-        raise Vra::Exception::NotFound, "resources for request ID #{@id} are not found"
-      end
-      request_resources.map { |resource| Vra::Resource.new(client, data: resource) }
+      status == 'FAILED'
     end
   end
 end

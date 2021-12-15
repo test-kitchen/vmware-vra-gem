@@ -16,7 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-require "vra/catalog_item"
+#TODO: This class is deprecated, will be removed soon
+
+require 'vra/catalog_item'
 
 class ::Hash
   def deep_merge(second)
