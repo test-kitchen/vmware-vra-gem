@@ -50,7 +50,7 @@ module Vra
     end
 
     def request(*args)
-      Vra::CatalogRequest.new(@client, *args)
+      Vra::DeploymentRequest.new(@client, *args)
     end
 
     def fetch_catalog_items(catalog_name)

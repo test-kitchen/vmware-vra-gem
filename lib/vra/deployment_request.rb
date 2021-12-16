@@ -23,10 +23,10 @@ module Vra
   class DeploymentRequest
     attr_reader :catalog_id
 
-    def initialize(client, catalog_id, opts)
+    def initialize(client, catalog_id, opts = {})
       @client     = client
       @catalog_id = catalog_id
-      validate!
+      validate!(opts)
 
       @image_mapping  = opts[:image_mapping]
       @name           = opts[:name]
@@ -45,8 +45,8 @@ module Vra
         raise e
       end
 
-      request_id = FFI_Yajl::Parser.parse(response.body)['id']
-      Vra::Deployment.new(client, request_id)
+      request_id = FFI_Yajl::Parser.parse(response)[0]['deploymentId']
+      Vra::Deployment.new(client, id: request_id)
     end
 
     private
@@ -55,7 +55,7 @@ module Vra
                 :flavor_mapping, :project_id, :version,
                 :count
 
-    def validate!
+    def validate!(opts)
       missing_params = []
       %i[image_mapping flavor_mapping name project_id version].each do |arg|
         missing_params << arg unless opts.key?(arg)

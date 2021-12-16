@@ -26,7 +26,7 @@ module Vra
 
     attr_reader :id
 
-    def initialize(client, opts)
+    def initialize(client, opts = {})
       @client = client
       @id     = opts[:id]
       @data   = opts[:data]
@@ -87,18 +87,18 @@ module Vra
       response['content'].map! { |x| Vra::Request.new(client, id: x['id'], data: x) }
     end
 
+    def refresh
+      @data = client.get_parsed("/deployment/api/deployments/#{id}")
+    rescue Vra::Exception::HTTPNotFound
+      raise Vra::Exception::NotFound, "deployment with ID #{id} does not exist"
+    end
+
     private
 
     attr_reader :client, :data
 
     def validate!
       raise ArgumentError, 'must supply id or data hash' if @id.nil? && @data.nil?
-    end
-
-    def refresh
-      @data = client.get_parsed("/deployment/api/deployments/#{id}")
-    rescue Vra::Exception::HTTPNotFound
-      raise Vra::Exception::NotFound, "deployment with ID #{id} does not exist"
     end
   end
 end
