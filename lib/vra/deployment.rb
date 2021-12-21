@@ -78,7 +78,7 @@ module Vra
     def resources
       response = client.get_parsed("/deployment/api/deployments/#{id}/resources")
 
-      response['content']
+      response['content'].map! { |x| Vra::Resource.new(client, id, data: x) }
     end
 
     def requests

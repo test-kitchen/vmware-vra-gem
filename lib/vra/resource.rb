@@ -21,26 +21,27 @@ require "ffi_yajl" unless defined?(FFI_Yajl)
 
 module Vra
   class Resource
-    attr_reader :client, :id, :resource_data
+    attr_reader :client, :deployment_id, :id, :resource_data
 
-    def initialize(client, opts)
+    def initialize(client, deployment_id, opts)
       @client           = client
+      @deployment_id    = deployment_id
       @id               = opts[:id]
       @resource_data    = opts[:data]
       @resource_actions = []
 
       if @id.nil? && @resource_data.nil?
-        raise ArgumentError, "must supply an id or a resource data hash"
+        raise ArgumentError, 'must supply an id or a resource data hash'
       end
 
       if !@id.nil? && !@resource_data.nil?
-        raise ArgumentError, "must supply an id OR a resource data hash, not both"
+        raise ArgumentError, 'must supply an id OR a resource data hash, not both'
       end
 
       if @resource_data.nil?
         fetch_resource_data
       else
-        @id = @resource_data["id"]
+        @id = @resource_data['id']
       end
     end
 
@@ -55,7 +56,7 @@ module Vra
     end
 
     def fetch_resource_data
-      @resource_data = client.get_parsed("/catalog-service/api/consumer/resources/#{@id}")
+      @resource_data = client.get_parsed("/deployment/api/deployments/#{deployment_id}/resources/#{id}")
     rescue Vra::Exception::HTTPNotFound
       raise Vra::Exception::NotFound, "resource ID #{@id} does not exist"
     end
@@ -65,60 +66,57 @@ module Vra
       resource_data["name"]
     end
 
-    def description
-      resource_data["description"]
-    end
-
     def status
-      resource_data["status"]
+      resource_data['syncStatus']
     end
 
+    def properties
+      resource_data['properties']
+    end
+
+    # TODO: Confirm other vm resource types
     def vm?
-      %w{Infrastructure.Virtual Infrastructure.Cloud}.include?(resource_data["resourceTypeRef"]["id"])
+      %w{Cloud.vSphere.Machine}.include?(resource_data['type'])
     end
 
-    def organization
-      return {} if resource_data["organization"].nil?
-
-      resource_data["organization"]
-    end
-
-    def tenant_id
-      organization["tenantRef"]
-    end
-
-    def tenant_name
-      organization["tenantLabel"]
-    end
-
-    def subtenant_id
-      organization["subtenantRef"]
-    end
-
-    def subtenant_name
-      organization["subtenantLabel"]
-    end
-
-    def catalog_item
-      return {} if resource_data["catalogItem"].nil?
-
-      resource_data["catalogItem"]
-    end
-
-    def catalog_id
-      catalog_item["id"]
-    end
-
-    def catalog_name
-      catalog_item["label"]
-    end
-
-    def owner_ids
-      resource_data["owners"].map { |x| x["ref"] }
-    end
+    # def organization
+    #   return {} if resource_data["organization"].nil?
+    #
+    #   resource_data["organization"]
+    # end
+    #
+    # def tenant_id
+    #   organization["tenantRef"]
+    # end
+    #
+    # def tenant_name
+    #   organization["tenantLabel"]
+    # end
+    #
+    # def subtenant_id
+    #   organization["subtenantRef"]
+    # end
+    #
+    # def subtenant_name
+    #   organization["subtenantLabel"]
+    # end
+    #
+    # def catalog_item
+    #   return {} if resource_data["catalogItem"].nil?
+    #
+    #   resource_data["catalogItem"]
+    # end
+    #
+    # def catalog_id
+    #   catalog_item["id"]
+    # end
+    #
+    # def catalog_name
+    #   catalog_item["label"]
+    # end
 
     def owner_names
-      resource_data["owners"].map { |x| x["value"] }
+      properties['Owner']
     end
 
     def machine_status
@@ -129,7 +127,7 @@ module Vra
     end
 
     def machine_on?
-      machine_status == "On"
+      status == 'SUCCESS'
     end
 
     def machine_off?
@@ -151,16 +149,12 @@ module Vra
     def network_interfaces
       return unless vm?
 
-      network_list = resource_data["resourceData"]["entries"].find { |x| x["key"] == "NETWORK_LIST" }
+      network_list = properties['networks']
       return if network_list.nil?
 
-      network_list["value"]["items"].each_with_object([]) do |item, nics|
+      network_list.each_with_object([]) do |item, nics|
         nic = {}
-        item["values"]["entries"].each do |entry|
-          key = entry["key"]
-          value = entry["value"]["value"]
-          nic[key] = value
-        end
+        nic[item['name']] = item['mac_address']
 
         nics << nic
       end
@@ -169,47 +163,26 @@ module Vra
     def ip_addresses
       return if !vm? || network_interfaces.nil?
 
-      addrs = []
-
-      request_id = @resource_data["requestId"]
-
-      print "Waiting For vRA to collect the IP"
-
-      loop do
-        resource_views = @client.http_get("/catalog-service/api/consumer/requests/#{request_id}/resourceViews")
-
-        JSON.parse(resource_views.body)["content"].each do |content|
-          if content.key?("data") &&
-              !(content["data"]["ip_address"].nil? ||
-                content["data"]["ip_address"] == "")
-            addrs << content["data"]["ip_address"]
-          end
-        end
-
-        break unless addrs.empty?
-
-        sleep 10
-      end
-
-      addrs
+      properties['address']
     end
 
-    def actions
-      # if this Resource instance was created with data from a "all_resources" fetch,
-      # it is likely missing operations data because the vRA API is not pleasant sometimes.
-      fetch_resource_data if resource_data["operations"].nil?
+    # TODO: Implement actions api
+    # def actions
+    #   # if this Resource instance was created with data from a "all_resources" fetch,
+    #   # it is likely missing operations data because the vRA API is not pleasant sometimes.
+    #   fetch_resource_data if resource_data["operations"].nil?
+    #
+    #   resource_data["operations"]
+    # end
 
-      resource_data["operations"]
-    end
-
-    def action_id_by_name(name)
-      return if actions.nil?
-
-      action = actions.find { |x| x["name"] == name }
-      return if action.nil?
-
-      action["id"]
-    end
+    # def action_id_by_name(name)
+    #   return if actions.nil?
+    #
+    #   action = actions.find { |x| x["name"] == name }
+    #   return if action.nil?
+    #
+    #   action["id"]
+    # end
 
     def destroy
       action_id = action_id_by_name("Destroy")
