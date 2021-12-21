@@ -50,9 +50,9 @@ module Vra
       begin
         response = send_request!
       rescue Vra::Exception::HTTPError => e
-        raise Vra::Exception::RequestError, "Unable to submit request: #{e.errors.join(', ')}"
+        raise Vra::Exception::RequestError, "Unable to submit request: #{e.message}, trace: #{e.errors.join(', ')}"
       rescue StandardError => e
-        raise e
+        raise e, e.message
       end
 
       request_id = FFI_Yajl::Parser.parse(response)[0]['deploymentId']
@@ -99,7 +99,7 @@ module Vra
 
     def request_payload
       {
-        'deploymentName': "'#{name}'",
+        'deploymentName': name,
         'projectId': project_id,
         'version': version,
         'inputs': {
