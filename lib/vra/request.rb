@@ -31,7 +31,7 @@ module Vra
       if @request_data.nil?
         refresh
       else
-        @id = @request_data[:id]
+        @id = @request_data['id']
       end
     end
 
