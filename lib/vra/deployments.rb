@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 #
-# Author:: Chef Partner Engineering (<partnereng@chef.io>)
+# Author:: Ashique Saidalavi (<ashique.saidalavi@progress.com>)
 # Copyright:: Copyright (c) 2015 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
@@ -16,20 +16,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+module Vra
+  # class that represents the Deployments Object
+  class Deployments
+    def initialize(client)
+      @client = client
+    end
 
-require 'vra/catalog_base'
-require 'vra/catalog'
-require 'vra/catalog_item'
-require 'vra/catalog_source'
-require 'vra/catalog_type'
-require 'vra/catalog_request'
-require 'vra/deployment_request'
-require 'vra/deployment'
-require 'vra/deployments'
-require 'vra/client'
-require 'vra/exceptions'
-require 'vra/request'
-require 'vra/request_parameters'
-require 'vra/resource'
-require 'vra/resources'
-require 'vra/version'
+    def by_id(dep_id)
+      Vra::Deployment.new(client, id: dep_id)
+    end
+
+    def all
+      fetch_all_resources
+    end
+
+    def self.all(client)
+      new(client).all
+    end
+
+    private
+
+    attr_reader :client
+
+    def fetch_all_resources
+      client
+        .http_get_paginated_array!('/deployment/api/deployments')
+        .map! { |x| Vra::Deployment.new(client, data: x) }
+    end
+  end
+end

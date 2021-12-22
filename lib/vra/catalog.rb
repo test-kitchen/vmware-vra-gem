@@ -45,10 +45,6 @@ module Vra
       fetch_entitlements(project_id, 'CatalogItemIdentifier')
     end
 
-    def deployments
-      fetch_resources Vra::Deployment
-    end
-
     def request(*args)
       Vra::DeploymentRequest.new(@client, *args)
     end

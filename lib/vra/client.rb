@@ -44,15 +44,11 @@ module Vra
     #
 
     def catalog
-      Vra::Catalog.new(self)
+      @catalog ||= Vra::Catalog.new(self)
     end
 
-    def requests(*args)
-      Vra::Requests.new(self, *args)
-    end
-
-    def resources(*args)
-      Vra::Resources.new(self, *args)
+    def deployments
+      @deployments ||= Vra::Deployments.new(self)
     end
 
     #########################
