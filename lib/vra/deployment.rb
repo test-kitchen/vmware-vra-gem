@@ -93,6 +93,16 @@ module Vra
       raise Vra::Exception::NotFound, "deployment with ID #{id} does not exist"
     end
 
+    def destroy
+      begin
+        response = client.http_delete("/deployment/api/deployments/#{id}")
+      rescue Vra::Exception::HTTPNotFound
+        raise Vra::Exception::NotFound, "deployment with ID #{id} does not exist"
+      else
+        response.succuess?
+      end
+    end
+
     private
 
     attr_reader :client, :data

@@ -151,6 +151,10 @@ module Vra
       response.body
     end
 
+    def http_delete(path, skip_auth = nil)
+      http_fetch(:delete, path, skip_auth)
+    end
+
     def get_parsed(path)
       FFI_Yajl::Parser.parse(http_get!(path))
     end
