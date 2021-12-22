@@ -23,14 +23,16 @@ module Vra
     attr_reader :client, :id, :deployment_id
 
     def initialize(client, deployment_id, opts)
-      @client = client
-      @deployment_id = deployment_id
-      @id     = opts[:id]
-
+      @client             = client
+      @deployment_id      = deployment_id
+      @id                 = opts[:id]
       @request_data       = opts[:data]
-      @status             = nil
-      @completion_state   = nil
-      @completion_details = nil
+
+      if @request_data.nil?
+        refresh
+      else
+        @id = @request_data[:id]
+      end
     end
 
     def refresh
