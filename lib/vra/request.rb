@@ -20,7 +20,7 @@
 module Vra
   # class to represent the Deployment request
   class Request
-    attr_reader :client, :id, :deployment_id, :status
+    attr_reader :client, :id, :deployment_id
 
     def initialize(client, deployment_id, opts)
       @client = client
@@ -34,11 +34,9 @@ module Vra
     end
 
     def refresh
-      @request_data = client.get_parsed("/deployment/api/deployments/#{deployment_id}/requests/#{id}")
-      @status = @request_data['status']
+      @request_data = client.get_parsed("/deployment/api/deployments/#{deployment_id}/requests/#{id}?deleted=true")
     rescue Vra::Exception::HTTPNotFound
-      raise Vra::Exception::NotFound, "request ID #{@id} is not found" if @status.nil?
-      @status = 'SUCCESSFUL'
+      raise Vra::Exception::NotFound, "request ID #{@id} is not found"
     end
 
     def refresh_if_empty
@@ -47,6 +45,13 @@ module Vra
 
     def request_empty?
       @request_data.nil?
+    end
+
+    def status
+      refresh_if_empty
+      return if request_empty?
+
+      @request_data['status']
     end
 
     def completed?
