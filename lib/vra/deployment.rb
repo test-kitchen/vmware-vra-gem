@@ -75,6 +75,17 @@ module Vra
       successful? || failed?
     end
 
+    def actions
+      @actions = client.get_parsed("/deployment/api/deployments/#{id}/actions")
+    end
+
+    def action_id_by_name(action_name)
+      action = actions.find { |x| x['name'] == action_name}
+      return if action.nil
+
+      action['id']
+    end
+
     def resources
       response = client.get_parsed("/deployment/api/deployments/#{id}/resources")
 
@@ -93,14 +104,35 @@ module Vra
       raise Vra::Exception::NotFound, "deployment with ID #{id} does not exist"
     end
 
-    def destroy
-      begin
-        response = client.http_delete("/deployment/api/deployments/#{id}")
-      rescue Vra::Exception::HTTPNotFound
-        raise Vra::Exception::NotFound, "deployment with ID #{id} does not exist"
-      else
-        response.succuess?
-      end
+    # def destroy
+    #   begin
+    #     response = client.http_delete("/deployment/api/deployments/#{id}")
+    #   rescue Vra::Exception::HTTPNotFound
+    #     raise Vra::Exception::NotFound, "deployment with ID #{id} does not exist"
+    #   else
+    #     response.succuess?
+    #   end
+    # end
+
+    def destroy(reason = '')
+      action_id = action_id_by_name('Delete')
+      raise Vra::Exception::NotFound, "No destroy action found for resource #{@id}" if action_id.nil?
+
+      submit_action_request(action_id, reason)
+    end
+
+    def poweroff(reason = '')
+      action_id = action_id_by_name('PowerOff')
+      raise Vra::Exception::NotFound, "No power-off action found for resource #{@id}" if action_id.nil?
+
+      submit_action_request(action_id, reason)
+    end
+
+    def poweron(reason = nil)
+      action_id = action_id_by_name('PowerOn')
+      raise Vra::Exception::NotFound, "No power-on action found for resource #{@id}" if action_id.nil?
+
+      submit_action_request(action_id, reason)
     end
 
     private
@@ -109,6 +141,21 @@ module Vra
 
     def validate!
       raise ArgumentError, 'must supply id or data hash' if @id.nil? && @data.nil?
+    end
+
+    def submit_action_request(action_id, reason)
+      response = client.http_post!("/deployment/api/deployments/#{id}/requests",
+                                   FFI_Yajl::Encoder.encode(submit_action_payload(action_id, reason)))
+
+      Vra::Request.new(client, id, data: FFI_Yajl::Parser.parse(response))
+    end
+
+    def submit_action_payload(action_id, reason)
+      {
+        "actionId": action_id,
+        "inputs": {},
+        "reason": reason
+      }
     end
   end
 end

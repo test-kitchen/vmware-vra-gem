@@ -20,10 +20,11 @@
 module Vra
   # class to represent the Deployment request
   class Request
-    attr_reader :client, :id
+    attr_reader :client, :id, :deployment_id
 
-    def initialize(client, opts)
+    def initialize(client, deployment_id, opts)
       @client = client
+      @deployment_id = deployment_id
       @id     = opts[:id]
 
       @request_data       = opts[:data]
@@ -33,7 +34,7 @@ module Vra
     end
 
     def refresh
-      @request_data = client.get_parsed("/catalog-service/api/consumer/requests/#{@id}")
+      @request_data = client.get_parsed("/deployment/api/deployments/#{deployment_id}/requests/#{id}")
     rescue Vra::Exception::HTTPNotFound
       raise Vra::Exception::NotFound, "request ID #{@id} is not found"
     end
