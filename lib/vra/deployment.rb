@@ -81,7 +81,7 @@ module Vra
 
     def action_id_by_name(action_name)
       action = actions.find { |x| x['name'] == action_name}
-      return if action.nil
+      return if action.nil?
 
       action['id']
     end
