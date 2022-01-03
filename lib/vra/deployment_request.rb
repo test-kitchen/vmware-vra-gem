@@ -75,6 +75,10 @@ module Vra
       @additional_params.to_vra
     end
 
+    def hash_parameters
+      @additional_params.to_h
+    end
+
     private
 
     attr_reader :client

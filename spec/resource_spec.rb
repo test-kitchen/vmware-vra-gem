@@ -71,13 +71,13 @@ describe Vra::Resource do
       Vra::Resource.new(client, deployment_id, id: resource_id)
     end
 
-    # it 'should raise an exception if the resource not found' do
-    #   allow(client).to receive(:get_parsed).and_return(Vra::Exception::HTTPNotFound)
-    #
-    #   expect { Vra::Resource.new(client, deployment_id, id: resource_id) }
-    #     .to raise_error(Vra::Exception::NotFound)
-    #     .with_message("resource ID #{resource_id} does not exist")
-    # end
+    it 'should raise an exception if the resource not found' do
+      allow(client).to receive(:get_parsed).and_raise(Vra::Exception::HTTPNotFound)
+
+      expect { Vra::Resource.new(client, deployment_id, id: resource_id) }
+        .to raise_error(Vra::Exception::NotFound)
+        .with_message("resource ID #{resource_id} does not exist")
+    end
   end
 
   context 'when a valid VM resource instance has been created' do

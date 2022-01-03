@@ -89,6 +89,14 @@ describe Vra::Request do
 
       request.refresh
     end
+
+    it 'should raise an exception if the resource not found' do
+      allow(client).to receive(:get_parsed).and_raise(Vra::Exception::HTTPNotFound)
+
+      expect { request.refresh }
+        .to raise_error(Vra::Exception::NotFound)
+        .with_message("request ID #{request_id} is not found")
+    end
   end
 
   describe '#refresh_if_empty' do

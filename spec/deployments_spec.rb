@@ -71,4 +71,10 @@ describe ::Vra::Deployments do
       expect(deployment).to be_an_instance_of(Vra::Deployment)
     end
   end
+
+  describe 'called with client' do
+    it 'should return the class object' do
+      expect(client.deployments).to be_an_instance_of described_class
+    end
+  end
 end

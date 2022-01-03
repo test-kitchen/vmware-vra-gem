@@ -86,6 +86,23 @@ describe Vra::DeploymentRequest do
       end
     end
 
+    context 'set_parameters' do
+      it 'should be able to set multiple parameters' do
+        request.set_parameters('test-parent', { 'param1' => { type: 'string', value: 1234 } })
+
+        expect(request.parameters)
+          .to eq({ inputs: { 'test-parent' => { 'inputs' => { 'param1' => 1234 } } } })
+      end
+
+      it 'should set multiple parameters with different data types' do
+        request.set_parameters('param1', { key1: { type: 'string', value: 'data' } })
+        request.set_parameters('param2', { key2: { type: 'boolean', value: false } })
+        request.set_parameters('param3', { key3: { type: 'integer', value: 100 } })
+
+        expect(request.parameters[:inputs].count).to be 3
+      end
+    end
+
     context 'delete_parameter' do
       before(:each) do
         request.set_parameter('hardware-config', 'string', 'small')
@@ -95,6 +112,14 @@ describe Vra::DeploymentRequest do
         expect(request.parameters[:inputs].count).to be(1)
         request.delete_parameter('hardware-config')
         expect(request.parameters[:inputs].count).to be(0)
+      end
+    end
+
+    context '#hash_parameters' do
+      it 'should have the correct representation' do
+        request.set_parameters(:param1, { key1: { type: 'string', value: 'data' } })
+
+        expect(request.hash_parameters).to eq({ param1: { :key1 => 'data' } })
       end
     end
   end
@@ -138,6 +163,30 @@ describe Vra::DeploymentRequest do
       allow(Vra::Deployment).to receive(:new)
 
       request.submit
+    end
+
+    it 'should return a deployment object' do
+      response = double('response', body: '[{"deploymentId": "123"}]', success?: true)
+      allow(client).to receive(:http_post).and_return(response)
+      allow(client)
+        .to receive(:get_parsed)
+        .and_return(JSON.parse(File.read('spec/fixtures/resource/sample_deployment.json')))
+
+      dep = request.submit
+      expect(dep).to be_an_instance_of(Vra::Deployment)
+      expect(dep.id).to eq('123')
+    end
+
+    it 'should handle the VRA Errors' do
+      allow(request).to receive(:send_request!).and_raise(Vra::Exception::HTTPError)
+
+      expect { request.submit }.to raise_error(Vra::Exception::RequestError)
+    end
+
+    it 'should handle the generic errors' do
+      allow(request).to receive(:send_request!).and_raise(ArgumentError)
+
+      expect { request.submit }.to raise_error(ArgumentError)
     end
   end
 end

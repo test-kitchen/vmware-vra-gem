@@ -111,7 +111,8 @@ describe Vra::Client do
 
     context 'when token exists' do
       before(:each) do
-        client.access_token = '12345'
+        client.access_token  = '12345'
+        client.refresh_token = '54321'
       end
 
       it 'returns true if the token validates successfully' do
@@ -440,6 +441,15 @@ describe Vra::Client do
     end
   end
 
+  describe '#http_delete' do
+    it 'should perform the delete method' do
+      allow(client).to receive(:authorized?).and_return(true)
+      expect(Vra::Http).to receive(:execute)
+
+      client.http_delete('/test')
+    end
+  end
+
   describe '#raise_http_exception' do
     context 'when a 404 is received' do
       let(:exception) do
@@ -543,6 +553,14 @@ describe Vra::Client do
 
       it 'raises an exception' do
         expect { client.validate_client_options! }.to raise_error(ArgumentError)
+      end
+
+      it 'should raise an exception when the URI::InvalidURIError is raised' do
+        allow(URI).to receive(:parse).and_raise(URI::InvalidURIError)
+
+        expect { client.validate_client_options! }
+          .to raise_error(ArgumentError)
+          .with_message('Base URL something-that-is-not-a-HTTP-URI is not a valid URI.')
       end
     end
   end
