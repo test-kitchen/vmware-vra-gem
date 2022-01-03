@@ -33,11 +33,11 @@ module Vra
     end
 
     def name
-      @data['name']
+      data['name']
     end
 
     def catalog_type_id
-      @data['typeId']
+      data['typeId']
     end
 
     def catalog_type
@@ -45,11 +45,11 @@ module Vra
     end
 
     def config
-      @data['config']
+      data['config']
     end
 
     def global?
-      @data['global'] == true
+      data['global'] == true
     end
 
     def project_id
@@ -102,9 +102,9 @@ module Vra
     private
 
     def fetch_data
-      fetch_catalog_data && return if @data.nil?
+      fetch_catalog_data && return if data.nil?
 
-      @id = @data['id']
+      @id = data['id']
     end
 
     def fetch_catalog_data

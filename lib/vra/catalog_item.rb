@@ -25,10 +25,11 @@ module Vra
   class CatalogItem < Vra::CatalogBase
     INDEX_URL = '/catalog/api/admin/items'
 
-    attr_reader :id, :client
+    attr_reader :project_id
 
-    def initialize(client, opts)
+    def initialize(client, opts = {})
       super
+      @project_id = opts[:project_id]
       validate!
 
       if @data.nil?
@@ -45,19 +46,19 @@ module Vra
     end
 
     def name
-      @data['name']
+      data['name']
     end
 
     def description
-      @data['description']
+      data['description']
     end
 
     def source_id
-      @data['sourceId']
+      data['sourceId']
     end
 
     def source_name
-      @data['sourceName']
+      data['sourceName']
     end
 
     def source
@@ -65,85 +66,19 @@ module Vra
     end
 
     def type
-      @type ||= Vra::CatalogType.new(client, data: @data[:type])
+      @type ||= Vra::CatalogType.new(client, data: data['type'])
     end
 
     def icon_id
-      @data['iconId']
-    end
-
-    def status
-      @data['status']
-    end
-
-    def organization
-      return {} if @data['organization'].nil?
-
-      @data['organization']
-    end
-
-    def tenant_id
-      organization['tenantRef']
-    end
-
-    def tenant_name
-      organization['tenantLabel']
-    end
-
-    def subtenant_id
-      organization['subtenantRef']
-    end
-
-    def subtenant_name
-      organization['subtenantLabel']
-    end
-
-    def blueprint_id
-      @data['providerBinding']['bindingId']
+      data['iconId']
     end
 
     def entitle!(opts = {})
       super(opts.merge(type: 'CatalogItemIdentifier'))
     end
 
-    # @param [String] - the id of the catalog item
-    # @param [Vra::Client] - a vra client object
-    # @return [String] - returns a json string of the catalog template
-    def self.dump_template(client, id)
-      response = client.http_get("/catalog-service/api/consumer/entitledCatalogItems/#{id}/requests/template")
-      response.body
-    end
-
-    # @param client [Vra::Client] - a vra client object
-    # @param id [String] - the id of the catalog item
-    # @param filename [String] - the name of the file you want to output the template to
-    # if left blank, will default to the id of the item
-    # @note outputs the catalog template to a file in serialized format
-    def self.write_template(client, id, filename = nil)
-      filename ||= "#{id}.json"
-      begin
-        contents = dump_template(client, id)
-        data = JSON.parse(contents)
-        pretty_contents = JSON.pretty_generate(data)
-        File.write(filename, pretty_contents)
-        filename
-      rescue Vra::Exception::HTTPError => e
-        raise e
-      end
-    end
-
-    # @param [Vra::Client] - a vra client object
-    # @param [String] - the directory path to write the files to
-    # @param [Boolean] - set to true if you wish the file name to be the id of the catalog item
-    # @return [Array[String]] - a array of all the files that were generated
-    def self.dump_templates(client, dir_name = "vra_templates", use_id = false)
-      FileUtils.mkdir_p(dir_name) unless File.exist?(dir_name)
-      client.catalog.entitled_items.map do |c|
-        id = use_id ? c.id : c.name.tr(" ", "_")
-        filename = File.join(dir_name, "#{id}.json").downcase
-        write_template(client, c.id, filename)
-        filename
-      end
+    def self.entitle!(client, id)
+      new(client, id: id).entitle!
     end
   end
 end

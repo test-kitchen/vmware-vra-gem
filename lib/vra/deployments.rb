@@ -31,8 +31,14 @@ module Vra
       fetch_all_resources
     end
 
-    def self.all(client)
-      new(client).all
+    class << self
+      def all(client)
+        new(client).all
+      end
+
+      def by_id(client, id)
+        new(client).by_id(id)
+      end
     end
 
     private

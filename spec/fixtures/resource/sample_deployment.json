@@ -1,0 +1,26 @@
+{
+    "id": "dep-123",
+    "name": "win-DCI",
+    "description": "win-dci deployment",
+    "orgId": "origin-123",
+    "catalogItemId": "cat-123",
+    "catalogItemVersion": "6",
+    "blueprintId": "blueprint-123",
+    "blueprintVersion": "6",
+    "iconId": "icon-123",
+    "createdAt": "2021-12-31T09:25:09.668646Z",
+    "createdBy": "administrator",
+    "ownedBy": "administrator",
+    "lastUpdatedAt": "2021-12-31T09:27:32.801759Z",
+    "lastUpdatedBy": "administrator",
+    "leaseExpireAt": "2022-03-01T09:27:00Z",
+    "inputs": {
+        "count": 1,
+        "image": "SQL 2016",
+        "flavor": "Medium",
+        "sql-image": "Windows2016",
+        "hardware-config": "Medium"
+    },
+    "projectId": "pro-123456",
+    "status": "CREATE_SUCCESSFUL"
+}

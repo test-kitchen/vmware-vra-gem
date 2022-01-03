@@ -1,0 +1,19 @@
+{
+    "id": "req-123",
+    "name": "Create",
+    "requestedBy": "admin",
+    "blueprintId": "blueprint-123",
+    "inputs": {
+        "flag": "false",
+        "count": "1",
+        "hardware-config": "Medium"
+    },
+    "status": "SUCCESSFUL",
+    "details": "",
+    "createdAt": "2021-12-20T13:21:52.699271Z",
+    "updatedAt": "2021-12-20T13:31:38.725363Z",
+    "totalTasks": 5,
+    "completedTasks": 5,
+    "dismissed": false,
+    "cancelable": true
+}

@@ -1,0 +1,25 @@
+[
+    {
+        "id": "0225face-95dd-49a5-b0cd-493759a2f7c5",
+        "projectId": "6ba69375-79d5-42c3-a099-7d32739f71a7",
+        "definition": {
+            "type": "CatalogSourceIdentifier",
+            "id": "18102dc2-9e48-487a-93a8-aafab2ecc057",
+            "name": "DCI",
+            "sourceType": "com.vmw.blueprint",
+            "numItems": 17,
+            "iconId": "1495b8d9-9428-30d6-9626-10ff9281645e"
+        }
+    },
+    {
+        "id": "07317598-0a6b-47c4-a5e9-ba0c9ce430b1",
+        "projectId": "6ba69375-79d5-42c3-a099-7d32739f71a7",
+        "definition": {
+            "type": "CatalogItemIdentifier",
+            "id": "e186f066-7971-485a-8aed-bf75f16d3ea8",
+            "name": "TemplateCreation",
+            "sourceType": "com.vmw.vro.workflow",
+            "numItems": 1
+        }
+    }
+]

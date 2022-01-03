@@ -95,7 +95,7 @@ module Vra
     def requests
       response = client.get_parsed("/deployment/api/deployments/#{id}/requests")
 
-      response['content'].map! { |x| Vra::Request.new(client, id: x['id'], data: x) }
+      response['content'].map! { |x| Vra::Request.new(client, id, id: x['id'], data: x) }
     end
 
     def refresh
@@ -104,16 +104,6 @@ module Vra
       raise Vra::Exception::NotFound, "deployment with ID #{id} does not exist"
     end
 
-    # def destroy
-    #   begin
-    #     response = client.http_delete("/deployment/api/deployments/#{id}")
-    #   rescue Vra::Exception::HTTPNotFound
-    #     raise Vra::Exception::NotFound, "deployment with ID #{id} does not exist"
-    #   else
-    #     response.succuess?
-    #   end
-    # end
-
     def destroy(reason = '')
       action_id = action_id_by_name('Delete')
       raise Vra::Exception::NotFound, "No destroy action found for resource #{@id}" if action_id.nil?
@@ -121,14 +111,14 @@ module Vra
       submit_action_request(action_id, reason)
     end
 
-    def poweroff(reason = '')
+    def power_off(reason = '')
       action_id = action_id_by_name('PowerOff')
       raise Vra::Exception::NotFound, "No power-off action found for resource #{@id}" if action_id.nil?
 
       submit_action_request(action_id, reason)
     end
 
-    def poweron(reason = nil)
+    def power_on(reason = nil)
       action_id = action_id_by_name('PowerOn')
       raise Vra::Exception::NotFound, "No power-on action found for resource #{@id}" if action_id.nil?
 

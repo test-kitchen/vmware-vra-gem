@@ -1,0 +1,18 @@
+{
+    "id": "654321",
+    "name": "Centos-80x64",
+    "description": "",
+    "sourceId": "pro-123456",
+    "sourceName": "Devops",
+    "type": {
+        "id": "com.vmw.blueprint",
+        "link": "/catalog/api/types/com.vmw.blueprint",
+        "name": "VMware Cloud Templates"
+    },
+    "createdAt": "2020-09-18T17:38:50.366691Z",
+    "createdBy": "administrator",
+    "lastUpdatedAt": "2021-12-15T00:18:34.706782Z",
+    "lastUpdatedBy": "administrator",
+    "iconId": "1ab82fe1",
+    "bulkRequestLimit": 1
+}

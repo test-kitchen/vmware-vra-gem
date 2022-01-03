@@ -17,15 +17,15 @@
 # limitations under the License.
 #
 
-require "spec_helper"
+require 'spec_helper'
 
-shared_examples "refresh_trigger_method" do |method|
-  it "calls #refresh_if_needed" do
+shared_examples 'refresh_trigger_method' do |method|
+  it 'calls #refresh_if_needed' do
     expect(request).to receive(:refresh_if_empty)
     request.send(method)
   end
 
-  it "returns nil if request data is empty" do
+  it 'returns nil if request data is empty' do
     allow(request).to receive(:refresh_if_empty)
     allow(request).to receive(:request_empty?).and_return true
     expect(request.send(method)).to eq nil
@@ -34,113 +34,99 @@ end
 
 describe Vra::Request do
   let(:client) do
-    Vra::Client.new(username: "user@corp.local",
-                    password: "password",
-                    tenant: "tenant",
-                    base_url: "https://vra.corp.local")
+    Vra::Client.new(
+      username: 'user@corp.local',
+      password: 'password',
+      tenant: 'tenant',
+      base_url: 'https://vra.corp.local'
+    )
   end
 
-  let(:request_id) { "2c3df007-b1c4-4687-b332-310089c4851d" }
+  let(:deployment_id) { 'dep-123' }
 
-  let(:in_progress_payload) do
-    {
-      "phase" => "IN_PROGRESS",
-      "requestCompletion" => {
-        "requestCompletionState" => nil,
-        "completionDetails" => nil,
-      },
-    }
-  end
+  let(:request_id) { 'req-123' }
 
   let(:completed_payload) do
-    {
-      "phase" => "SUCCESSFUL",
-      "requestCompletion" => {
-        "requestCompletionState" => "SUCCESSFUL",
-        "completionDetails" => "Request succeeded. Created test-machine.",
-      },
-    }
+    JSON.parse(File.read('spec/fixtures/resource/sample_dep_request.json'))
   end
 
-  let(:request) { Vra::Request.new(client, request_id) }
+  let(:in_progress_payload) do
+    JSON.parse(File.read('spec/fixtures/resource/sample_dep_request.json'))
+        .merge('status' => 'IN_PROGRESS')
+  end
 
-  describe "#initialize" do
-    it "sets the id" do
-      expect(request.id).to eq request_id
+  let(:request) { Vra::Request.new(client, deployment_id, data: in_progress_payload) }
+
+  before(:each) do
+    allow(client).to receive(:authorized?).and_return(true)
+  end
+
+  describe '#initialize' do
+    it 'sets the id' do
+      allow(client).to receive(:get_parsed).and_return(completed_payload)
+
+      req = described_class.new(client, deployment_id, id: request_id)
+      expect(req.id).to eq(request_id)
+    end
+
+    it 'sets the attributes correctly' do
+      allow(client).to receive(:get_parsed).and_return(completed_payload)
+
+      req = described_class.new(client, deployment_id, id: request_id)
+      expect(req.status).to eq('SUCCESSFUL')
+      expect(req.completed?).to be_truthy
+      expect(req.failed?).to be_falsey
+      expect(req.name).to eq('Create')
+      expect(req.requested_by).to eq('admin')
     end
   end
 
-  describe "#refresh" do
-    it "calls the request API endpoint" do
+  describe '#refresh' do
+    it 'calls the request API endpoint' do
       expect(client).to receive(:get_parsed)
-        .with("/catalog-service/api/consumer/requests/#{request_id}")
+        .with("/deployment/api/deployments/#{deployment_id}/requests/#{request_id}?deleted=true")
         .and_return(in_progress_payload)
 
       request.refresh
     end
   end
 
-  describe "#refresh_if_empty" do
-    context "request data is empty" do
-      it "calls #refresh" do
-        expect(request).to receive(:refresh)
-        request.refresh_if_empty
-      end
-    end
-
-    context "request data is not empty" do
-      it "does not call #refresh" do
+  describe '#refresh_if_empty' do
+    context 'request data is not empty' do
+      it 'does not call #refresh' do
         allow(request).to receive(:request_empty?).and_return(false)
         expect(request).to_not receive(:refresh)
       end
     end
   end
 
-  describe "#status" do
-    it_behaves_like "refresh_trigger_method", :status
+  describe '#status' do
+    it_behaves_like 'refresh_trigger_method', :status
   end
 
-  describe "#completed?" do
-    context "when the request is neither successful or failed yet" do
-      it "returns false" do
+  describe '#completed?' do
+    context 'when the request is neither successful or failed yet' do
+      it 'returns false' do
         allow(request).to receive(:successful?).and_return(false)
         allow(request).to receive(:failed?).and_return(false)
         expect(request.completed?).to eq false
       end
     end
 
-    context "when the request is successful" do
-      it "returns true" do
+    context 'when the request is successful' do
+      it 'returns true' do
         allow(request).to receive(:successful?).and_return(true)
         allow(request).to receive(:failed?).and_return(false)
         expect(request.completed?).to eq true
       end
     end
 
-    context "when the request failed" do
-      it "returns true" do
+    context 'when the request failed' do
+      it 'returns true' do
         allow(request).to receive(:successful?).and_return(false)
         allow(request).to receive(:failed?).and_return(true)
         expect(request.completed?).to eq true
       end
-    end
-  end
-
-  describe "#completion_state" do
-    it_behaves_like "refresh_trigger_method", :completion_state
-  end
-
-  describe "#completion_details" do
-    it_behaves_like "refresh_trigger_method", :completion_details
-  end
-
-  describe "#resources" do
-    it "calls the requests resources API endpoint" do
-      expect(client).to receive(:http_get_paginated_array!)
-        .with("/catalog-service/api/consumer/requests/#{request_id}/resources")
-        .and_return([])
-
-      request.resources
     end
   end
 end

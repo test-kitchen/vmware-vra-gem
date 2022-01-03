@@ -21,32 +21,32 @@ module Vra
   class CatalogType < Vra::CatalogBase
     INDEX_URL = '/catalog/api/types'
 
-    def initialize(client, opts)
+    def initialize(client, opts = {})
       super
       validate!
       fetch_data
     end
 
     def name
-      @data['name']
+      data['name']
     end
 
     def base_url
-      @data['baseUrl']
+      data['baseUri']
     end
 
     def config_schema
-      @data['configSchema']
+      data['configSchema']
     end
 
     def icon_id
-      @data['iconId']
+      data['iconId']
     end
 
     private
 
     def fetch_data
-      @id = @data['id'] && return unless @data.nil?
+      @id = data['id'] and return unless data.nil?
 
       @data = client.get_parsed("/catalog/api/types/#{id}")
     rescue Vra::Exception::HTTPNotFound

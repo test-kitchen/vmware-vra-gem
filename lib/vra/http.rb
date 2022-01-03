@@ -64,6 +64,7 @@ module Vra
           get: Net::HTTP::Get,
           head: Net::HTTP::Head,
           post: Net::HTTP::Post,
+          delete: Net::HTTP::Delete
         }.fetch(method, nil)
 
         raise "Unknown HTTP method #{method}!" unless type
@@ -148,7 +149,7 @@ module Vra
       attr_reader :http_code, :response
 
       def self.from_response(http_response)
-        body = FFI_Yajl::Parser.parse(http_response.body)
+        body = FFI_Yajl::Parser.parse(http_response.body) || {}
         new(body['message'], http_response.code, body)
       end
 

@@ -20,9 +20,9 @@
 module Vra
   # class to represent the Deployment request
   class Request
-    attr_reader :client, :id, :deployment_id
+    attr_reader :id, :deployment_id
 
-    def initialize(client, deployment_id, opts)
+    def initialize(client, deployment_id, opts = {})
       @client             = client
       @deployment_id      = deployment_id
       @id                 = opts[:id]
@@ -33,6 +33,14 @@ module Vra
       else
         @id = @request_data['id']
       end
+    end
+
+    def requested_by
+      request_data['requestedBy']
+    end
+
+    def name
+      request_data['name']
     end
 
     def refresh
@@ -53,7 +61,7 @@ module Vra
       refresh_if_empty
       return if request_empty?
 
-      @request_data['status']
+      request_data['status']
     end
 
     def completed?
@@ -67,5 +75,9 @@ module Vra
     def failed?
       status == 'FAILED'
     end
+
+    private
+
+    attr_reader :request_data, :client
   end
 end

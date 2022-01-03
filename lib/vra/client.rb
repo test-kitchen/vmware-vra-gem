@@ -23,6 +23,9 @@ require 'vra/http'
 
 module Vra
   class Client
+    ACCESS_TOKEN_URL = '/csp/gateway/am/api/login?access_token'
+    ROLES_URL = '/csp/gateway/am/api/loggedin/user/orgs'
+
     attr_accessor :page_size
 
     def initialize(opts)
@@ -99,7 +102,7 @@ module Vra
     def authorized?
       return false if @access_token.value.nil?
 
-      response = http_head('/csp/gateway/am/api/loggedin/user/orgs', :skip_auth)
+      response = http_head(ROLES_URL, :skip_auth)
       response.success?
     end
 
@@ -107,7 +110,7 @@ module Vra
       @access_token.value = nil
       validate_client_options!
 
-      response = http_post('/csp/gateway/am/api/login?access_token',
+      response = http_post(ACCESS_TOKEN_URL,
                            FFI_Yajl::Encoder.encode(token_params),
                            :skip_auth)
       raise Vra::Exception::Unauthorized, "Unable to get bearer token: #{response.body}" unless response.success_ok?
