@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 #
 # Author:: Ashique Saidalavi (<ashique.saidalavi@progress.com>)
-# Copyright:: Copyright (c) 2015 Chef Software, Inc.
+# Copyright:: Copyright (c) 2022 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -90,6 +90,10 @@ module Vra
       response = client.get_parsed("/deployment/api/deployments/#{id}/resources")
 
       response['content'].map! { |x| Vra::Resource.new(client, id, data: x) }
+    end
+
+    def resource_by_id(res_id)
+      Vra::Resource.new(client, id, id: res_id)
     end
 
     def requests
