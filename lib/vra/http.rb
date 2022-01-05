@@ -150,7 +150,8 @@ module Vra
 
       def self.from_response(http_response)
         body = FFI_Yajl::Parser.parse(http_response.body) || {}
-        new(body['message'], http_response.code, body)
+        message = body['message'] || body['serverMessage']
+        new(message, http_response.code, body)
       end
 
       def initialize(message, http_code, response)
