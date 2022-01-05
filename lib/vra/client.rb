@@ -112,7 +112,7 @@ module Vra
       response = http_post(ACCESS_TOKEN_URL,
                            FFI_Yajl::Encoder.encode(token_params),
                            :skip_auth)
-      raise Vra::Exception::Unauthorized, "Unable to get bearer token: #{response.body}" unless response.success_ok?
+      raise Vra::Exception::Unauthorized, "Unable to get the access token: #{response.body}" unless response.success_ok?
 
       response_body = FFI_Yajl::Parser.parse(response.body)
       @access_token.value = response_body['access_token']
