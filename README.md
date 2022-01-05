@@ -16,6 +16,8 @@ to create Chef plugins for knife, test-kitchen, and provisioning.
 
 `2.0.0` version and forward will support vRA 7+.
 
+`3.0.0` version and forward will support vRA 8+.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -44,166 +46,134 @@ require 'vra'
 Then, set up your client object. You will need to know your tenant ID from your vRA administrator.
 
 ```
-vra = Vra::Client.new(username: 'devmgr@corp.local', password: 'mypassword', tenant: 'mytenant', base_url: 'https://vra.corp.local', verify_ssl: true)
+client = Vra::Client.new(username: 'devmgr@corp.local', password: 'mypassword', tenant: 'mytenant', base_url: 'https://vra.corp.local', verify_ssl: true)
 => #<Vra::Client:0x000000034c0df8 ... >
 ```
+### Catalog Types:
+
+To list all the catalog types:
+
+```
+client.catalog.all_types
+ => [#<Vra::CatalogType:0x00007fcde6855370 @id="com.vmw.vro.workflow", @data={"id"=>"com.vmw.vro.workflow", ... ]
+```
+
+### Catalog Sources:
+
+To list all the catalog sources:
+
+```
+client.catalog.all_sources
+[#<Vra::CatalogSource:0x00007fcde3948c30 @id="2f5b2d5c-6dc2-4ea7-b304-cd8fea5ede0f", @data= ...]
+```
+
+And to list the sources that are entitled only:
+
+```
+client.catalog.entitled_sources(project_id)
+=> [#<Vra::CatalogSource:0x00007fcde2a28c00 @id="18102dc2-9e48-487a-93a8-aafab2ecc05 ...]
+```
+
+Creating a new source can be done as follows:
+
+```
+source = Vra::CatalogSource.create(client, name: 'New source', catalog_type_id: 'com.vmw.vro.workflow', project_id: project_id)
+ => #<Vra::CatalogSource:0x00007fad651f63b8 ... >
+```
+
+### Catalog Items
 
 To list all items in the catalog:
 
 ```
-vra.catalog.all_items
-=> [{"@type"=>"CatalogItem", "id"=>"a9cd6148-6e0b-4a80-ac47-f5255c52b43d", "version"=>2, "name"=>"CentOS 6.6", "description"=>"Blueprint for deploying a CentOS Linux development server", ... }]
+client.catalog.all_items
+ => [#<Vra::CatalogItem:0x00007fe583863b28>, #<Vra::CatalogItem:0x00007fe583863ad8 ... ]
 ```
 
 To only list the items in the catalog for which you are entitled to request:
 
 ```
-vra.catalog.entitled_items
-=> [{"@type"=>"ConsumerEntitledCatalogItem", "catalogItem"=>{"id"=>"d29efd6b-3cd6-4f8d-b1d8-da4ddd4e52b1", "version"=>2, "name"=>"WindowsServer2012", "description"=>"Windows Server 2012", ... }]
-```
-
-When you are ready to request an item from the catalog, create a new catalog request object:
-
-```
-catalog_request = vra.catalog.request('a9cd6148-6e0b-4a80-ac47-f5255c52b43d', cpus: 1, memory: 512, requested_for: 'devmgr@corp.local', lease_days: 30)
-=> #<Vra::CatalogRequest:0x00000003477c20 ... >
+client.catalog.entitled_items(project_id)
+=> [#<Vra::CatalogItem:0x00007fe583863b28>, #<Vra::CatalogItem:0x00007fe583863ad8 ... ]
 ```
 
 To retrive catalog id from catalog name:
 
 ```
-vra.catalog.fetch_catalog_items('my_catalog_name')
-=> #<Vra::CatalogRequest:0x00000004477c20 ... >  
+client.catalog.fetch_catalog_items('centos')
+ =>
+[#<Vra::CatalogItem:0x00007fb734110f60
+  @id="f2e8c6ee-dd00-32c4-94c7-0a50046cb2f3",
+  @data={
+    "name"=>"oe-centos-1633598756_bp",
+  ...>
+]
 ```
 
-vRA requires your sub-tenant (a.k.a. "business group") to be specified when requesting an item from the catalog. If the catalog item you are requesting is specifically created for a given business group, the gem will use that ID automatically without you needing to specify it.
-
-An easier option has been provided to end user to provide a friendly sub-tenant name instead of sub-tenant id, and the driver would take care of retrieving the sub-tenant id for the corresponding sub-tenant name. Tenant name is also required along with sub-tenant name to retrieve sub-tenant id. 
-
-To retrieve sub-tenant id from sub-tenant name:
+### Requesting Deployments
+When you are ready to request a deployment using a catalog, create a new deployment object:
 
 ```
-vra.fetch_subtenant_items('my_tenant', 'my_subtenant_name')
+request = client.catalog.request(
+  catalog_id, 
+  image_mapping: 'VRA-nc-lnx-ce8.4-Docker',
+  flavor_mapping: 'Small',
+  name: 'CentOS VRA8 Test',
+  project_id: project_id,
+  version: '1'
+)
+ =>
+#<Vra::DeploymentRequest:0x00007fb7340b7438
+...
 ```
-
-However, if there is no sub-tenant ID or sub-tenant name available for us to use, you will receive an error when you submit:
-
-```
-request = catalog_request.submit
-ArgumentError: Unable to submit request, required param(s) missing => subtenant_id
-	from /home/aleff/vmware-vra/lib/vra/catalog_request.rb:42:in `validate_params!'
-	from /home/aleff/vmware-vra/lib/vra/catalog_request.rb:99:in `submit'
-	from (irb):4
-	from /opt/chefdk/embedded/bin/irb:11:in `<main>'
-
-```
-
-In this case, you will need to supply the sub-tenant ID manually:
-
-```
-catalog_request.subtenant_id = '5327ddd3-1a4e-4663-9e9d-63db86ffc8af'
-=> "5327ddd3-1a4e-4663-9e9d-63db86ffc8af"
-```
+To request a deployment from a catalog item, you can use the above method with a project ID that has a cloud template version released to the project. 
+The ID of the catalog item from which you are requesting the deployment should be also included, and the version of the released cloud template. 
+Additionally, the name of the deployment should be specified and it should be unique.
+The image mapping specifies the OS image for a VM and the flavor mapping specifies the CPU count and RAM of a VM.
 
 If your catalog blueprint item requires additional parameters to successfully submit your request, you may add them:
 
 ```
-catalog_request.set_parameter('my_parameter', 'string', 'my value')
+request.set_parameter('my_parameter', 'string', 'my value')
 ```
 
-If you need to set a parameter on a child object in the blueprint, you can add them by using a ~:
+### Managing the deployment
+
+Now, submit your request!  The client will return a new "Deployment" object you can use to query for status.
 
 ```
-catalog_request.set_parameter('object~my_parameter', 'string', 'my value')
-```
+deployment = catalog_request.submit
+=> #<Vra::Deployment:0x000000027caea0 ... >
 
-### Creating a request from a yaml or json payload
-Should you want to create a request ahead of time you can create the parameters up front by
-reading from a file or a hard coded payload you use every time.  This is not required by any means but allows
-for some extra flexibility when using this request object directly.  The only difference is that you can pass
-in the request parameters instead of having to set them after you create the object.
-
-Given a sample request object like the following you will want to read the yaml into an ruby object:
-
-```yaml
-requestData:
-  entries:
-    key: provider-provisioningGroupId
-    value:
-      type: string
-      value: 93992-3929392-32323828-832882394
-    key: provider-datacenter
-      type: string
-      value: datacenter1
-    key: provider-domain
-      type: string
-      value: chef.com
-
-```
-
-And now use that data to create the Vra::RequestParameters to feed into the catalog request.
-
-```ruby
-# read in the request data
-yaml_data = YAML,load(data)
-# create a parameters array, although this only works with VRA6, since VRA7 can have complex data
-parameters = yaml_data['requestData']['entries'].map {|item| [item['key'], item['value'].values].flatten }
-# We put the values in a array so we can easily explode the parameters using the splat operator later
-request_params = Vra::RequestParameters.new
-# loop through each parameter and setting each parameter
-parameters.each {|p| request_params.set(*p)  # splat
-request_options = {
-  cpus: 1,
-  memory: 1024,
-  requested_for: 'me@me.com',
-  lease_days: 2,
-  additional_params: request_params
-}
-# create the request
-catalog_request = vra.catalog.request(blueprint, request_options)
-```
-In the above option instead of cpus and memory, shirt_size can be used as well if the blueprint has shirt size option enabled. e.g. of shirt size can be like value.small, value.medium etc, 
-
-Now, submit your request!  The client will return a new "Request" object you can use to query for status.
-
-```
-request = catalog_request.submit
-=> #<Vra::Request:0x000000027caea0 ... >
-
-request.status
+deployment.status
 => "IN_PROGRESS"
 ```
 
-You can easily refresh your request object to get the latest status:
+You can refresh your deployment object to get the latest status:
 
 ```
-request.refresh && request.status
+deployment.refresh && deployment.status
 => "SUCCESSFUL"
-
-request.completion_state
-=> "SUCCESSFUL"
-
-request.completion_details
-=> "Request succeeded. Created hol-dev-32."
 ```
 
-You can also save the request ID for later, and create a new request object at your leisure to follow-up on your request:
+You can also save the deployment ID for later, and create a new deployment object at your leisure to follow-up on your deployment request:
 
 ```
-request.id
+deployment.id
 => "aed22465-02db-481d-b55a-cefe216096a2"
 
-new_request = vra.requests.by_id('aed22465-02db-481d-b55a-cefe216096a2')
-=> #<Vra::Request:0x0000000564ac30 ... >
+new_deployment = client.deployments.by_id('aed22465-02db-481d-b55a-cefe216096a2')
+=> #<Vra::Deployment:0x0000000564ac30 ... >
 
-new_request.status
-=> "SUCCESSFUL"
+new_deployment.status
+=> "CREATE_SUCCESSFUL"
 ```
 
-When the request is successful, you can query the resources created as the result of your request. Assuming that the catalog item blueprint we requested only creates a single VM, we can get that resource and learn more information about it:
+### Deployment Resources
+When the deployment request is successful, you can query the resources created as the result of your request. Assuming that the catalog item blueprint we requested only creates a single VM, we can get that resource and learn more information about it:
 
 ```
-resource = request.resources.first
+resource = deployment.resources.first
 => #<Vra::Resource:0x00000006772e68 ... >
 
 resource.network_interfaces
@@ -216,23 +186,26 @@ resource.name
 => "hol-dev-32"
 ```
 
-And just like requests, you can save the resource ID and query it again later:
+If you have the resource_id and the deployment object, you can fetch the resources details as follows
 
 ```
 resource.id
 => "331fd10b-f2a2-40ae-86bc-1255c1ee9a6d"
 
-new_resource = vra.resources.by_id('331fd10b-f2a2-40ae-86bc-1255c1ee9a6d')
+new_resource = deployment.resource_by_id('331fd10b-f2a2-40ae-86bc-1255c1ee9a6d')
 => #<Vra::Resource:0x000000067c13b0 ... >
 
 new_resource.name
 => "hol-dev-32"
 ```
 
-When you no longer need the VM, you can destroy it, which returns another request object you can query for status:
+### Deleting a deployment from vRA
+
+When you no longer need the VM, you can destroy the deployment which will delete all the associated resources as well. 
+The method will return a request object you can query for status:
 
 ```
-destroy_req = resource.destroy
+destroy_req = deployment.destroy
 => #<Vra::Request:0x00000006ea90d8 ... >
 
 destroy_req.status
@@ -242,45 +215,8 @@ destroy_req.status
 You can also list all resources and requests you have permission to see with these methods:
 
 ```
-vra.resources.all_resources
-vra.requests.all_requests
-```
-
-### Download VRA catalog templates
-It can be quite useful to download the catalog templates from your VRA server for future playback or inspection.  This
-can now be easily done with some helpful class methods.
-
-To get a json string representation of the catalog template you can use `Vra::CatalogItem.dump_template(client, catalog_id)`
-
-To dump the catalog template to a file instead of a string `Vra::CatalogItem.write_template(client, catalog_id)`.  This will create a file like `windows2012.json`.
-
-If you just want to dump all the templates you can use `Vra::CatalogItem.dump_templates(client)`.  This will create a directory named vra_templates
-with all the entitled templates for the current user.  
-
-There are additional options you can provide to these methods in order to customize output file names and directories, so please see the source code in lib/vra/catalog_item.rb
-
-### Supply custom VRA catalog template and create request
-If you previously had some custom templates already in JSON format you can now use those to create requests instead of setting
-a bunch of parameters.  This can be especially useful when your request has complex parameters or you have a bunch of templates
-that you want to create unique requests for.
-
-To use you can do something like:
-
-```ruby
-payload_file = '/tmp/windows_2012.json'  # must be in json format
-cr = Vra::CatalogRequest.request_from_payload(client, payload_file)
-cr.submit
-
-```
-
-If you already have a catalog request object you can still supply a custom payload by simply setting the template_payload property.
-Note this custom payload will be merged with the properties originally set when creating the catalog request object.
-
-```ruby
-cr = Vra::CatalogRequest.new(id, opts)
-cr.template_payload = File.read('/tmp/windows_2012.json')
-cr.submit
-
+deployment.resources
+deployment.requests
 ```
 
 ### Pagination
@@ -315,7 +251,7 @@ $env:VRA_HTTP_TRACE=1
 
 Author:: Chef Partner Engineering (<partnereng@chef.io>)
 
-Copyright:: Copyright (c) 2015-2016 Chef Software, Inc.
+Copyright:: Copyright (c) 2022 Chef Software, Inc.
 
 License:: Apache License, Version 2.0
 
