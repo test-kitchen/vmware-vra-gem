@@ -92,7 +92,7 @@ module Vra
       end
     end
 
-    def ip_addresses
+    def ip_address
       return if !vm? || network_interfaces.nil?
 
       properties['address']

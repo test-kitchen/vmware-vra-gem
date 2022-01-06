@@ -153,7 +153,7 @@ describe Vra::Resource do
 
     describe '#ip_addresses' do
       it 'should have the correct ip address' do
-        expect(resource.ip_addresses).to eq '10.30.236.64'
+        expect(resource.ip_address).to eq '10.30.236.64'
       end
     end
   end
