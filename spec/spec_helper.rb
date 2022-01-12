@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 #
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
-# Copyright:: Copyright (c) 2015 Chef Software, Inc.
+# Copyright:: Copyright (c) 2022 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,13 +17,19 @@
 # limitations under the License.
 #
 
-require "vra"
-require "webmock/rspec"
+require 'webmock/rspec'
+require 'simplecov'
+
+SimpleCov.start do
+  enable_coverage :branch
+end
+
+require 'vra'
 
 def fixtures_dir
   @fixtures_dir ||= begin
     base_dir = File.dirname(__FILE__)
-    File.join(base_dir, "fixtures")
+    File.join(base_dir, 'fixtures')
   end
 end
 
