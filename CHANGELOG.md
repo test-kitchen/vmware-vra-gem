@@ -1,5 +1,10 @@
 # Change Log
 
+## [3.0.0](https://github.com/chef-partners/vmware-vra-gem/tree/v3.0.0) (2022-01-18)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.7.2...v3.0.0)
+
+- Rewritten to support vRA 8. If you require support for 7 make sure to pin on the previous 2.7.2 release.
+
 ## [2.7.2](https://github.com/chef-partners/vmware-vra-gem/tree/v2.7.2) (2020-09-09)
 [Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.7.1...v2.7.2)
 
