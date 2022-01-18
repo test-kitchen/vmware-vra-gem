@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 #
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
-# Copyright:: Copyright (c) 2015 Chef Software, Inc.
+# Copyright:: Copyright (c) 2022 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,23 +17,34 @@
 # limitations under the License.
 #
 
-require "ffi_yajl" unless defined?(FFI_Yajl)
-
 module Vra
+  # class to represent the Deployment request
   class Request
-    attr_reader :client, :id
-    def initialize(client, id)
-      @client = client
-      @id     = id
+    attr_reader :id, :deployment_id
 
-      @request_data       = nil
-      @status             = nil
-      @completion_state   = nil
-      @completion_details = nil
+    def initialize(client, deployment_id, opts = {})
+      @client             = client
+      @deployment_id      = deployment_id
+      @id                 = opts[:id]
+      @request_data       = opts[:data]
+
+      if @request_data.nil?
+        refresh
+      else
+        @id = @request_data['id']
+      end
+    end
+
+    def requested_by
+      request_data['requestedBy']
+    end
+
+    def name
+      request_data['name']
     end
 
     def refresh
-      @request_data = client.get_parsed("/catalog-service/api/consumer/requests/#{@id}")
+      @request_data = client.get_parsed("/deployment/api/deployments/#{deployment_id}/requests/#{id}?deleted=true")
     rescue Vra::Exception::HTTPNotFound
       raise Vra::Exception::NotFound, "request ID #{@id} is not found"
     end
@@ -50,7 +61,7 @@ module Vra
       refresh_if_empty
       return if request_empty?
 
-      @request_data["phase"]
+      request_data['status']
     end
 
     def completed?
@@ -58,34 +69,15 @@ module Vra
     end
 
     def successful?
-      status == "SUCCESSFUL"
+      status == 'SUCCESSFUL'
     end
 
     def failed?
-      status == "FAILED"
+      status == 'FAILED'
     end
 
-    def completion_state
-      refresh_if_empty
-      return if request_empty?
+    private
 
-      @request_data["requestCompletion"]["requestCompletionState"]
-    end
-
-    def completion_details
-      refresh_if_empty
-      return if request_empty?
-
-      @request_data["requestCompletion"]["completionDetails"]
-    end
-
-    def resources
-      begin
-        request_resources = client.http_get_paginated_array!("/catalog-service/api/consumer/requests/#{@id}/resources")
-      rescue Vra::Exception::HTTPNotFound
-        raise Vra::Exception::NotFound, "resources for request ID #{@id} are not found"
-      end
-      request_resources.map { |resource| Vra::Resource.new(client, data: resource) }
-    end
+    attr_reader :request_data, :client
   end
 end

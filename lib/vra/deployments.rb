@@ -1,8 +1,7 @@
 # frozen_string_literal: true
-
 #
-# Author:: Chef Partner Engineering (<partnereng@chef.io>)
-# Copyright:: Copyright (c) 2015 Chef Software, Inc.
+# Author:: Ashique Saidalavi (<ashique.saidalavi@progress.com>)
+# Copyright:: Copyright (c) 2022 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,29 +16,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 module Vra
-  class Resources
-    attr_reader :client
-
+  # class that represents the Deployments Object
+  class Deployments
     def initialize(client)
       @client = client
     end
 
-    # @return [Array[Vra::Resource]] - returns an array of all the resources owned by the user
-    # @param [Vra::Client]
-    def self.all(client)
-      items = client.http_get_paginated_array!("/catalog-service/api/consumer/resources")
-      items.map { |item| Vra::Resource.new(client, data: item) }
+    def by_id(dep_id)
+      Vra::Deployment.new(client, id: dep_id)
     end
 
-    # @return [Array[Vra::Resource]] - returns an array of all the resources owned by the user
-    def all_resources
-      self.class.all(client)
+    def all
+      fetch_all_resources
     end
 
-    def by_id(id)
-      Vra::Resource.new(client, id: id)
+    class << self
+      def all(client)
+        new(client).all
+      end
+
+      def by_id(client, id)
+        new(client).by_id(id)
+      end
+    end
+
+    private
+
+    attr_reader :client
+
+    def fetch_all_resources
+      client
+        .http_get_paginated_array!('/deployment/api/deployments')
+        .map! { |x| Vra::Deployment.new(client, data: x) }
     end
   end
 end

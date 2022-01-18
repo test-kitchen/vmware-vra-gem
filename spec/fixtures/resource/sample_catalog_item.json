@@ -1,0 +1,18 @@
+{
+    "id": "123456",
+    "name": "centos",
+    "description": "Centos Cat",
+    "sourceId": "source-123456",
+    "sourceName": "Source 123",
+    "type": {
+        "id": "com.vmw.blueprint",
+        "link": "/catalog/api/types/com.vmw.blueprint",
+        "name": "VMware Cloud Templates"
+    },
+    "createdAt": "2021-10-07T14:41:57.691449Z",
+    "createdBy": "administrator",
+    "lastUpdatedAt": "2021-11-04T00:06:45.835597Z",
+    "lastUpdatedBy": "administrator",
+    "iconId": "1495b8d9",
+    "bulkRequestLimit": 1
+}

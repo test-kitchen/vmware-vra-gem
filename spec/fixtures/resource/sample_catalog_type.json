@@ -1,0 +1,49 @@
+{
+    "id": "com.vmw.vro.workflow",
+    "name": "vRealize Orchestrator Workflow",
+    "baseUri": "https://vra.corp.local:8080/vro",
+    "createdBy": "vro-gateway-test",
+    "createdAt": "2020-08-04T22:37:14.295973Z",
+    "iconId": "0616ff81-c13b-32fe-b3b9-de3c2edd85dd",
+    "configSchema": {
+        "type": "object",
+        "properties": {
+            "workflows": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "version": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "integration": {
+                            "type": "object",
+                            "properties": {
+                                "endpointConfigurationLink": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "endpointConfigurationLink"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "id",
+                        "version"
+                    ]
+                }
+            }
+        }
+    }
+}

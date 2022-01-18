@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 #
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
-# Copyright:: Copyright (c) 2015 Chef Software, Inc.
+# Copyright:: Copyright (c) 2022 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,110 +21,64 @@ require "ffi_yajl" unless defined?(FFI_Yajl)
 require "vra/catalog"
 
 module Vra
-  class CatalogItem
-    attr_reader :id, :client
-    def initialize(client, opts)
-      @client            = client
-      @id                = opts[:id]
-      @catalog_item_data = opts[:data]
+  # Class that represents the Catalog Item
+  class CatalogItem < Vra::CatalogBase
+    INDEX_URL = '/catalog/api/admin/items'
 
-      if @id.nil? && @catalog_item_data.nil?
-        raise ArgumentError, "must supply an id or a catalog item data hash"
-      end
+    attr_reader :project_id
 
-      if !@id.nil? && !@catalog_item_data.nil?
-        raise ArgumentError, "must supply an id OR a catalog item data hash, not both"
-      end
+    def initialize(client, opts = {})
+      super
+      @project_id = opts[:project_id]
+      validate!
 
-      if @catalog_item_data.nil?
+      if @data.nil?
         fetch_catalog_item
       else
-        @id = @catalog_item_data["id"]
+        @id = @data['id']
       end
     end
 
     def fetch_catalog_item
-      @catalog_item_data = client.get_parsed("/catalog-service/api/consumer/catalogItems/#{id}")
+      @data = client.get_parsed("/catalog/api/admin/items/#{id}")
     rescue Vra::Exception::HTTPNotFound
       raise Vra::Exception::NotFound, "catalog ID #{id} does not exist"
     end
 
     def name
-      @catalog_item_data["name"]
+      data['name']
     end
 
     def description
-      @catalog_item_data["description"]
+      data['description']
     end
 
-    def status
-      @catalog_item_data["status"]
+    def source_id
+      data['sourceId']
     end
 
-    def organization
-      return {} if @catalog_item_data["organization"].nil?
-
-      @catalog_item_data["organization"]
+    def source_name
+      data['sourceName']
     end
 
-    def tenant_id
-      organization["tenantRef"]
+    def source
+      @source ||= Vra::CatalogSource.new(client, id: source_id)
     end
 
-    def tenant_name
-      organization["tenantLabel"]
+    def type
+      @type ||= Vra::CatalogType.new(client, data: data['type'])
     end
 
-    def subtenant_id
-      organization["subtenantRef"]
+    def icon_id
+      data['iconId']
     end
 
-    def subtenant_name
-      organization["subtenantLabel"]
+    def entitle!(opts = {})
+      super(opts.merge(type: 'CatalogItemIdentifier'))
     end
 
-    def blueprint_id
-      @catalog_item_data["providerBinding"]["bindingId"]
-    end
-
-    # @param [String] - the id of the catalog item
-    # @param [Vra::Client] - a vra client object
-    # @return [String] - returns a json string of the catalog template
-    def self.dump_template(client, id)
-      response = client.http_get("/catalog-service/api/consumer/entitledCatalogItems/#{id}/requests/template")
-      response.body
-    end
-
-    # @param client [Vra::Client] - a vra client object
-    # @param id [String] - the id of the catalog item
-    # @param filename [String] - the name of the file you want to output the template to
-    # if left blank, will default to the id of the item
-    # @note outputs the catalog template to a file in serialized format
-    def self.write_template(client, id, filename = nil)
-      filename ||= "#{id}.json"
-      begin
-        contents = dump_template(client, id)
-        data = JSON.parse(contents)
-        pretty_contents = JSON.pretty_generate(data)
-        File.write(filename, pretty_contents)
-        filename
-      rescue Vra::Exception::HTTPError => e
-        raise e
-      end
-    end
-
-    # @param [Vra::Client] - a vra client object
-    # @param [String] - the directory path to write the files to
-    # @param [Boolean] - set to true if you wish the file name to be the id of the catalog item
-    # @return [Array[String]] - a array of all the files that were generated
-    def self.dump_templates(client, dir_name = "vra_templates", use_id = false)
-      FileUtils.mkdir_p(dir_name) unless File.exist?(dir_name)
-      client.catalog.entitled_items.map do |c|
-        id = use_id ? c.id : c.name.tr(" ", "_")
-        filename = File.join(dir_name, "#{id}.json").downcase
-        write_template(client, c.id, filename)
-        filename
-      end
+    def self.entitle!(client, id)
+      new(client, id: id).entitle!
     end
   end
 end

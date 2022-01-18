@@ -1,6 +1,9 @@
 # frozen_string_literal: true
-require "net/http" unless defined?(Net::HTTP)
-require "openssl" unless defined?(OpenSSL)
+
+require 'net/http' unless defined?(Net::HTTP)
+require 'openssl' unless defined?(OpenSSL)
+require 'ffi_yajl' unless defined?(FFI_Yajl)
+require 'json'
 
 module Vra
   module Http
@@ -61,6 +64,7 @@ module Vra
           get: Net::HTTP::Get,
           head: Net::HTTP::Head,
           post: Net::HTTP::Post,
+          delete: Net::HTTP::Delete
         }.fetch(method, nil)
 
         raise "Unknown HTTP method #{method}!" unless type
@@ -142,12 +146,13 @@ module Vra
     end
 
     class Error < StandardError
-      def self.from_response(http_response)
-        new(http_response.message, http_response.code, http_response.body)
-      end
+      attr_reader :http_code, :response
 
-      attr_reader :http_code
-      attr_reader :response
+      def self.from_response(http_response)
+        body = FFI_Yajl::Parser.parse(http_response.body) || {}
+        message = body['message'] || body['serverMessage']
+        new(message, http_response.code, body)
+      end
 
       def initialize(message, http_code, response)
         super(message)

@@ -1,0 +1,20 @@
+{
+    "id": "123456",
+    "name": "Devops",
+    "typeId": "com.vmw.blueprint",
+    "createdAt": "2020-08-19T20:16:12.160353Z",
+    "createdBy": "administrator",
+    "lastUpdatedAt": "2021-12-29T12:49:32.186116Z",
+    "lastUpdatedBy": "system-user",
+    "config": {
+        "sourceProjectId": "pro-123456"
+    },
+    "itemsImported": 20,
+    "itemsFound": 20,
+    "lastImportStartedAt": "2021-12-29T12:49:30.638320Z",
+    "lastImportCompletedAt": "2021-12-29T12:49:32.185967Z",
+    "lastImportErrors": [],
+    "projectId": "pro-123456",
+    "global": false,
+    "iconId": "1495b8d9"
+}

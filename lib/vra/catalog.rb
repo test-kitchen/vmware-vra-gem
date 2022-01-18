@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 #
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
-# Copyright:: Copyright (c) 2015 Chef Software, Inc.
+# Copyright:: Copyright (c) 2022 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,22 +25,53 @@ module Vra
       @client = client
     end
 
-    def all_items
-      client.http_get_paginated_array!("/catalog-service/api/consumer/catalogItems")
-        .map! { |x| Vra::CatalogItem.new(client, data: x) }
+    def all_types
+      fetch_resources Vra::CatalogType
     end
 
-    def entitled_items
-      client.http_get_paginated_array!("/catalog-service/api/consumer/entitledCatalogItems")
-        .map! { |x| Vra::CatalogItem.new(client, data: x["catalogItem"]) }
+    def all_sources
+      fetch_resources Vra::CatalogSource
+    end
+
+    def all_items
+      fetch_resources Vra::CatalogItem
+    end
+
+    def entitled_sources(project_id)
+      fetch_entitlements(project_id, 'CatalogSourceIdentifier')
+    end
+
+    def entitled_items(project_id)
+      fetch_entitlements(project_id, 'CatalogItemIdentifier')
     end
 
     def request(*args)
-      Vra::CatalogRequest.new(@client, *args)
+      Vra::DeploymentRequest.new(@client, *args)
     end
 
     def fetch_catalog_items(catalog_name)
-      client.http_get("/catalog-service/api/consumer/entitledCatalogItemViews?%24filter=name+eq+'#{catalog_name}'")
+      fetch_resources(
+        Vra::CatalogItem,
+        '/catalog/api/admin/items',
+        "search=#{catalog_name}"
+      )
+    end
+
+    private
+
+    def fetch_resources(klass, url = nil, filter = nil)
+      client
+        .http_get_paginated_array!(url || klass::INDEX_URL, filter)
+        .map! { |x| klass.new(client, data: x) }
+    end
+
+    def fetch_entitlements(project_id, type)
+      klass = type == 'CatalogSourceIdentifier' ? Vra::CatalogSource : Vra::CatalogItem
+
+      client
+        .get_parsed("/catalog/api/admin/entitlements?projectId=#{project_id}")
+        .select { |x| x['definition']['type'] == type }
+        .map! { |x| klass.new(client, data: x['definition']) }
     end
   end
 end

@@ -16,3 +16,5 @@ mkmf.log
 .direnv/
 .envrc
 .ruby-version
+.idea
+

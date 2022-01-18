@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 #
 # Author:: Chef Partner Engineering (<partnereng@chef.io>)
-# Copyright:: Copyright (c) 2015 Chef Software, Inc.
+# Copyright:: Copyright (c) 2022 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,14 +17,17 @@
 # limitations under the License.
 #
 
-require "vra/catalog"
-require "vra/catalog_item"
-require "vra/catalog_request"
-require "vra/client"
-require "vra/exceptions"
-require "vra/request"
-require "vra/request_parameters"
-require "vra/requests"
-require "vra/resource"
-require "vra/resources"
-require "vra/version"
+require 'vra/catalog_base'
+require 'vra/catalog'
+require 'vra/catalog_item'
+require 'vra/catalog_source'
+require 'vra/catalog_type'
+require 'vra/deployment_request'
+require 'vra/deployment'
+require 'vra/deployments'
+require 'vra/client'
+require 'vra/exceptions'
+require 'vra/request'
+require 'vra/request_parameters'
+require 'vra/resource'
+require 'vra/version'

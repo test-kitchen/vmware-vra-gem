@@ -1,0 +1,58 @@
+[
+    {
+        "id": "Deployment.ChangeLease",
+        "name": "ChangeLease",
+        "displayName": "Change Lease",
+        "description": "Set a deployment's expiration date",
+        "valid": true,
+        "actionType": "RESOURCE_ACTION"
+    },
+    {
+        "id": "Deployment.ChangeOwner",
+        "name": "ChangeOwner",
+        "displayName": "Change Owner",
+        "description": "Change owner of a deployment",
+        "valid": true,
+        "actionType": "RESOURCE_ACTION"
+    },
+    {
+        "id": "Deployment.Delete",
+        "name": "Delete",
+        "displayName": "Delete",
+        "description": "Delete a deployment",
+        "valid": true,
+        "actionType": "RESOURCE_ACTION"
+    },
+    {
+        "id": "Deployment.EditTags",
+        "name": "EditTags",
+        "displayName": "Edit Tags",
+        "description": "Add or remove tags from a deployment's resources",
+        "valid": true,
+        "actionType": "RESOURCE_ACTION"
+    },
+    {
+        "id": "Deployment.PowerOff",
+        "name": "PowerOff",
+        "displayName": "Power Off",
+        "description": "Power off a deployment",
+        "valid": true,
+        "actionType": "RESOURCE_ACTION"
+    },
+    {
+        "id": "Deployment.PowerOn",
+        "name": "PowerOn",
+        "displayName": "Power On",
+        "description": "Power on a deployment",
+        "valid": false,
+        "actionType": "RESOURCE_ACTION"
+    },
+    {
+        "id": "Deployment.Update",
+        "name": "Update",
+        "displayName": "Update",
+        "description": "Update a deployment",
+        "valid": true,
+        "actionType": "RESOURCE_ACTION"
+    }
+]

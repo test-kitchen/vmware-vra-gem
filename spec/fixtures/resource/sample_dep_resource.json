@@ -1,0 +1,112 @@
+{
+    "id": "res-123",
+    "name": "Cloud_vSphere_Machine_1",
+    "type": "Cloud.vSphere.Machine",
+    "createdAt": "2021-12-20T13:22:10.404600Z",
+    "properties": {
+        "resourceId": "671c2ec7-4863-42c8-addf-7e420cb190b7",
+        "Owner": "admin",
+        "zone_overlapping_migrated": "true",
+        "powerState": "ON",
+        "environmentName": "On premise",
+        "hasSnapshots": "false",
+        "computeHostType": "ClusterComputeResource",
+        "id": "/resources/compute/671c2ec7-4863-42c8-addf-7e420cb190b7",
+        "cpuCount": 2,
+        "totalMemoryMB": 8192,
+        "endpointType": "vsphere",
+        "resourceLink": "/resources/compute/671c2ec7-4863-42c8-addf-7e420cb190b7",
+        "networks": [
+            {
+                "address": "192.168.110.200",
+                "assignment": "dynamic",
+                "mac_address": "00:50:56:ae:95:3c",
+                "name": "VM Network",
+                "resourceName": "VM Network",
+                "id": "/resources/network-interfaces/net-1",
+                "ipv6Addresses": [
+                    "fd27:5600:0:232::7cd",
+                    "fe80::59be:c7d0:665f:13f5"
+                ],
+                "deviceIndex": 0
+            },
+            {
+                "address": "192.168.220.200",
+                "assignment": "dynamic",
+                "mac_address": "00:50:56:ae:95:3d",
+                "name": "Management Network",
+                "resourceName": "Management Network",
+                "id": "/resources/network-interfaces/net-2",
+                "ipv6Addresses": [
+                    "fd27:5600:0:232::8cd",
+                    "fe80::59be:c7d0:665f:13e1"
+                ],
+                "deviceIndex": 0
+            }
+        ],
+        "resourcePool": "/resources/pools/d66ae91db21f2075-7f703c5265a63d87",
+        "componentType": "Cloud.vSphere.Machine",
+        "address": "10.30.236.64",
+        "resourceGroupName": "VRATEMPDCI",
+        "datastoreName": "ncvra01",
+        "coreCount": "2",
+        "flavorMappingName": "",
+        "customizationSpec": "vRA-Windows2019",
+        "resourceDescLink": "/resources/compute-descriptions/e756089d-5256-48eb-977c-4af31405eb72",
+        "project": "pro-123",
+        "provisionGB": "100",
+        "zone": "USMORVRA01",
+        "memoryGB": "8",
+        "image": "VRA-nc-base-w2k19",
+        "resourceName": "nc-vra-2073",
+        "flavor": "Medium",
+        "softwareName": "Microsoft Windows Server 2016 or later (64-bit)",
+        "name": "Cloud_vSphere_Machine_1",
+        "region": "USNC-VRA-CL01",
+        "storage": {
+            "disks": [
+                {
+                    "independent": "false",
+                    "sharesLevel": "normal",
+                    "diskPlacementRef": "Datastore:datastore-361848",
+                    "controllerKey": "1000",
+                    "type": "HDD",
+                    "shares": "1000",
+                    "provisionGB": "100",
+                    "encrypted": false,
+                    "bootOrder": 1,
+                    "provisioningType": "thin",
+                    "capacityGb": 100,
+                    "vm": "VirtualMachine:vm-1086705",
+                    "limitIops": "-1",
+                    "name": "nc-vra-2073-boot-disk",
+                    "controllerUnitNumber": "0",
+                    "persistent": false,
+                    "vcUuid": "d9a8730b-c244-4cd2-a570-41f3724b1bff"
+                },
+                {
+                    "encrypted": false,
+                    "capacityGb": 0,
+                    "vm": "VirtualMachine:vm-1086705",
+                    "name": "CD/DVD drive 1",
+                    "controllerUnitNumber": "0",
+                    "controllerKey": "15000",
+                    "type": "CDROM",
+                    "persistent": false,
+                    "vcUuid": "d9a8730b-c244-4cd2-a570-41f3724b1bff"
+                }
+            ]
+        },
+        "providerId": "5035dbc0-5ecd-2875-f21c-5fe844e4dcd4",
+        "osType": "WINDOWS",
+        "instanceUUID": "5035dbc0-5ecd-2875-f21c-5fe844e4dcd4",
+        "endpointId": "d3b65631-3196-4e38-ad4a-ee02afa2bea4",
+        "datacenter": "Datacenter:datacenter-342098",
+        "primaryMAC": "00:50:56:b5:72:2d",
+        "computeHostRef": "ClusterComputeResource:domain-c342105",
+        "account": "nc-devvcmor01",
+        "vcUuid": "d9a8730b-c244-4cd2-a570-41f3724b1bff"
+    },
+    "syncStatus": "SUCCESS",
+    "state": "OK"
+}
