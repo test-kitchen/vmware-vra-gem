@@ -1,4 +1,8 @@
 # Change Log
+## [3.0.1](https://github.com/chef-partners/vmware-vra-gem/tree/v3.0.1) (2022-01-25)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v3.0.0...v3.0.1)
+
+- Fix access token workflow to work with VRA8
 
 ## [3.0.0](https://github.com/chef-partners/vmware-vra-gem/tree/v3.0.0) (2022-01-18)
 [Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v2.7.2...v3.0.0)
