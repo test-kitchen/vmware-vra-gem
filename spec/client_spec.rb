@@ -54,7 +54,7 @@ describe Vra::Client do
   end
 
   describe '#request_headers' do
-    context 'when bearer token exists' do
+    context 'when access token exists' do
       it 'has an Authorization header' do
         client.access_token = '12345'
         expect(client.request_headers.key?('csp-auth-token')).to be true
@@ -131,7 +131,7 @@ describe Vra::Client do
     end
   end
 
-  describe '#generate_bearer_token' do
+  describe '#generate_access_token' do
     let(:payload) do
       {
         username: 'user@corp.local',
@@ -148,15 +148,28 @@ describe Vra::Client do
       }.to_json
     end
 
+    let(:refresh_response_body) { { token: '123456' }.to_json }
+
     it 'posts to the tokens API endpoint' do
       response = double('response', code: 200, body: success_response, success_ok?: true)
+      refresh_response = double('response', code: 200, body: refresh_response_body, success_ok?: true)
+      # First request to generate the refresh token
       expect(Vra::Http).to receive(:execute)
         .with(method: :post,
-              url: client.full_url(described_class::ACCESS_TOKEN_URL),
+              url: client.full_url(described_class::REFRESH_TOKEN_URL),
               payload: payload,
               headers: anything,
               verify_ssl: true)
         .and_return(response)
+
+      # Second request to generate access token
+      expect(Vra::Http).to receive(:execute)
+        .with(method: :post,
+              url: client.full_url(described_class::ACCESS_TOKEN_URL),
+              payload: "{ \"refreshToken\": \"654321\" }",
+              headers: anything,
+              verify_ssl: true)
+        .and_return(refresh_response)
 
       client.generate_access_token
     end
@@ -164,7 +177,8 @@ describe Vra::Client do
     context 'when token is generated successfully' do
       it 'sets the token' do
         response = double('response', code: 200, body: success_response, success_ok?: true)
-        allow(Vra::Http).to receive(:execute).and_return(response)
+        refresh_response = double('response', code: 200, body: refresh_response_body, success_ok?: true)
+        allow(Vra::Http).to receive(:execute).twice.and_return(response, refresh_response)
 
         client.generate_access_token
 
