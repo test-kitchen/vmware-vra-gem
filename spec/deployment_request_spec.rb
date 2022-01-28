@@ -70,6 +70,45 @@ describe Vra::DeploymentRequest do
 
       expect { request.send(:validate!) }.not_to raise_error(ArgumentError)
     end
+
+    context 'versions' do
+      let(:dep_request) do
+        described_class.new(
+          client,
+          catalog_id,
+          image_mapping: 'centos',
+          name: 'sample dep',
+          flavor_mapping: 'small',
+          project_id: 'pro-123'
+        )
+      end
+
+      before do
+        allow(client).to receive(:authorized?).and_return(true)
+      end
+
+      it 'should not call the api to fetch versions if provided in the params' do
+        expect(client).not_to receive(:http_get_paginated_array!)
+
+        dep_request.version = '1'
+        dep_request.send(:validate!)
+      end
+
+      it 'should fetch version from api if version is blank' do
+        expect(client).to receive(:http_get_paginated_array!).and_return([{ 'id' => '2', 'description' => 'v2.0' }])
+
+        dep_request.send(:validate!)
+        expect(dep_request.version).to eq('2')
+      end
+
+      it 'should raise an exception if no valid versions found' do
+        expect(client).to receive(:http_get_paginated_array!).and_return([])
+
+        expect { dep_request.send(:validate!) }
+          .to raise_error(ArgumentError)
+          .with_message('Unable to fetch a valid catalog version')
+      end
+    end
   end
 
   describe '#additional parameters' do

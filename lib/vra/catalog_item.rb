@@ -73,12 +73,24 @@ module Vra
       data['iconId']
     end
 
+    def versions
+      client
+        .http_get_paginated_array!("/catalog/api/items/#{id}/versions")
+        .map { |v| v['id'] }
+    end
+
     def entitle!(opts = {})
       super(opts.merge(type: 'CatalogItemIdentifier'))
     end
 
-    def self.entitle!(client, id)
-      new(client, id: id).entitle!
+    class << self
+      def entitle!(client, id)
+        new(client, id: id).entitle!
+      end
+
+      def fetch_latest_version(client, id)
+        new(client, data: { 'id' => id }).versions&.first
+      end
     end
   end
 end
