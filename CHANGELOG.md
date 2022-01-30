@@ -1,4 +1,10 @@
 # Change Log
+
+## [3.1.0](https://github.com/chef-partners/vmware-vra-gem/tree/v3.1.0) (2022-01-30)
+[Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v3.0.1...v3.1.0)
+
+- Make the version param optional in deployment request api 
+
 ## [3.0.1](https://github.com/chef-partners/vmware-vra-gem/tree/v3.0.1) (2022-01-25)
 [Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v3.0.0...v3.0.1)
 
