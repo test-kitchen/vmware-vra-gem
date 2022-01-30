@@ -85,13 +85,21 @@ module Vra
 
     def validate!
       missing_params = []
-      %i[image_mapping flavor_mapping name project_id version].each do |arg|
+      %i[image_mapping flavor_mapping name project_id].each do |arg|
         missing_params << arg if send(arg).nil?
       end
 
-      return if missing_params.empty?
+      unless missing_params.empty?
+        raise ArgumentError, "Unable to submit request, required param(s) missing => #{missing_params.join(', ')}"
+      end
 
-      raise ArgumentError, "Unable to submit request, required param(s) missing => #{missing_params.join(', ')}"
+      # If the user doesn't supply the catalog version, fetch the latest version and use it
+      # and if the API was unable to find a valid version, alert the user.
+      return unless @version.nil?
+
+
+      @version = CatalogItem.fetch_latest_version(client, catalog_id)
+      raise ArgumentError, 'Unable to fetch a valid catalog version' if @version.nil?
     end
 
     def send_request!

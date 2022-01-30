@@ -125,8 +125,10 @@ request = client.catalog.request(
 #<Vra::DeploymentRequest:0x00007fb7340b7438
 ...
 ```
-To request a deployment from a catalog item, you can use the above method with a project ID that has a cloud template version released to the project. 
-The ID of the catalog item from which you are requesting the deployment should be also included, and the version of the released cloud template. 
+To request a deployment from a catalog item, you can use the above method with a project ID that has a cloud template version released to the project.
+
+The ID of the catalog item from which you are requesting the deployment should be also included, and the version of the released cloud template. If the user doesn't specify a version explicitly, the latest version will be fetched automatically and will be used for the request.
+ 
 Additionally, the name of the deployment should be specified and it should be unique.
 The image mapping specifies the OS image for a VM and the flavor mapping specifies the CPU count and RAM of a VM.
 

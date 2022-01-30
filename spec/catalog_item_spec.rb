@@ -122,4 +122,37 @@ describe Vra::CatalogItem do
       expect(catalog_item.type).to be_a(Vra::CatalogType)
     end
   end
+
+  describe '#versions' do
+    let(:versions_response) do
+      [{ id: '2', description: 'v2.0' }, { id: '1', description: 'v1.0' }]
+    end
+
+    before do
+      allow(client).to receive(:authorized?).and_return(true)
+    end
+
+    it 'should call the api to fetch the versions' do
+      expect(client)
+        .to receive(:http_get_paginated_array!)
+        .with('/catalog/api/items/catalog-12345/versions')
+        .and_return(versions_response)
+
+      described_class.fetch_latest_version(client, 'catalog-12345')
+    end
+
+    it 'should return the correct version' do
+      stub_request(:get, client.full_url('/catalog/api/items/catalog-12345/versions?$skip=0&$top=20'))
+        .to_return(
+          status: 200,
+          body: {
+            content: versions_response,
+            totalPages: 1
+          }.to_json,
+          headers: {}
+        )
+
+      expect(described_class.fetch_latest_version(client, 'catalog-12345')).to eq('2')
+    end
+  end
 end
