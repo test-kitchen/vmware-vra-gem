@@ -89,7 +89,6 @@ module Vra
       headers["Accept"]         = "application/json"
       headers["Content-Type"]   = "application/json"
       headers["Authorization"]  = "Bearer " + @access_token.value unless @access_token.value.nil?
-
       headers
     end
 
