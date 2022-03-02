@@ -88,7 +88,7 @@ module Vra
       headers                   = {}
       headers['Accept']         = 'application/json'
       headers['Content-Type']   = 'application/json'
-      headers['csp-auth-token'] = @access_token.value unless @access_token.value.nil?
+      headers['Authorization']  = 'Bearer ' + @access_token.value unless @access_token.value.nil?
 
       headers
     end
