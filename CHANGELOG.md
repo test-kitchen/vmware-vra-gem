@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.1.1](https://github.com/chef-partners/vmware-vra-gem/tree/v3.1.1) (2022-03-01)
+
+- Send Authorization: Bearer header instead of csp-auth-token for greater compatibility [@oshvarts]
+
 ## [3.1.0](https://github.com/chef-partners/vmware-vra-gem/tree/v3.1.0) (2022-01-30)
 [Full Changelog](https://github.com/chef-partners/vmware-vra-gem/compare/v3.0.1...v3.1.0)
 
