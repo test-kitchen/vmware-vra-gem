@@ -69,7 +69,7 @@ describe Vra::CatalogItem do
       let(:response) { double('response', code: 200, body: catalog_item_payload.to_json) }
 
       it 'calls http_get against the catalog_service' do
-        expect(client).to receive(:http_get).with('/catalog/api/admin/items/catalog-12345').and_return(response)
+        expect(client).to receive(:http_get).with('/catalog/api/items/catalog-12345').and_return(response)
         Vra::CatalogItem.new(client, id: 'catalog-12345')
       end
     end
@@ -78,7 +78,7 @@ describe Vra::CatalogItem do
       it 'raises an exception' do
         allow(client)
           .to receive(:http_get)
-          .with('/catalog/api/admin/items/catalog-12345')
+          .with('/catalog/api/items/catalog-12345')
           .and_raise(Vra::Exception::HTTPNotFound)
 
         expect { Vra::CatalogItem.new(client, id: 'catalog-12345') }
@@ -91,7 +91,7 @@ describe Vra::CatalogItem do
   describe '#entitle!' do
     it 'should entitle the catalog item' do
       allow(client).to receive(:authorized?).and_return(true)
-      stub_request(:get, client.full_url('/catalog/api/admin/items/123456'))
+      stub_request(:get, client.full_url('/catalog/api/items/123456'))
         .to_return(status: 200, body: catalog_item_payload.to_json, headers: {})
 
       response = double('response', body: '{"message": "success"}', success?: true)

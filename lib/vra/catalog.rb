@@ -52,7 +52,7 @@ module Vra
     def fetch_catalog_items(catalog_name)
       fetch_resources(
         Vra::CatalogItem,
-        '/catalog/api/admin/items',
+        '/catalog/api/items',
         "search=#{catalog_name}"
       )
     end

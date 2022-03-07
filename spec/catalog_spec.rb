@@ -44,7 +44,7 @@ describe Vra::Catalog do
   describe '#all_items' do
     it 'calls the catalogItems endpoint' do
       expect(client).to receive(:http_get_paginated_array!)
-        .with('/catalog/api/admin/items', nil)
+        .with('/catalog/api/items', nil)
         .and_return([catalog_item])
 
       client.catalog.all_items
@@ -52,7 +52,7 @@ describe Vra::Catalog do
 
     it 'returns a Vra::CatalogItem object' do
       allow(client).to receive(:http_get_paginated_array!)
-        .with('/catalog/api/admin/items', nil)
+        .with('/catalog/api/items', nil)
         .and_return([catalog_item])
 
       items = client.catalog.all_items
@@ -154,7 +154,7 @@ describe Vra::Catalog do
 
     it 'returns the catalogs by name' do
       expect(client).to receive(:http_get_paginated_array!)
-        .with('/catalog/api/admin/items', 'search=centos')
+        .with('/catalog/api/items', 'search=centos')
         .and_return([catalog_item])
 
       cat = client.catalog.fetch_catalog_items('centos').first
