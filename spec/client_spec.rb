@@ -57,13 +57,13 @@ describe Vra::Client do
     context 'when access token exists' do
       it 'has an Authorization header' do
         client.access_token = '12345'
-        expect(client.request_headers.key?('csp-auth-token')).to be true
+        expect(client.request_headers.key?('Authorization')).to be true
       end
     end
 
     context 'when access token does not exist' do
       it 'does not have an Authorization header' do
-        expect(client.request_headers.key?('csp-auth-token')).to be false
+        expect(client.request_headers.key?('Authorization')).to be false
       end
     end
   end

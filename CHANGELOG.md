@@ -1,10 +1,17 @@
 # Change Log
 
-## [3.1.1]
 
-[Full Changelog](https://github.com/test-kitchen/vmware-vra-gem/compare/v3.0.1...v3.1.0)
+## [3.1.2] (2022-03-28)
 
-- Upgrade Rake dependency
+- Upgrade Rake dependency (@damacus)
+
+[Full Changelog](https://github.com/test-kitchen/vmware-vra-gem/compare/v3.1.1...v3.1.1)
+
+## [3.1.1] (2022-03-01)
+
+- Send Authorization: Bearer header instead of csp-auth-token for greater compatibility [@oshvarts]
+
+[Full Changelog](https://github.com/test-kitchen/vmware-vra-gem/compare/v3.1.0...v3.1.1)
 
 ## [3.1.0](https://github.com/test-kitchen/vmware-vra-gem/tree/v3.1.0) (2022-01-30)
 
