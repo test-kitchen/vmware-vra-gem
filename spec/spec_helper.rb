@@ -17,19 +17,19 @@
 # limitations under the License.
 #
 
-require 'webmock/rspec'
-require 'simplecov'
+require "webmock/rspec"
+require "simplecov"
 
 SimpleCov.start do
   enable_coverage :branch
 end
 
-require 'vra'
+require "vra"
 
 def fixtures_dir
   @fixtures_dir ||= begin
     base_dir = File.dirname(__FILE__)
-    File.join(base_dir, 'fixtures')
+    File.join(base_dir, "fixtures")
   end
 end
 

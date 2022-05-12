@@ -45,8 +45,8 @@ module Vra
     attr_reader :client, :data
 
     def validate!
-      raise ArgumentError, 'must supply id or data hash' if @id.nil? && @data.nil?
-      raise ArgumentError, 'must supply id or data hash, not both' if !@id.nil? && !@data.nil?
+      raise ArgumentError, "must supply id or data hash" if @id.nil? && @data.nil?
+      raise ArgumentError, "must supply id or data hash, not both" if !@id.nil? && !@data.nil?
     end
 
     def entitle_params(type)
@@ -54,8 +54,8 @@ module Vra
         'projectId': project_id,
         'definition': {
           'type': type,
-          'id': id
-        }
+          'id': id,
+        },
       }
     end
   end

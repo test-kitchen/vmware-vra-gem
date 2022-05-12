@@ -17,42 +17,42 @@
 # limitations under the License.
 #
 
-require 'spec_helper'
+require "spec_helper"
 
 describe Vra::Catalog do
   let(:client) do
     Vra::Client.new(
-      username: 'user@corp.local',
-      password: 'password',
-      tenant: 'tenant',
-      base_url: 'https://vra.corp.local'
+      username: "user@corp.local",
+      password: "password",
+      tenant: "tenant",
+      base_url: "https://vra.corp.local"
     )
   end
 
   let(:catalog_item) do
-    JSON.parse(File.read('spec/fixtures/resource/sample_catalog_item.json'))
+    JSON.parse(File.read("spec/fixtures/resource/sample_catalog_item.json"))
   end
 
   let(:entitled_catalog_item) do
-    JSON.parse(File.read('spec/fixtures/resource/sample_catalog_item_2.json'))
+    JSON.parse(File.read("spec/fixtures/resource/sample_catalog_item_2.json"))
   end
 
   before(:each) do
     allow(client).to receive(:authorized?).and_return(true)
   end
 
-  describe '#all_items' do
-    it 'calls the catalogItems endpoint' do
+  describe "#all_items" do
+    it "calls the catalogItems endpoint" do
       expect(client).to receive(:http_get_paginated_array!)
-        .with('/catalog/api/admin/items', nil)
+        .with("/catalog/api/admin/items", nil)
         .and_return([catalog_item])
 
       client.catalog.all_items
     end
 
-    it 'returns a Vra::CatalogItem object' do
+    it "returns a Vra::CatalogItem object" do
       allow(client).to receive(:http_get_paginated_array!)
-        .with('/catalog/api/admin/items', nil)
+        .with("/catalog/api/admin/items", nil)
         .and_return([catalog_item])
 
       items = client.catalog.all_items
@@ -61,60 +61,60 @@ describe Vra::Catalog do
     end
   end
 
-  describe '#entitled_items' do
-    it 'calls the entitledCatalogItems endpoint' do
+  describe "#entitled_items" do
+    it "calls the entitledCatalogItems endpoint" do
       expect(client).to receive(:get_parsed)
-        .with('/catalog/api/admin/entitlements?projectId=pro-123456')
-        .and_return(JSON.parse(File.read('spec/fixtures/resource/sample_entitlements.json')))
+        .with("/catalog/api/admin/entitlements?projectId=pro-123456")
+        .and_return(JSON.parse(File.read("spec/fixtures/resource/sample_entitlements.json")))
 
-      client.catalog.entitled_items('pro-123456')
+      client.catalog.entitled_items("pro-123456")
     end
 
-    it 'returns a Vra::CatalogItem object' do
+    it "returns a Vra::CatalogItem object" do
       allow(client).to receive(:get_parsed)
-        .with('/catalog/api/admin/entitlements?projectId=pro-123456')
-        .and_return(JSON.parse(File.read('spec/fixtures/resource/sample_entitlements.json')))
+        .with("/catalog/api/admin/entitlements?projectId=pro-123456")
+        .and_return(JSON.parse(File.read("spec/fixtures/resource/sample_entitlements.json")))
 
-      items = client.catalog.entitled_items('pro-123456')
+      items = client.catalog.entitled_items("pro-123456")
 
       expect(items.first).to be_an_instance_of(Vra::CatalogItem)
     end
 
-    it 'return a Vra::CatalogSource object on source entitlements' do
+    it "return a Vra::CatalogSource object on source entitlements" do
       allow(client).to receive(:get_parsed)
-        .with('/catalog/api/admin/entitlements?projectId=pro-123456')
-        .and_return(JSON.parse(File.read('spec/fixtures/resource/sample_entitlements.json')))
+        .with("/catalog/api/admin/entitlements?projectId=pro-123456")
+        .and_return(JSON.parse(File.read("spec/fixtures/resource/sample_entitlements.json")))
 
-      items = client.catalog.entitled_sources('pro-123456')
+      items = client.catalog.entitled_sources("pro-123456")
 
       expect(items.first).to be_an_instance_of(Vra::CatalogSource)
     end
   end
 
-  describe '#request' do
-    it 'returns a new Vra::CatalogRequest object' do
+  describe "#request" do
+    it "returns a new Vra::CatalogRequest object" do
       allow(Vra::CatalogItem).to receive(:new)
-      request = client.catalog.request('blueprint-1', cpus: 2)
+      request = client.catalog.request("blueprint-1", cpus: 2)
       expect(request).to be_an_instance_of(Vra::DeploymentRequest)
     end
   end
 
-  describe '#sources' do
+  describe "#sources" do
     let(:source_data) do
-      JSON.parse(File.read('spec/fixtures/resource/sample_catalog_source.json'))
+      JSON.parse(File.read("spec/fixtures/resource/sample_catalog_source.json"))
     end
 
-    it 'should call the api to fetch the sources' do
+    it "should call the api to fetch the sources" do
       expect(client).to receive(:http_get_paginated_array!)
-        .with('/catalog/api/admin/sources', nil)
+        .with("/catalog/api/admin/sources", nil)
         .and_return([source_data])
 
       client.catalog.all_sources
     end
 
-    it 'should return the Vra::CatalogSource object' do
+    it "should return the Vra::CatalogSource object" do
       expect(client).to receive(:http_get_paginated_array!)
-        .with('/catalog/api/admin/sources', nil)
+        .with("/catalog/api/admin/sources", nil)
         .and_return([source_data])
 
       source = client.catalog.all_sources.first
@@ -123,22 +123,22 @@ describe Vra::Catalog do
     end
   end
 
-  describe '#types' do
+  describe "#types" do
     let(:type_data) do
-      JSON.parse(File.read('spec/fixtures/resource/sample_catalog_type.json'))
+      JSON.parse(File.read("spec/fixtures/resource/sample_catalog_type.json"))
     end
 
-    it 'should call the api to fetch the types' do
+    it "should call the api to fetch the types" do
       expect(client).to receive(:http_get_paginated_array!)
-        .with('/catalog/api/types', nil)
+        .with("/catalog/api/types", nil)
         .and_return([type_data])
 
       client.catalog.all_types
     end
 
-    it 'should return the Vra::CatalogType object' do
+    it "should return the Vra::CatalogType object" do
       expect(client).to receive(:http_get_paginated_array!)
-        .with('/catalog/api/types', nil)
+        .with("/catalog/api/types", nil)
         .and_return([type_data])
 
       source = client.catalog.all_types.first
@@ -147,17 +147,17 @@ describe Vra::Catalog do
     end
   end
 
-  describe '#fetch_catalog_by_name' do
+  describe "#fetch_catalog_by_name" do
     let(:catalog_item) do
-      JSON.parse(File.read('spec/fixtures/resource/sample_catalog_item.json'))
+      JSON.parse(File.read("spec/fixtures/resource/sample_catalog_item.json"))
     end
 
-    it 'returns the catalogs by name' do
+    it "returns the catalogs by name" do
       expect(client).to receive(:http_get_paginated_array!)
-        .with('/catalog/api/admin/items', 'search=centos')
+        .with("/catalog/api/admin/items", "search=centos")
         .and_return([catalog_item])
 
-      cat = client.catalog.fetch_catalog_items('centos').first
+      cat = client.catalog.fetch_catalog_items("centos").first
 
       expect(cat).to be_an_instance_of(Vra::CatalogItem)
     end

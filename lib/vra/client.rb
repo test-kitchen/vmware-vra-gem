@@ -17,15 +17,15 @@
 # limitations under the License.
 #
 
-require 'ffi_yajl' unless defined?(FFI_Yajl)
-require 'passwordmasker'
-require 'vra/http'
+require "ffi_yajl" unless defined?(FFI_Yajl)
+require "passwordmasker"
+require "vra/http"
 
 module Vra
   class Client
-    REFRESH_TOKEN_URL = '/csp/gateway/am/api/login?access_token'
-    ACCESS_TOKEN_URL = '/iaas/api/login'
-    ROLES_URL = '/csp/gateway/am/api/loggedin/user/orgs'
+    REFRESH_TOKEN_URL = "/csp/gateway/am/api/login?access_token"
+    ACCESS_TOKEN_URL = "/iaas/api/login"
+    ROLES_URL = "/csp/gateway/am/api/loggedin/user/orgs"
 
     attr_accessor :page_size
 
@@ -80,15 +80,15 @@ module Vra
       {
         'username': @username,
         'password': @password.value,
-        'tenant': @tenant
+        'tenant': @tenant,
       }
     end
 
     def request_headers
       headers                   = {}
-      headers['Accept']         = 'application/json'
-      headers['Content-Type']   = 'application/json'
-      headers['Authorization']  = 'Bearer ' + @access_token.value unless @access_token.value.nil?
+      headers["Accept"]         = "application/json"
+      headers["Content-Type"]   = "application/json"
+      headers["Authorization"]  = "Bearer " + @access_token.value unless @access_token.value.nil?
 
       headers
     end
@@ -96,7 +96,7 @@ module Vra
     def authorize!
       generate_access_token unless authorized?
 
-      raise Vra::Exception::Unauthorized, 'Unable to authorize against vRA' unless authorized?
+      raise Vra::Exception::Unauthorized, "Unable to authorize against vRA" unless authorized?
     end
 
     def authorized?
@@ -119,14 +119,14 @@ module Vra
       raise Vra::Exception::Unauthorized, "Unable to get the refresh token: #{refresh_response.body}" unless refresh_response.success_ok?
 
       refresh_response_body = FFI_Yajl::Parser.parse(refresh_response.body)
-      @refresh_token.value = refresh_response_body['refresh_token']
+      @refresh_token.value = refresh_response_body["refresh_token"]
 
       # Second Step: Sending the refresh token to a separate endpoint to get an Access Token
       access_response = http_post(ACCESS_TOKEN_URL, "{ \"refreshToken\": \"#{@refresh_token.value}\" }", :skip_auth)
       raise Vra::Exception::Unauthorized, "Unable to get the access token: #{access_response.body}" unless access_response.success_ok?
 
       access_response_body = FFI_Yajl::Parser.parse(access_response.body)
-      @access_token.value = access_response_body['token']
+      @access_token.value = access_response_body["token"]
     end
 
     def full_url(path)

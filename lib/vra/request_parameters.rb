@@ -93,7 +93,7 @@ module Vra
 
     def to_vra
       hash = {
-        'inputs': {}
+        'inputs': {},
       }
 
       @entries.each do |_, v|
@@ -120,7 +120,7 @@ module Vra
     def to_h
       hash = {}
 
-      if @children.count.positive?
+      if @children.count > 0
         hash[@key] = {}
 
         @children.each do |c|
@@ -135,13 +135,13 @@ module Vra
 
     def to_vra
       hash = {}
-      if @children.count.positive?
+      if @children.count > 0
         hash[@key] = {}
 
-        hash[@key]['inputs'] = {}
+        hash[@key]["inputs"] = {}
 
         @children.each do |c|
-          hash[@key]['inputs'].merge!(c.to_vra)
+          hash[@key]["inputs"].merge!(c.to_vra)
         end
       else
         hash[@key] = format_value
@@ -152,12 +152,12 @@ module Vra
 
     def format_value
       case @type
-      when 'integer'
+      when "integer"
         @value.to_i
-      when 'string'
+      when "string"
         @value
-      when 'boolean'
-        @value.to_s == 'true'
+      when "boolean"
+        @value.to_s == "true"
       else
         @value
       end

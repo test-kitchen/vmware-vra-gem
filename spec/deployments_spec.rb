@@ -17,54 +17,54 @@
 # limitations under the License.
 #
 
-require 'spec_helper'
+require "spec_helper"
 
 describe ::Vra::Deployments do
   let(:client) do
     Vra::Client.new(
-      username: 'user@corp.local',
-      password: 'password',
-      tenant: 'tenant',
-      base_url: 'https://vra.corp.local'
+      username: "user@corp.local",
+      password: "password",
+      tenant: "tenant",
+      base_url: "https://vra.corp.local"
     )
   end
 
   let(:deployment_response) do
-    JSON.parse(File.read('spec/fixtures/resource/sample_deployment.json'))
+    JSON.parse(File.read("spec/fixtures/resource/sample_deployment.json"))
   end
 
   before(:each) do
     allow(client).to receive(:authorized?).and_return(true)
   end
 
-  describe '#by_id' do
-    it 'should call the api to fetch the deployments' do
+  describe "#by_id" do
+    it "should call the api to fetch the deployments" do
       expect(client).to receive(:get_parsed).and_return(deployment_response)
 
-      described_class.by_id(client, 'dep-123')
+      described_class.by_id(client, "dep-123")
     end
 
-    it 'should return the deployment by id' do
-      stub_request(:get, client.full_url('/deployment/api/deployments/dep-123'))
+    it "should return the deployment by id" do
+      stub_request(:get, client.full_url("/deployment/api/deployments/dep-123"))
         .to_return(status: 200, body: deployment_response.to_json, headers: {})
 
-      deployment = described_class.by_id(client, 'dep-123')
+      deployment = described_class.by_id(client, "dep-123")
       expect(deployment).to be_an_instance_of(Vra::Deployment)
     end
   end
 
-  describe '#all' do
-    it 'should call the api to fetch all deployments' do
+  describe "#all" do
+    it "should call the api to fetch all deployments" do
       expect(client)
         .to receive(:http_get_paginated_array!)
-        .with('/deployment/api/deployments')
+        .with("/deployment/api/deployments")
         .and_return([deployment_response])
 
       described_class.all(client)
     end
 
-    it 'should return the Vra::Deployment object' do
-      stub_request(:get, client.full_url('/deployment/api/deployments?$skip=0&$top=20'))
+    it "should return the Vra::Deployment object" do
+      stub_request(:get, client.full_url("/deployment/api/deployments?$skip=0&$top=20"))
         .to_return(status: 200, body: { content: [deployment_response], totalPages: 1 }.to_json, headers: {})
 
       deployment = described_class.all(client).first
@@ -72,8 +72,8 @@ describe ::Vra::Deployments do
     end
   end
 
-  describe 'called with client' do
-    it 'should return the class object' do
+  describe "called with client" do
+    it "should return the class object" do
       expect(client.deployments).to be_an_instance_of described_class
     end
   end

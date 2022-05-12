@@ -22,7 +22,7 @@ require "ffi_yajl" unless defined?(FFI_Yajl)
 module Vra
   # Class that represents the Deployment Object
   class Deployment
-    INDEX_URL = '/deployment/api/deployments'
+    INDEX_URL = "/deployment/api/deployments"
 
     attr_reader :id
 
@@ -35,40 +35,40 @@ module Vra
       if @data.nil?
         refresh
       elsif @id.nil?
-        @id = @data['id']
+        @id = @data["id"]
       end
     end
 
     def name
-      @data['name']
+      @data["name"]
     end
 
     def description
-      @data['description']
+      @data["description"]
     end
 
     def org_id
-      @data['orgId']
+      @data["orgId"]
     end
 
     def blueprint_id
-      @data['blueprintId']
+      @data["blueprintId"]
     end
 
     def owner
-      @data['ownedBy']
+      @data["ownedBy"]
     end
 
     def status
-      @data['status']
+      @data["status"]
     end
 
     def successful?
-      status == 'CREATE_SUCCESSFUL'
+      status == "CREATE_SUCCESSFUL"
     end
 
     def failed?
-      status == 'CREATE_FAILED'
+      status == "CREATE_FAILED"
     end
 
     def completed?
@@ -80,16 +80,16 @@ module Vra
     end
 
     def action_id_by_name(action_name)
-      action = actions.find { |x| x['name'] == action_name}
+      action = actions.find { |x| x["name"] == action_name }
       return if action.nil?
 
-      action['id']
+      action["id"]
     end
 
     def resources
       response = client.get_parsed("/deployment/api/deployments/#{id}/resources")
 
-      response['content'].map! { |x| Vra::Resource.new(client, id, data: x) }
+      response["content"].map! { |x| Vra::Resource.new(client, id, data: x) }
     end
 
     def resource_by_id(res_id)
@@ -99,7 +99,7 @@ module Vra
     def requests
       response = client.get_parsed("/deployment/api/deployments/#{id}/requests")
 
-      response['content'].map! { |x| Vra::Request.new(client, id, id: x['id'], data: x) }
+      response["content"].map! { |x| Vra::Request.new(client, id, id: x["id"], data: x) }
     end
 
     def refresh
@@ -108,22 +108,22 @@ module Vra
       raise Vra::Exception::NotFound, "deployment with ID #{id} does not exist"
     end
 
-    def destroy(reason = '')
-      action_id = action_id_by_name('Delete')
+    def destroy(reason = "")
+      action_id = action_id_by_name("Delete")
       raise Vra::Exception::NotFound, "No destroy action found for resource #{@id}" if action_id.nil?
 
       submit_action_request(action_id, reason)
     end
 
-    def power_off(reason = '')
-      action_id = action_id_by_name('PowerOff')
+    def power_off(reason = "")
+      action_id = action_id_by_name("PowerOff")
       raise Vra::Exception::NotFound, "No power-off action found for resource #{@id}" if action_id.nil?
 
       submit_action_request(action_id, reason)
     end
 
     def power_on(reason = nil)
-      action_id = action_id_by_name('PowerOn')
+      action_id = action_id_by_name("PowerOn")
       raise Vra::Exception::NotFound, "No power-on action found for resource #{@id}" if action_id.nil?
 
       submit_action_request(action_id, reason)
@@ -134,7 +134,7 @@ module Vra
     attr_reader :client, :data
 
     def validate!
-      raise ArgumentError, 'must supply id or data hash' if @id.nil? && @data.nil?
+      raise ArgumentError, "must supply id or data hash" if @id.nil? && @data.nil?
     end
 
     def submit_action_request(action_id, reason)
@@ -148,7 +148,7 @@ module Vra
       {
         "actionId": action_id,
         "inputs": {},
-        "reason": reason
+        "reason": reason,
       }
     end
   end

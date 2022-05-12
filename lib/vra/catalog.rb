@@ -38,11 +38,11 @@ module Vra
     end
 
     def entitled_sources(project_id)
-      fetch_entitlements(project_id, 'CatalogSourceIdentifier')
+      fetch_entitlements(project_id, "CatalogSourceIdentifier")
     end
 
     def entitled_items(project_id)
-      fetch_entitlements(project_id, 'CatalogItemIdentifier')
+      fetch_entitlements(project_id, "CatalogItemIdentifier")
     end
 
     def request(*args)
@@ -52,7 +52,7 @@ module Vra
     def fetch_catalog_items(catalog_name)
       fetch_resources(
         Vra::CatalogItem,
-        '/catalog/api/admin/items',
+        "/catalog/api/admin/items",
         "search=#{catalog_name}"
       )
     end
@@ -66,12 +66,12 @@ module Vra
     end
 
     def fetch_entitlements(project_id, type)
-      klass = type == 'CatalogSourceIdentifier' ? Vra::CatalogSource : Vra::CatalogItem
+      klass = type == "CatalogSourceIdentifier" ? Vra::CatalogSource : Vra::CatalogItem
 
       client
         .get_parsed("/catalog/api/admin/entitlements?projectId=#{project_id}")
-        .select { |x| x['definition']['type'] == type }
-        .map! { |x| klass.new(client, data: x['definition']) }
+        .select { |x| x["definition"]["type"] == type }
+        .map! { |x| klass.new(client, data: x["definition"]) }
     end
   end
 end

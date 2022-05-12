@@ -21,10 +21,10 @@ require "ffi_yajl" unless defined?(FFI_Yajl)
 
 module Vra
   class Resource
-    VM_TYPES = %w[
+    VM_TYPES = %w{
       Cloud.vSphere.Machine
       Cloud.Machine
-    ].freeze
+    }.freeze
 
     attr_reader :client, :deployment_id, :id, :resource_data
 
@@ -35,13 +35,13 @@ module Vra
       @resource_data    = opts[:data]
       @resource_actions = []
 
-      raise ArgumentError, 'must supply an id or a resource data hash' if @id.nil? && @resource_data.nil?
-      raise ArgumentError, 'must supply an id OR a resource data hash, not both' if !@id.nil? && !@resource_data.nil?
+      raise ArgumentError, "must supply an id or a resource data hash" if @id.nil? && @resource_data.nil?
+      raise ArgumentError, "must supply an id OR a resource data hash, not both" if !@id.nil? && !@resource_data.nil?
 
       if @resource_data.nil?
         fetch_resource_data
       else
-        @id = @resource_data['id']
+        @id = @resource_data["id"]
       end
     end
 
@@ -54,40 +54,40 @@ module Vra
     alias refresh fetch_resource_data
 
     def name
-      resource_data['name']
+      resource_data["name"]
     end
 
     def status
-      resource_data['syncStatus']
+      resource_data["syncStatus"]
     end
 
     def properties
-      resource_data['properties']
+      resource_data["properties"]
     end
 
     def vm?
-      VM_TYPES.include?(resource_data['type'])
+      VM_TYPES.include?(resource_data["type"])
     end
 
     def owner_names
-      properties['Owner']
+      properties["Owner"]
     end
 
     def project_id
-      properties['project']
+      properties["project"]
     end
 
     def network_interfaces
       return unless vm?
 
-      network_list = properties['networks']
+      network_list = properties["networks"]
       return if network_list.nil?
 
       network_list.each_with_object([]) do |item, nics|
         nics << {
-          'NETWORK_NAME' => item['name'],
-          'NETWORK_ADDRESS' => item['address'],
-          'NETWORK_MAC_ADDRESS' => item['mac_address']
+          "NETWORK_NAME" => item["name"],
+          "NETWORK_ADDRESS" => item["address"],
+          "NETWORK_MAC_ADDRESS" => item["mac_address"],
         }
       end
     end
@@ -95,7 +95,7 @@ module Vra
     def ip_address
       return if !vm? || network_interfaces.nil?
 
-      properties['address']
+      properties["address"]
     end
   end
 end
