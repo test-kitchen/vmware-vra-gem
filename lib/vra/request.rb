@@ -31,16 +31,16 @@ module Vra
       if @request_data.nil?
         refresh
       else
-        @id = @request_data['id']
+        @id = @request_data["id"]
       end
     end
 
     def requested_by
-      request_data['requestedBy']
+      request_data["requestedBy"]
     end
 
     def name
-      request_data['name']
+      request_data["name"]
     end
 
     def refresh
@@ -61,7 +61,7 @@ module Vra
       refresh_if_empty
       return if request_empty?
 
-      request_data['status']
+      request_data["status"]
     end
 
     def completed?
@@ -69,11 +69,11 @@ module Vra
     end
 
     def successful?
-      status == 'SUCCESSFUL'
+      status == "SUCCESSFUL"
     end
 
     def failed?
-      status == 'FAILED'
+      status == "FAILED"
     end
 
     private

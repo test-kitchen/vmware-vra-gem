@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-require 'ffi_yajl' unless defined?(FFI_Yajl)
+require "ffi_yajl" unless defined?(FFI_Yajl)
 
 # Overriding the hash object to add the deep_merge method
 class ::Hash
@@ -50,12 +50,12 @@ module Vra
       begin
         response = send_request!
       rescue Vra::Exception::HTTPError => e
-        raise Vra::Exception::RequestError, "Unable to submit request: #{e.message}, trace: #{e.errors.join(', ')}"
+        raise Vra::Exception::RequestError, "Unable to submit request: #{e.message}, trace: #{e.errors.join(", ")}"
       rescue StandardError => e
         raise e, e.message
       end
 
-      request_id = FFI_Yajl::Parser.parse(response)[0]['deploymentId']
+      request_id = FFI_Yajl::Parser.parse(response)[0]["deploymentId"]
       Vra::Deployment.new(client, id: request_id)
     end
 
@@ -85,21 +85,20 @@ module Vra
 
     def validate!
       missing_params = []
-      %i[image_mapping flavor_mapping name project_id].each do |arg|
+      %i{image_mapping flavor_mapping name project_id}.each do |arg|
         missing_params << arg if send(arg).nil?
       end
 
       unless missing_params.empty?
-        raise ArgumentError, "Unable to submit request, required param(s) missing => #{missing_params.join(', ')}"
+        raise ArgumentError, "Unable to submit request, required param(s) missing => #{missing_params.join(", ")}"
       end
 
       # If the user doesn't supply the catalog version, fetch the latest version and use it
       # and if the API was unable to find a valid version, alert the user.
       return unless @version.nil?
 
-
       @version = CatalogItem.fetch_latest_version(client, catalog_id)
-      raise ArgumentError, 'Unable to fetch a valid catalog version' if @version.nil?
+      raise ArgumentError, "Unable to fetch a valid catalog version" if @version.nil?
     end
 
     def send_request!
@@ -117,8 +116,8 @@ module Vra
         'inputs': {
           'count': count,
           'image': image_mapping,
-          'flavor': flavor_mapping
-        }
+          'flavor': flavor_mapping,
+        },
       }.deep_merge(parameters)
     end
   end

@@ -23,7 +23,7 @@ require "vra/catalog"
 module Vra
   # Class that represents the Catalog Item
   class CatalogItem < Vra::CatalogBase
-    INDEX_URL = '/catalog/api/admin/items'
+    INDEX_URL = "/catalog/api/admin/items"
 
     attr_reader :project_id
 
@@ -35,7 +35,7 @@ module Vra
       if @data.nil?
         fetch_catalog_item
       else
-        @id = @data['id']
+        @id = @data["id"]
       end
     end
 
@@ -46,19 +46,19 @@ module Vra
     end
 
     def name
-      data['name']
+      data["name"]
     end
 
     def description
-      data['description']
+      data["description"]
     end
 
     def source_id
-      data['sourceId']
+      data["sourceId"]
     end
 
     def source_name
-      data['sourceName']
+      data["sourceName"]
     end
 
     def source
@@ -66,21 +66,21 @@ module Vra
     end
 
     def type
-      @type ||= Vra::CatalogType.new(client, data: data['type'])
+      @type ||= Vra::CatalogType.new(client, data: data["type"])
     end
 
     def icon_id
-      data['iconId']
+      data["iconId"]
     end
 
     def versions
       client
         .http_get_paginated_array!("/catalog/api/items/#{id}/versions")
-        .map { |v| v['id'] }
+        .map { |v| v["id"] }
     end
 
     def entitle!(opts = {})
-      super(opts.merge(type: 'CatalogItemIdentifier'))
+      super(opts.merge(type: "CatalogItemIdentifier"))
     end
 
     class << self
@@ -89,7 +89,7 @@ module Vra
       end
 
       def fetch_latest_version(client, id)
-        new(client, data: { 'id' => id }).versions&.first
+        new(client, data: { "id" => id }).versions&.first
       end
     end
   end

@@ -298,6 +298,7 @@
 - Add support for Infrastructure.Cloud resources [\#15](https://github.com/test-kitchen/vmware-vra-gem/pull/15) ([adamleff](https://github.com/adamleff))
 
 ## [v1.4.0](https://github.com/test-kitchen/vmware-vra-gem/tree/v1.4.0) (2015-11-13)
+
 [Full Changelog](https://github.com/test-kitchen/vmware-vra-gem/compare/v1.3.0...v1.4.0)
 
 **Closed issues:**

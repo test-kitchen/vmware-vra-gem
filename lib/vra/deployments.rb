@@ -47,7 +47,7 @@ module Vra
 
     def fetch_all_resources
       client
-        .http_get_paginated_array!('/deployment/api/deployments')
+        .http_get_paginated_array!("/deployment/api/deployments")
         .map! { |x| Vra::Deployment.new(client, data: x) }
     end
   end
