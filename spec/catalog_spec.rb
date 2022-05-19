@@ -154,7 +154,7 @@ describe Vra::Catalog do
 
     it "returns the catalogs by name" do
       expect(client).to receive(:http_get_paginated_array!)
-        .with("/catalog/api/items", 'search=centos')
+        .with("/catalog/api/items", "search=centos")
         .and_return([catalog_item])
 
       cat = client.catalog.fetch_catalog_items("centos").first
