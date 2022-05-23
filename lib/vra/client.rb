@@ -80,7 +80,7 @@ module Vra
       {
         'username': @username,
         'password': @password.value,
-        'tenant': @tenant,
+        'domain': @tenant,
       }
     end
 
