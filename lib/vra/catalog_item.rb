@@ -23,7 +23,7 @@ require "vra/catalog"
 module Vra
   # Class that represents the Catalog Item
   class CatalogItem < Vra::CatalogBase
-    INDEX_URL = "/catalog/api/admin/items"
+    INDEX_URL = "/catalog/api/items"
 
     attr_reader :project_id
 
@@ -40,7 +40,7 @@ module Vra
     end
 
     def fetch_catalog_item
-      @data = client.get_parsed("/catalog/api/admin/items/#{id}")
+      @data = client.get_parsed("/catalog/api/items/#{id}")
     rescue Vra::Exception::HTTPNotFound
       raise Vra::Exception::NotFound, "catalog ID #{id} does not exist"
     end
