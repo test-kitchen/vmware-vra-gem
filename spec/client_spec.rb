@@ -136,7 +136,7 @@ describe Vra::Client do
       {
         username: "user@corp.local",
         password: "password",
-        tenant: "tenant",
+        domain: "tenant",
       }.to_json
     end
 
