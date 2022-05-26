@@ -1,5 +1,13 @@
 # Change Log
 
+## [3.1.3](https://github.com/test-kitchen/vmware-vra-gem/tree/v3.1.3) (2022-05-26)
+
+- Use regular admin catalog endpoint to fetch catalog items
+- Fixed the issue with multi-tenancy
+- Fix chefstyle issues and optimise workflow
+
+[Full Changelog](https://github.com/test-kitchen/vmware-vra-gem/compare/v3.1.2...v3.1.3)
+
 
 ## [3.1.2] (2022-03-28)
 
