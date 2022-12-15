@@ -47,10 +47,10 @@ require 'vra'
 => true
 ```
 
-Then, set up your client object. You will need to know your tenant ID from your vRA administrator.
+Then, set up your client object. You will need to know your domain from your vRA administrator.
 
 ```shell
-client = Vra::Client.new(username: 'devmgr@corp.local', password: 'mypassword', tenant: 'mytenant', base_url: 'https://vra.corp.local', verify_ssl: true)
+client = Vra::Client.new(username: 'devmgr@corp.local', password: 'mypassword', domain: 'domain.corp.local', base_url: 'https://vra.corp.local', verify_ssl: true)
 => #<Vra::Client:0x000000034c0df8 ... >
 ```
 
@@ -234,7 +234,7 @@ deployment.requests
 vRA paginates API requests where lists of items are returned.  By default, this gem will ask vRA to provide items in groups of 20.  However, as reported in [Issue 10](https://github.com/chef-partners/vmware-vra-gem/issues/10), it appears vRA may have a pagination bug.  You can change the default page size from 20 to a value of your choice by passing in a `page_size` option when setting up the client:
 
 ```ruby
-vra = Vra::Client.new(username: 'devmgr@corp.local', password: 'mypassword', tenant: 'mytenant', base_url: 'https://vra.corp.local', verify_ssl: true, page_size: 100)
+vra = Vra::Client.new(username: 'devmgr@corp.local', password: 'mypassword', domain: 'domain.corp.local', base_url: 'https://vra.corp.local', verify_ssl: true, page_size: 100)
 ```
 
 ... or setting `page_size` on the client object after you've created it:
