@@ -71,6 +71,10 @@ module Vra
       status == "CREATE_FAILED"
     end
 
+    def completion_details
+      requests.last.details
+    end
+
     def completed?
       successful? || failed?
     end

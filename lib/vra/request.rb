@@ -76,6 +76,10 @@ module Vra
       status == "FAILED"
     end
 
+    def details
+      request_data["details"]
+    end
+
     private
 
     attr_reader :request_data, :client
