@@ -81,7 +81,7 @@ module Vra
       {
         'username': @username,
         'password': @password.value,
-        'domain': @domain
+        'domain': @domain,
       }
     end
 
