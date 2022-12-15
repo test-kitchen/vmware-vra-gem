@@ -26,7 +26,7 @@ describe Vra::Client do
     {
       username: "user@corp.local",
       password: "password",
-      tenant: "tenant",
+      domain: "domain",
       base_url: "https://vra.corp.local",
     }
   end
@@ -136,7 +136,7 @@ describe Vra::Client do
       {
         username: "user@corp.local",
         password: "password",
-        domain: "tenant",
+        domain: "domain",
       }.to_json
     end
 
@@ -414,7 +414,7 @@ describe Vra::Client do
       let(:unverified_client) do
         Vra::Client.new(username: "user@corp.local",
                         password: "password",
-                        tenant: "tenant",
+                        domain: "domain",
                         base_url: "https://vra.corp.local",
                         verify_ssl: false)
       end
@@ -503,7 +503,7 @@ describe Vra::Client do
       let(:client) do
         described_class.new(
           password: "password",
-          tenant: "tenant",
+          domain: "domain",
           base_url: "https://vra.corp.local"
         )
       end
@@ -517,7 +517,7 @@ describe Vra::Client do
       let(:client) do
         described_class.new(
           username: "username",
-          tenant: "tenant",
+          domain: "domain",
           base_url: "https://vra.corp.local"
         )
       end
@@ -527,7 +527,7 @@ describe Vra::Client do
       end
     end
 
-    context "when tenant is missing" do
+    context "when domain is missing" do
       let(:client) do
         described_class.new(
           username: "username",
@@ -546,7 +546,7 @@ describe Vra::Client do
         described_class.new(
           username: "username",
           password: "password",
-          tenant: "tenant"
+          domain: "domain"
         )
       end
 
@@ -560,7 +560,7 @@ describe Vra::Client do
         described_class.new(
           username: "username",
           password: "password",
-          tenant: "tenant",
+          domain: "domain",
           base_url: "something-that-is-not-a-HTTP-URI"
         )
       end

@@ -33,7 +33,8 @@ module Vra
       @base_url      = opts[:base_url]
       @username      = opts[:username]
       @password      = PasswordMasker.new(opts[:password])
-      @tenant        = opts[:tenant]
+      @domain        = fetch_domain(opts)
+
       @verify_ssl    = opts.fetch(:verify_ssl, true)
       @refresh_token = PasswordMasker.new(nil)
       @access_token  = PasswordMasker.new(nil)
@@ -80,7 +81,7 @@ module Vra
       {
         'username': @username,
         'password': @password.value,
-        'domain': @tenant,
+        'domain': @domain
       }
     end
 
@@ -231,7 +232,7 @@ module Vra
 
     def validate_client_options!
       raise ArgumentError, "Username and password are required" if @username.nil? || @password.value.nil?
-      raise ArgumentError, "A tenant is required" if @tenant.nil?
+      raise ArgumentError, "A domain is required" if @domain.nil?
       raise ArgumentError, "A base URL is required" if @base_url.nil?
       raise ArgumentError, "Base URL #{@base_url} is not a valid URI." unless valid_uri?(@base_url)
     end
@@ -241,6 +242,16 @@ module Vra
       uri.is_a?(URI::HTTP)
     rescue URI::InvalidURIError
       false
+    end
+
+    private
+
+    # This is for backward compatibility, if someone still uses tenant key to pass the domain,
+    # it should also work.
+    def fetch_domain(opts)
+      return opts[:tenant] if opts.key?(:tenant) && !opts.key?(:domain)
+
+      opts[:domain]
     end
   end
 end

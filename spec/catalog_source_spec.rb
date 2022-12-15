@@ -23,7 +23,7 @@ describe Vra::CatalogSource do
     Vra::Client.new(
       username: "user@corp.local",
       password: "password",
-      tenant: "tenant",
+      domain: "domain",
       base_url: "https://vra.corp.local"
     )
   end
