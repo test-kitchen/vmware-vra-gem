@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.2.1](https://github.com/test-kitchen/vmware-vra-gem/tree/v3.2.1) (2023-05-23)
+
+- Eliminate Unique naming convention issue. This change will help in getting VM name as 'Deployment + DeploymentID'
+
 ## [3.2.0](https://github.com/test-kitchen/vmware-vra-gem/tree/v3.2.0) (2022-12-19)
 
 - Updated the tenant attribute to domain
