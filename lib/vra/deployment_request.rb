@@ -110,7 +110,6 @@ module Vra
 
     def request_payload
       {
-       # 'deploymentName': name,
         'projectId': project_id,
         'version': version,
         'inputs': {
