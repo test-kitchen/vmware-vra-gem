@@ -85,7 +85,7 @@ module Vra
 
     def validate!
       missing_params = []
-      %i{image_mapping flavor_mapping name project_id}.each do |arg|
+      %i{image_mapping flavor_mapping  project_id}.each do |arg|
         missing_params << arg if send(arg).nil?
       end
 
@@ -110,6 +110,7 @@ module Vra
 
     def request_payload
       {
+        'deploymentName': name,
         'projectId': project_id,
         'version': version,
         'inputs': {
