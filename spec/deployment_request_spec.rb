@@ -71,6 +71,17 @@ describe Vra::DeploymentRequest do
       expect { request.send(:validate!) }.not_to raise_error(ArgumentError)
     end
 
+    it "should not return error if deployment name is missing" do
+      request = described_class.new(client, catalog_id)
+
+      request.image_mapping  = "Centos Image"
+      request.flavor_mapping = "Small"
+      request.version        = "1"
+      request.project_id     = "pro-123"
+
+      expect { request.send(:validate!) }.not_to raise_error(ArgumentError)
+    end
+
     context "versions" do
       let(:dep_request) do
         described_class.new(
