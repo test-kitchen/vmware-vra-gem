@@ -1,5 +1,11 @@
 # Change Log
 
+## [3.2.1](https://github.com/test-kitchen/vmware-vra-gem/tree/v3.2.1) (2023-07-05)
+
+- Make deployment name an optional parameter
+
+[Full Changelog](https://github.com/test-kitchen/vmware-vra-gem/compare/v3.2.0...v3.2.1)
+
 ## [3.2.0](https://github.com/test-kitchen/vmware-vra-gem/tree/v3.2.0) (2022-12-19)
 
 - Updated the tenant attribute to domain
