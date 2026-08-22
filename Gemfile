@@ -5,8 +5,7 @@ source "https://rubygems.org"
 group :development do
   gem "simplecov", require: false
 end
-gemspec
-
+gemspec development_group: :test
 group :cookstyle do
   gem "cookstyle"
 end
