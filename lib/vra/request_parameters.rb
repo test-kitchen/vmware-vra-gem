@@ -120,7 +120,7 @@ module Vra
     def to_h
       hash = {}
 
-      if @children.count > 0
+      if @children.any?
         hash[@key] = {}
 
         @children.each do |c|
@@ -135,7 +135,7 @@ module Vra
 
     def to_vra
       hash = {}
-      if @children.count > 0
+      if @children.any?
         hash[@key] = {}
 
         hash[@key]["inputs"] = {}

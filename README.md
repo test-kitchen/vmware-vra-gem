@@ -121,7 +121,7 @@ When you are ready to request a deployment using a catalog, create a new deploym
 
 ```shell
 request = client.catalog.request(
-  catalog_id, 
+  catalog_id,
   image_mapping: 'VRA-nc-lnx-ce8.4-Docker',
   flavor_mapping: 'Small',
   name: 'CentOS VRA8 Test',

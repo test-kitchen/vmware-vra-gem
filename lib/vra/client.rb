@@ -115,8 +115,8 @@ module Vra
       # VRA 8 has a two-step authentication process - This probably breaks VRA7, who knows?!?
       # First step: Sending Username/Password to get a Refresh Token
       refresh_response = http_post(REFRESH_TOKEN_URL,
-                           FFI_Yajl::Encoder.encode(token_params),
-                           :skip_auth)
+        FFI_Yajl::Encoder.encode(token_params),
+        :skip_auth)
       raise Vra::Exception::Unauthorized, "Unable to get the refresh token: #{refresh_response.body}" unless refresh_response.success_ok?
 
       refresh_response_body = FFI_Yajl::Parser.parse(refresh_response.body)
@@ -138,9 +138,9 @@ module Vra
       authorize! unless skip_auth
 
       response = Vra::Http.execute(method: method,
-                                   url: full_url(path),
-                                   headers: request_headers,
-                                   verify_ssl: @verify_ssl)
+        url: full_url(path),
+        headers: request_headers,
+        verify_ssl: @verify_ssl)
     rescue => e
       raise_http_exception(e, path)
     else
@@ -184,10 +184,10 @@ module Vra
 
       if items.uniq!
         raise Vra::Exception::DuplicateItemsDetected,
-              "Duplicate items were returned by the vRA API. " \
-              "Increase your page size to avoid this vRA API bug. " \
-              "See https://github.com/chef-partners/vmware-vra-gem#pagination " \
-              "for more information."
+          "Duplicate items were returned by the vRA API. " \
+          "Increase your page size to avoid this vRA API bug. " \
+          "See https://github.com/chef-partners/vmware-vra-gem#pagination " \
+          "for more information."
       end
 
       items
@@ -197,10 +197,10 @@ module Vra
       authorize! unless skip_auth
 
       response = Vra::Http.execute(method: :post,
-                                   url: full_url(path),
-                                   headers: request_headers,
-                                   payload: payload,
-                                   verify_ssl: @verify_ssl)
+        url: full_url(path),
+        headers: request_headers,
+        payload: payload,
+        verify_ssl: @verify_ssl)
     rescue => e
       raise_http_exception(e, path)
     else
@@ -222,9 +222,9 @@ module Vra
               end
 
       exception = klass.new(code: caught_exception.http_code,
-                            body: caught_exception.response,
-                            klass: caught_exception.class,
-                            path: path)
+        body: caught_exception.response,
+        klass: caught_exception.class,
+        path: path)
 
       message = exception.errors.empty? ? caught_exception.message : exception.errors.join(", ")
       raise exception, message
