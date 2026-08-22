@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.summary       = "Client gem for interacting with VMware vRealize Automation."
   spec.description   = spec.summary
   spec.homepage      = "https://github.com/chef-partners/vmware-vra-gem"
-  spec.license       = "Apache 2.0"
+  spec.license       = "Apache-2.0"
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
