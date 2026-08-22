@@ -31,7 +31,7 @@ module Vra
   class DeploymentRequest
     attr_reader :catalog_id
     attr_accessor :image_mapping, :name, :flavor_mapping,
-                  :project_id, :version, :count
+      :project_id, :version, :count
 
     def initialize(client, catalog_id, opts = {})
       @client            = client

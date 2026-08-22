@@ -5,6 +5,7 @@ require "vra/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "vmware-vra"
+  spec.required_ruby_version = ">= 3.1"
   spec.version       = Vra::VERSION
   spec.authors       = ["Adam Leff", "JJ Asghar"]
   spec.email         = ["jj@chef.io"]

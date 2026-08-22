@@ -143,7 +143,7 @@ module Vra
 
     def submit_action_request(action_id, reason)
       response = client.http_post!("/deployment/api/deployments/#{id}/requests",
-                                   FFI_Yajl::Encoder.encode(submit_action_payload(action_id, reason)))
+        FFI_Yajl::Encoder.encode(submit_action_payload(action_id, reason)))
 
       Vra::Request.new(client, id, data: FFI_Yajl::Parser.parse(response))
     end

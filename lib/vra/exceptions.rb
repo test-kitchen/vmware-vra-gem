@@ -49,11 +49,7 @@ module Vra
         return unless data["errors"].respond_to?(:each)
 
         data["errors"].each do |error|
-          if error["systemMessage"]
-            @errors << error["systemMessage"]
-          else
-            @errors << error["message"]
-          end
+          @errors << error["systemMessage"] || error["message"]
         end
       end
     end

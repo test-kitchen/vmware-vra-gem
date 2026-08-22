@@ -6,3 +6,7 @@ group :development do
   gem "simplecov", require: false
 end
 gemspec
+
+group :cookstyle do
+  gem "cookstyle"
+end
