@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "vra/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "vmware-vra"
+  spec.name = "vmware-vra"
   spec.required_ruby_version = ">= 3.1"
   spec.version       = Vra::VERSION
   spec.authors       = ["Adam Leff", "JJ Asghar"]
@@ -16,7 +16,6 @@ Gem::Specification.new do |spec|
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
   spec.add_dependency "ffi-yajl",       "~> 2.2"
