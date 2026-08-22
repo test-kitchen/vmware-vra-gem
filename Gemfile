@@ -2,7 +2,7 @@
 source "https://rubygems.org"
 
 # Specify your gem's dependencies in vmware-vra-gem.gemspec
-group :development do
+group :test do
   gem "simplecov", require: false
 end
 gemspec development_group: :test
