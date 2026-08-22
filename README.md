@@ -102,7 +102,7 @@ client.catalog.entitled_items(project_id)
 => [#<Vra::CatalogItem:0x00007fe583863b28>, #<Vra::CatalogItem:0x00007fe583863ad8 ... ]
 ```
 
-To retrive catalog id from catalog name:
+To retrieve catalog id from catalog name:
 
 ```shell
 client.catalog.fetch_catalog_items('centos')

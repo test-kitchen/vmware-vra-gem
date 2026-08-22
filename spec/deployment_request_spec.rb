@@ -129,7 +129,7 @@ describe Vra::DeploymentRequest do
 
     context "set_parameter" do
       it "should set the parameter" do
-        request.set_parameter("hardware-config", "stirng", "Small")
+        request.set_parameter("hardware-config", "string", "Small")
 
         expect(request.parameters).to eq({ inputs: { "hardware-config" => "Small" } })
         expect(request.parameters[:inputs].count).to be(1)
